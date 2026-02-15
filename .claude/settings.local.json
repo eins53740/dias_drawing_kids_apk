@@ -5,7 +5,8 @@
       "Bash(java -version:*)",
       "Bash(node --version:*)",
       "Bash(npm:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(node -e:*)"
     ]
   }
 }

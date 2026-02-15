@@ -1,1303 +1,652 @@
-// ===== REALISTIC PROGRESSIVE SVG DRAWING SYSTEM =====
-// Detailed cartoon-sketch portraits based on actual photos.
-// Each layer adds realistic detail. Active layer pulses in orange.
+// ===== FULL-SCENE PROGRESSIVE SVG DRAWING SYSTEM =====
+// Each scene recreates the full photo composition, not just the person.
+// Layers build up the complete scene step by step.
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
-const VIEWBOX = '0 0 320 450';
-const PENCIL = '#4A4A4A';
-const LIGHT_PENCIL = '#888';
-const HIGHLIGHT = '#E65100';
-const PW = 1.8;      // pencil width
-const HW = 2.8;      // highlight width
-const SKETCH = 1.2;  // sketch/detail width
+const VB = '0 0 360 450';
+const P = '#4A4A4A'; // pencil
+const LP = '#888';    // light pencil
+const HL = '#E65100'; // highlight
+const PW = 1.6;
+const HW = 2.5;
+const SW = 1.0;
 
-function ce(tag, attrs) {
-  const el = document.createElementNS(SVG_NS, tag);
-  for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
-  return el;
-}
+function ce(t, a) { const e = document.createElementNS(SVG_NS, t); for (const [k, v] of Object.entries(a)) e.setAttribute(k, v); return e; }
+function sk(e, a, w) { e.setAttribute('stroke', a ? HL : P); e.setAttribute('stroke-width', a ? HW : (w || PW)); e.setAttribute('stroke-linecap', 'round'); e.setAttribute('stroke-linejoin', 'round'); if (!e.getAttribute('fill')) e.setAttribute('fill', 'none'); if (a) e.classList.add('active-element'); }
+function lt(e, a) { e.setAttribute('stroke', a ? HL : LP); e.setAttribute('stroke-width', a ? 1.5 : SW); e.setAttribute('stroke-linecap', 'round'); if (!e.getAttribute('fill')) e.setAttribute('fill', 'none'); if (a) e.classList.add('active-element'); }
+function pp(g, ds, a, fn) { ds.forEach(d => { const p = ce('path', { d, fill: 'none' }); (fn || sk)(p, a); g.appendChild(p); }); }
+function fl(g, d, c, a) { const e = ce('path', { d, fill: c, stroke: 'none' }); if (a) e.classList.add('active-element'); g.appendChild(e); }
+function fe(g, t, a2, a) { const e = ce(t, { ...a2, stroke: 'none' }); if (a) e.classList.add('active-element'); g.appendChild(e); }
 
-function stroke(el, active, w) {
-  el.setAttribute('stroke', active ? HIGHLIGHT : PENCIL);
-  el.setAttribute('stroke-width', active ? HW : (w || PW));
-  el.setAttribute('stroke-linecap', 'round');
-  el.setAttribute('stroke-linejoin', 'round');
-  if (!el.getAttribute('fill')) el.setAttribute('fill', 'none');
-  if (active) el.classList.add('active-element');
-}
-
-function light(el, active) {
-  el.setAttribute('stroke', active ? HIGHLIGHT : LIGHT_PENCIL);
-  el.setAttribute('stroke-width', active ? 1.8 : SKETCH);
-  el.setAttribute('stroke-linecap', 'round');
-  if (!el.getAttribute('fill')) el.setAttribute('fill', 'none');
-  if (active) el.classList.add('active-element');
-}
-
-function fill(el, color, active) {
-  el.setAttribute('fill', color);
-  el.setAttribute('stroke', 'none');
-  if (active) el.classList.add('active-element');
-}
-
-// Helper: add multiple paths to a group
-function paths(g, ds, active, styleFn) {
-  ds.forEach(d => {
-    const p = ce('path', { d, fill: 'none' });
-    (styleFn || stroke)(p, active);
-    g.appendChild(p);
-  });
-}
-
-// ===================================================================
-// MIGUEL - Young boy ~7yo, round face, short dirty-blonde hair,
-// yellow hoodie, eating from bowl, cheeky grin, ears stick out
-// ===================================================================
+// ==============================================================
+// SCENE 1: MIGUEL - Boy eating at table with red tablecloth,
+// wine bottle, lemon drink, can, bowl, cup
+// ==============================================================
 const miguelLayers = [
-  // 0: Head shape - round, slightly chubby, child proportions
+  // 0: Composition - table line, Miguel placement zone
   (g, a) => {
-    // Main face outline - round, wider at cheeks, soft chin
-    paths(g, [
-      // Full face contour: forehead to right jaw to chin to left jaw
-      'M108 148 C108 112 124 88 160 82 C196 88 212 112 212 148 ' +
-      'C214 172 210 192 200 206 C192 216 178 224 160 228 ' +
-      'C142 224 128 216 120 206 C110 192 106 172 108 148',
-    ], a);
-    // Chin definition
-    paths(g, [
-      'M136 218 C148 228 172 228 184 218',
-    ], a, light);
-    // Cheek roundness lines
-    paths(g, [
-      'M114 174 C116 180 118 184 122 188',
-      'M206 174 C204 180 202 184 198 188',
-    ], a, light);
+    // Table edge (horizontal)
+    pp(g, ['M0 240 L360 240'], a);
+    // Table front
+    pp(g, ['M0 240 L0 450 M360 240 L360 450'], a, lt);
+    // Miguel zone guide (right side)
+    pp(g, [
+      'M190 20 L190 240',  // vertical guide
+      'M190 130 L340 130',  // shoulder line
+    ], a, lt);
+    // Chair back hint
+    pp(g, ['M200 60 L200 220 M340 60 L340 220 M200 60 L340 60'], a, lt);
   },
 
-  // 1: Eyes - big, expressive child eyes, slightly round, bright
+  // 1: Miguel body outline - sitting behind table, leaning forward
   (g, a) => {
-    // Left eye - full shape with upper/lower lid
-    const le = ce('path', { d: 'M130 148 C132 140 142 136 148 140 C154 144 154 152 148 156 C142 160 132 156 130 148 Z', fill: 'none' });
-    stroke(le, a);
-    g.appendChild(le);
-    // Left iris
-    const li = ce('ellipse', { cx: 141, cy: 149, rx: 6.5, ry: 7, fill: a ? HIGHLIGHT : '#4E3524' });
-    if (a) li.classList.add('active-element');
-    g.appendChild(li);
-    // Left pupil
-    const lpu = ce('circle', { cx: 142, cy: 149, r: 3.2, fill: '#1A1008' });
-    g.appendChild(lpu);
-    // Left upper lid crease
-    const llc = ce('path', { d: 'M128 140 C134 133 146 131 152 136', fill: 'none' });
-    light(llc, a);
-    g.appendChild(llc);
-
-    // Right eye
-    const re = ce('path', { d: 'M172 148 C174 140 184 136 190 140 C196 144 196 152 190 156 C184 160 174 156 172 148 Z', fill: 'none' });
-    stroke(re, a);
-    g.appendChild(re);
-    const ri = ce('ellipse', { cx: 183, cy: 149, rx: 6.5, ry: 7, fill: a ? HIGHLIGHT : '#4E3524' });
-    if (a) ri.classList.add('active-element');
-    g.appendChild(ri);
-    const rpu = ce('circle', { cx: 184, cy: 149, r: 3.2, fill: '#1A1008' });
-    g.appendChild(rpu);
-    const rlc = ce('path', { d: 'M170 140 C176 133 188 131 194 136', fill: 'none' });
-    light(rlc, a);
-    g.appendChild(rlc);
-
-    // Eyebrows - short, slightly raised (surprised/cheeky)
-    paths(g, [
-      'M126 132 C132 126 144 125 150 128',
-      'M170 128 C176 125 188 126 194 132',
-    ], a);
+    // Head
+    pp(g, ['M236 80 C236 56 254 42 270 42 C286 42 304 56 304 80 C306 100 300 116 292 126 C284 134 276 140 270 142 C264 140 256 134 248 126 C240 116 236 100 236 80'], a);
+    // Neck
+    pp(g, ['M258 140 L256 155 M282 140 L284 155'], a);
+    // Shoulders and torso
+    pp(g, ['M220 175 C230 160 248 155 270 155 C292 155 310 160 320 175 L325 240 M220 175 L215 240'], a);
+    // Left arm going to mouth
+    pp(g, ['M225 180 C210 195 200 210 195 225 C192 232 196 238 205 236 L230 220 C240 208 248 190 254 170'], a);
+    // Right arm holding cup
+    pp(g, ['M315 180 C325 195 332 210 335 228 C336 234 332 238 326 236 L310 225'], a);
   },
 
-  // 2: Nose and open mouth (eating/grinning)
+  // 2: Miguel face details
   (g, a) => {
-    // Nose - small button nose, child-like
-    paths(g, [
-      // Bridge hint
-      'M158 142 C157 152 155 162 153 168',
-      // Nose tip and nostrils
-      'M148 170 C150 174 154 176 158 176 C162 176 166 174 168 170',
-      // Nostril curves
-      'M150 173 C148 171 147 168 149 167',
-      'M166 173 C168 171 169 168 167 167',
-    ], a);
-
-    // Mouth - big open grin, teeth showing, eating
-    paths(g, [
-      // Upper lip
-      'M138 192 C142 188 150 186 160 186 C170 186 178 188 182 192',
-      // Lower lip - big open smile
-      'M138 192 C142 206 152 214 160 214 C168 214 178 206 182 192',
-      // Teeth line
-      'M140 194 C148 196 160 196 172 196 C178 195 180 193 182 192',
-      // Upper teeth
-      'M144 194 L144 198 M152 194 L152 199 M160 194 L160 199 M168 194 L168 198 M176 194 L176 197',
-    ], a);
-    // Dimples from smiling
-    paths(g, [
-      'M130 194 C132 198 134 200 134 196',
-      'M186 194 C184 198 182 200 182 196',
-    ], a, light);
+    // Eyes
+    pp(g, ['M254 78 C256 72 264 70 268 74 C272 78 270 84 266 86 C262 88 256 84 254 78 Z'], a);
+    pp(g, ['M276 78 C278 72 286 70 290 74 C294 78 292 84 288 86 C284 88 278 84 276 78 Z'], a);
+    // Pupils
+    fe(g, 'circle', { cx: 262, cy: 79, r: 3.5, fill: a ? HL : '#3E2518' }, a);
+    fe(g, 'circle', { cx: 284, cy: 79, r: 3.5, fill: a ? HL : '#3E2518' }, a);
+    // Eyebrows
+    pp(g, ['M252 68 C258 64 266 63 270 66', 'M278 66 C282 63 290 64 296 68'], a);
+    // Nose
+    pp(g, ['M268 82 C267 88 266 94 264 98', 'M261 100 C264 104 268 106 272 106 C276 104 278 100 280 98'], a);
+    // Open mouth - eating grin
+    pp(g, ['M256 112 C260 108 268 107 274 108 C280 108 286 110 290 114', 'M256 112 C260 122 268 128 274 128 C280 128 286 122 290 114'], a);
+    // Teeth
+    pp(g, ['M258 114 L290 114', 'M264 114 L264 118 M270 114 L270 119 M276 114 L276 119 M282 114 L282 118'], a, lt);
+    // Ears
+    pp(g, ['M234 78 C228 74 224 80 224 88 C224 96 228 100 234 100', 'M306 78 C312 74 316 80 316 88 C316 96 312 100 306 100'], a);
   },
 
-  // 3: Hair - short, straight, dirty blonde, combed right, slight fringe
+  // 3: Hair + hoodie
   (g, a) => {
-    // Hair mass outline
-    paths(g, [
-      // Main hair shape - short on sides, slightly longer on top, swept right
-      'M106 142 C104 120 110 96 126 84 C140 76 158 72 170 74 ' +
-      'C182 76 198 82 208 96 C216 108 218 124 214 142',
-      // Hair line at forehead - natural, slightly uneven
-      'M112 138 C114 122 122 108 134 98 C144 92 156 88 168 90 ' +
-      'C178 92 190 98 198 108 C206 118 210 130 210 140',
-    ], a);
-    // Hair texture strands - swept to the right
-    paths(g, [
-      'M132 80 C138 78 148 76 156 78 C164 80 172 78 180 82',
-      'M120 92 C128 84 140 80 152 80 C162 80 174 82 186 90',
-      'M114 106 C120 96 132 88 146 86 C158 86 170 88 182 94',
-      'M116 118 C122 108 136 98 148 96 C160 96 172 100 184 108',
-      'M118 130 C124 120 138 110 150 108 C162 108 174 112 186 120',
-      // Side texture
-      'M108 134 C110 126 114 118 118 112',
-      'M212 134 C210 126 208 118 204 112',
-    ], a, light);
-    // Fringe detail at forehead
-    paths(g, [
-      'M136 98 C140 94 146 92 150 94',
-      'M154 90 C160 88 168 90 172 94',
-    ], a, light);
-  },
-
-  // 4: Ears (stick out a bit) and neck
-  (g, a) => {
-    // Left ear - sticking out
-    paths(g, [
-      'M106 146 C98 140 92 148 90 158 C88 168 92 178 98 180 C104 182 108 176 108 168',
-      // Inner ear detail
-      'M100 150 C96 156 96 166 100 174',
-      'M102 154 C100 160 100 166 102 170',
-    ], a);
-    // Right ear
-    paths(g, [
-      'M214 146 C222 140 228 148 230 158 C232 168 228 178 222 180 C216 182 212 176 212 168',
-      'M220 150 C224 156 224 166 220 174',
-      'M218 154 C220 160 220 166 218 170',
-    ], a);
-    // Neck - child's neck, shorter
-    paths(g, [
-      'M142 226 C140 234 138 244 136 254',
-      'M178 226 C180 234 182 244 184 254',
-    ], a);
-    // Neck shadow hint
-    paths(g, [
-      'M146 230 C154 234 166 234 174 230',
-    ], a, light);
-  },
-
-  // 5: Yellow hoodie - hood around neck, front pocket, drawstrings
-  (g, a) => {
-    // Shoulders and hoodie body
-    paths(g, [
-      // Left shoulder to body
-      'M136 254 C120 258 90 268 74 282 C64 292 60 310 60 340 L60 420',
-      // Right shoulder to body
-      'M184 254 C200 258 230 268 246 282 C256 292 260 310 260 340 L260 420',
-    ], a);
-    // Hood around neck - thick folded hood
-    paths(g, [
-      // Hood left side
-      'M118 252 C112 248 106 250 104 258 C102 266 108 272 116 270 L140 260',
-      // Hood right side
-      'M202 252 C208 248 214 250 216 258 C218 266 212 272 204 270 L180 260',
-      // Hood neckline
-      'M116 270 C130 276 146 278 160 278 C174 278 190 276 204 270',
-    ], a);
-    // Center seam
-    paths(g, ['M160 278 L160 420'], a, light);
+    // Hair - short, dirty blonde, swept right
+    pp(g, ['M238 76 C236 58 244 42 260 36 C272 32 286 34 296 40 C306 48 310 60 306 76', 'M242 72 C244 60 250 48 262 42 C274 38 286 42 294 50 C300 58 304 66 302 74'], a);
+    // Hair texture
+    pp(g, ['M256 38 C262 34 272 34 280 38', 'M248 48 C256 42 268 40 278 44', 'M244 58 C252 50 264 48 276 52'], a, lt);
+    // Hoodie body
+    pp(g, ['M228 166 C222 162 216 166 214 174 C212 182 216 188 224 186 L250 170', 'M312 166 C318 162 324 166 326 174 C328 182 324 188 316 186 L290 170'], a);
+    // Hood neckline
+    pp(g, ['M224 186 C240 192 256 194 270 194 C284 194 300 192 316 186'], a);
     // Drawstrings
-    paths(g, [
-      'M148 272 L144 300 L142 304',
-      'M172 272 L176 300 L178 304',
-    ], a, light);
-    // Kangaroo pocket
-    paths(g, [
-      'M102 350 C104 340 130 334 160 334 C190 334 216 340 218 350 ' +
-      'C216 360 190 366 160 366 C130 366 104 360 102 350',
-    ], a);
-    // Sleeve cuffs
-    paths(g, [
-      'M62 380 C66 376 74 374 80 376',
-      'M258 380 C254 376 246 374 240 376',
-    ], a, light);
+    pp(g, ['M260 188 L256 210', 'M280 188 L284 210'], a, lt);
+    // Center seam
+    pp(g, ['M270 194 L270 240'], a, lt);
   },
 
-  // 6: Arms and hands - right hand near mouth (eating), left hand holding cup
+  // 4: Hands + cup + food action
   (g, a) => {
-    // Left arm (viewer's left = his right arm, reaching to mouth with food)
-    paths(g, [
-      'M74 282 C58 296 44 320 40 340 C38 354 42 362 50 366',
-      // Forearm going up to face
-      'M50 366 C56 358 68 340 80 316 C90 296 104 276 118 260',
-    ], a);
     // Left hand near mouth with food
-    paths(g, [
-      // Hand shape
-      'M112 254 C106 250 100 252 98 258 C96 264 100 270 106 272 L116 268',
-      // Fingers holding food
-      'M100 256 C96 252 94 248 96 244 C98 240 102 240 104 244',
-      'M106 252 C104 248 102 242 104 238 C106 234 110 236 110 240',
-      // Food piece
-      'M96 238 C94 232 100 228 108 230 C112 232 112 238 108 240',
-    ], a);
-
-    // Right arm (his left, holding cup)
-    paths(g, [
-      'M246 282 C262 296 272 320 272 344 C272 358 268 366 260 370',
-      // Forearm to cup
-      'M260 370 C254 364 244 350 238 338 C232 326 228 316 226 310',
-    ], a);
-    // Right hand and cup
-    paths(g, [
-      // Cup shape
-      'M220 298 L218 330 C218 336 224 340 232 340 C240 340 244 336 244 330 L242 298 Z',
-      // Liquid line
-      'M222 308 C228 310 236 310 240 308',
-      // Fingers around cup
-      'M222 310 C218 312 216 318 218 322',
-      'M240 310 C244 312 246 318 244 322',
-      'M220 320 C216 322 216 328 218 330',
-    ], a);
-  },
-
-  // 7: Color - skin, hair
-  (g, a) => {
-    // Face skin fill
-    const skin = ce('path', {
-      d: 'M110 148 C110 114 126 90 160 84 C194 90 210 114 210 148 ' +
-         'C212 172 208 192 198 206 C190 216 176 224 160 228 ' +
-         'C144 224 130 216 122 206 C112 192 108 172 110 148 Z',
-      fill: '#F5D0A9'
-    });
-    if (a) skin.classList.add('active-element');
-    g.appendChild(skin);
-
-    // Ear skin
-    [{ d: 'M106 146 C98 140 92 148 90 158 C88 168 92 178 98 180 C104 182 108 176 108 168 Z' },
-     { d: 'M214 146 C222 140 228 148 230 158 C232 168 228 178 222 180 C216 182 212 176 212 168 Z' }
-    ].forEach(a2 => {
-      const ear = ce('path', { ...a2, fill: '#F5D0A9' });
-      g.appendChild(ear);
-    });
-
-    // Neck skin
-    const neck = ce('path', {
-      d: 'M142 226 C140 234 138 244 136 254 L184 254 C182 244 180 234 178 226 ' +
-         'C170 230 150 230 142 226 Z',
-      fill: '#F0C8A0'
-    });
-    g.appendChild(neck);
-
-    // Hair fill - dirty blonde
-    const hair = ce('path', {
-      d: 'M106 142 C104 120 110 96 126 84 C140 76 158 72 170 74 ' +
-         'C182 76 198 82 208 96 C216 108 218 124 214 142 ' +
-         'L210 140 C210 130 206 118 198 108 C190 98 178 92 168 90 ' +
-         'C156 88 144 92 134 98 C122 108 114 122 112 138 Z',
-      fill: '#C4A265'
-    });
-    if (a) hair.classList.add('active-element');
-    g.appendChild(hair);
-
-    // Hair highlights
-    const hl = ce('path', {
-      d: 'M130 86 C140 80 155 78 168 82 L166 86 C155 82 142 84 132 90 Z',
-      fill: '#D4B878', stroke: 'none'
-    });
-    g.appendChild(hl);
-
-    // Hand skin fills
-    const handL = ce('path', {
-      d: 'M112 254 C106 250 100 252 98 258 C96 264 100 270 106 272 L116 268 Z',
-      fill: '#F5D0A9'
-    });
-    g.appendChild(handL);
-  },
-
-  // 8: Color - hoodie yellow, cup
-  (g, a) => {
-    // Hoodie fill
-    const hoodie = ce('path', {
-      d: 'M136 254 C120 258 90 268 74 282 C64 292 60 310 60 340 L60 420 ' +
-         'L260 420 L260 340 C260 310 256 292 246 282 C230 268 200 258 184 254 ' +
-         'C180 260 172 272 160 278 C148 272 140 260 136 254 Z',
-      fill: '#FFD740'
-    });
-    if (a) hoodie.classList.add('active-element');
-    g.appendChild(hoodie);
-
-    // Hood darker
-    const hood = ce('path', {
-      d: 'M118 252 C112 248 106 250 104 258 C102 266 108 272 116 270 ' +
-         'C130 276 146 278 160 278 C174 278 190 276 204 270 ' +
-         'C212 272 218 266 216 258 C214 250 208 248 202 252 ' +
-         'C196 256 186 260 180 260 L140 260 C134 260 124 256 118 252 Z',
-      fill: '#FFC400'
-    });
-    if (a) hood.classList.add('active-element');
-    g.appendChild(hood);
-
-    // Pocket shadow
-    const pocket = ce('path', {
-      d: 'M104 350 C106 342 132 336 160 336 C188 336 214 342 216 350 ' +
-         'C214 358 188 364 160 364 C132 364 106 358 104 350 Z',
-      fill: '#FFB300', stroke: 'none'
-    });
-    g.appendChild(pocket);
-
-    // Cup fill
-    const cup = ce('path', {
-      d: 'M221 300 L219 329 C219 334 225 338 232 338 C239 338 243 334 243 329 L241 300 Z',
-      fill: '#E0E0E0'
-    });
-    g.appendChild(cup);
+    pp(g, ['M248 162 C242 158 236 160 234 166 C232 172 236 176 242 174', 'M236 164 C232 158 230 152 232 148 C234 144 238 144 240 148', 'M240 160 C238 154 236 148 238 144 C240 140 244 142 244 146'], a);
+    // Food piece
+    pp(g, ['M230 142 C228 136 232 132 240 134 C244 136 244 142 240 144'], a);
+    // Right hand + cup
+    pp(g, ['M308 220 L306 248 C306 254 312 258 320 258 C328 258 332 254 332 248 L330 220 Z'], a);
     // Liquid
-    const liq = ce('path', {
-      d: 'M222 308 C228 310 236 310 240 308 L240 329 C240 334 236 336 232 336 C228 336 224 334 222 329 Z',
-      fill: '#D4A44C', opacity: '0.5'
-    });
-    g.appendChild(liq);
+    pp(g, ['M310 230 C316 232 324 232 328 230'], a, lt);
+    // Fingers on cup
+    pp(g, ['M308 232 C304 234 302 240 304 244', 'M330 232 C334 234 336 240 334 244'], a);
   },
 
-  // 9: Final details - blush, eye shine, mouth color, food, shadows
+  // 5: Table - red cloth + bowl
   (g, a) => {
-    // Rosy cheeks
-    [{ cx: 126, cy: 182 }, { cx: 194, cy: 182 }].forEach(p => {
-      const c = ce('ellipse', { ...p, rx: 14, ry: 8, fill: '#FFAB91', opacity: '0.4' });
-      if (a) c.classList.add('active-element');
-      g.appendChild(c);
-    });
+    // Tablecloth drape
+    pp(g, ['M0 240 L360 240', 'M0 240 C10 244 20 248 20 260 L0 260', 'M360 240 C350 244 340 248 340 260 L360 260'], a);
+    // Cloth folds
+    pp(g, ['M40 242 C50 248 60 252 80 248', 'M180 242 C170 248 160 252 140 248', 'M220 242 C240 248 260 250 280 248'], a, lt);
+    // Bowl
+    pp(g, ['M230 260 C230 250 250 244 270 244 C290 244 310 250 310 260 C310 270 290 276 270 276 C250 276 230 270 230 260'], a);
+    // Food in bowl
+    pp(g, ['M236 256 C248 250 260 248 270 248 C280 248 292 250 304 256'], a, lt);
+    // Moon on bowl
+    pp(g, ['M266 266 C264 262 266 258 270 258 C268 260 268 264 270 266'], a, lt);
+  },
+
+  // 6: Bottles and can
+  (g, a) => {
+    // Wine bottle (Quinta do Cardo) - tall, dark, center-left
+    pp(g, ['M140 130 L140 240 M160 130 L160 240', 'M140 130 C140 122 144 118 148 116 L152 116 C156 118 160 122 160 130'], a);
+    // Wine bottle neck
+    pp(g, ['M146 116 L146 98 M154 116 L154 98', 'M144 98 L156 98'], a);
+    // Glass stopper (round glass ball)
+    pp(g, ['M146 98 C144 94 144 88 150 84 C156 88 156 94 154 98'], a);
+    pp(g, ['M148 84 C146 78 148 70 150 66 C152 70 154 78 152 84'], a);
+    // Wine label area
+    pp(g, ['M142 170 L158 170 L158 210 L142 210 Z'], a, lt);
+
+    // Lemon drink bottle - shorter, wider, left of wine
+    pp(g, ['M100 160 L100 240 M124 160 L124 240', 'M100 160 C100 152 106 148 110 146 L114 146 C118 148 124 152 124 160'], a);
+    // Yellow cap
+    pp(g, ['M106 146 L106 138 L118 138 L118 146'], a);
+    // Label area
+    pp(g, ['M102 180 L122 180 L122 220 L102 220 Z'], a, lt);
+
+    // Red can - far left
+    pp(g, ['M50 210 L50 250 C50 256 58 260 66 260 C74 260 82 256 82 250 L82 210 C82 204 74 200 66 200 C58 200 50 204 50 210 Z'], a);
+
+    // Empty glass far right
+    pp(g, ['M330 240 L332 260 C332 264 328 268 320 268 C312 268 308 264 308 260 L310 240'], a, lt);
+  },
+
+  // 7: Color - Miguel
+  (g, a) => {
+    // Skin
+    fl(g, 'M238 80 C238 58 256 44 270 44 C284 44 302 58 302 80 C304 98 298 114 290 124 C282 132 274 138 270 140 C266 138 258 132 250 124 C242 114 238 98 238 80 Z', '#F5D0A9', a);
+    // Ears
+    fe(g, 'ellipse', { cx: 229, cy: 88, rx: 6, ry: 10, fill: '#F5D0A9' }, false);
+    fe(g, 'ellipse', { cx: 311, cy: 88, rx: 6, ry: 10, fill: '#F5D0A9' }, false);
+    // Hair
+    fl(g, 'M240 76 C238 60 246 44 262 38 C274 34 288 36 298 42 C308 50 312 62 308 76 L304 74 C306 64 302 54 294 48 C286 42 274 40 264 44 C252 48 246 58 244 72 Z', '#C4A265', a);
+    // Hoodie
+    fl(g, 'M220 175 C230 160 248 155 270 155 C292 155 310 160 320 175 L325 240 L215 240 Z', '#FFD740', a);
+    // Hood
+    fl(g, 'M228 166 C222 162 216 166 214 174 C212 182 216 188 224 186 C240 192 256 194 270 194 C284 194 300 192 316 186 C324 188 328 182 326 174 C324 166 318 162 312 166 L290 170 L250 170 Z', '#FFC107', a);
+    // Hand skin
+    fe(g, 'ellipse', { cx: 238, cy: 164, rx: 10, ry: 10, fill: '#F5D0A9' }, false);
+  },
+
+  // 8: Color - table and objects
+  (g, a) => {
+    // Red tablecloth
+    fe(g, 'rect', { x: 0, y: 240, width: 360, height: 210, fill: '#C62828' }, a);
+    // Bowl
+    fl(g, 'M232 260 C232 252 252 246 270 246 C288 246 308 252 308 260 C308 268 288 274 270 274 C252 274 232 268 232 260 Z', '#9E9E9E', a);
+    // Food in bowl
+    fl(g, 'M238 256 C250 250 262 248 270 248 C278 248 290 250 302 256 C296 258 282 260 270 260 C258 260 244 258 238 256 Z', '#F5DEB3', false);
+    // Wine bottle
+    fl(g, 'M142 132 L142 238 L158 238 L158 132 C158 124 156 120 152 118 L148 118 C144 120 142 124 142 132 Z', '#1B5E20', a);
+    // Lemon drink
+    fl(g, 'M102 162 L102 238 L122 238 L122 162 C122 154 118 150 114 148 L110 148 C106 150 102 154 102 162 Z', '#5D4037', a);
+    // Yellow cap
+    fe(g, 'rect', { x: 107, y: 139, width: 10, height: 9, rx: 1, fill: '#FDD835' }, false);
+    // Red can
+    fl(g, 'M52 212 L52 248 C52 254 58 258 66 258 C74 258 80 254 80 248 L80 212 C80 206 74 202 66 202 C58 202 52 206 52 212 Z', '#D32F2F', a);
+    // Cup
+    fl(g, 'M309 241 L311 259 C311 263 316 266 320 266 C324 266 329 263 329 259 L331 241 Z', '#E0E0E0', false);
+    // Glass stopper
+    fe(g, 'circle', { cx: 150, cy: 80, rx: 8, fill: '#E0E0E0', opacity: '0.5' }, false);
+  },
+
+  // 9: Final details - labels, glass stopper, background
+  (g, a) => {
     // Eye shine
-    [{ cx: 139, cy: 146 }, { cx: 181, cy: 146 }].forEach(p => {
-      const s = ce('circle', { ...p, r: 2.5, fill: 'white' });
-      if (a) s.classList.add('active-element');
-      g.appendChild(s);
-    });
-    // Lip/mouth color
-    const mouth = ce('path', {
-      d: 'M140 194 C150 198 160 198 172 196 L182 192 ' +
-         'C178 206 168 214 160 214 C152 214 142 206 138 192 Z',
-      fill: '#E57373', opacity: '0.6'
-    });
-    if (a) mouth.classList.add('active-element');
-    g.appendChild(mouth);
-    // Food crumb color
-    const food = ce('path', {
-      d: 'M96 238 C94 232 100 228 108 230 C112 232 112 238 108 240 Z',
-      fill: '#F5DEB3'
-    });
-    if (a) food.classList.add('active-element');
-    g.appendChild(food);
-    // Nose shadow
-    const ns = ce('path', {
-      d: 'M152 170 C154 174 158 176 162 174 L164 170 C162 172 156 172 152 170 Z',
-      fill: '#E8C09A', opacity: '0.5'
-    });
-    g.appendChild(ns);
-    // Under-chin shadow
-    const cs = ce('path', {
-      d: 'M140 224 C150 230 170 230 180 224 C176 228 164 232 160 232 C156 232 144 228 140 224 Z',
-      fill: '#D4A87A', opacity: '0.3'
-    });
-    g.appendChild(cs);
-    // Hoodie wrinkle details
-    paths(g, [
-      'M120 300 C128 296 140 294 160 294',
-      'M200 300 C192 296 180 294 160 294',
-      'M130 380 C140 376 150 374 160 374',
-      'M190 380 C180 376 170 374 160 374',
-    ], a, light);
+    fe(g, 'circle', { cx: 260, cy: 77, r: 1.8, fill: 'white' }, a);
+    fe(g, 'circle', { cx: 282, cy: 77, r: 1.8, fill: 'white' }, a);
+    // Cheeks
+    fe(g, 'ellipse', { cx: 252, cy: 106, rx: 10, ry: 5, fill: '#FFAB91', opacity: '0.4' }, a);
+    fe(g, 'ellipse', { cx: 290, cy: 106, rx: 10, ry: 5, fill: '#FFAB91', opacity: '0.4' }, a);
+    // Mouth color
+    fl(g, 'M258 114 L288 114 C286 122 278 128 274 128 C268 128 260 122 258 114 Z', '#E57373', false);
+    // Wine label text
+    const wt = ce('text', { x: 144, y: 192, fill: '#FAFAFA', 'font-size': '4.5', 'font-family': 'serif' });
+    wt.textContent = 'QUINTA'; g.appendChild(wt);
+    const wt2 = ce('text', { x: 142, y: 198, fill: '#FAFAFA', 'font-size': '4.5', 'font-family': 'serif' });
+    wt2.textContent = 'DO CARDO'; g.appendChild(wt2);
+    // Lemon label
+    const lt2 = ce('text', { x: 104, y: 200, fill: '#FDD835', 'font-size': '4', 'font-family': 'sans-serif', 'font-weight': 'bold' });
+    lt2.textContent = 'Lemon'; if (a) lt2.classList.add('active-element'); g.appendChild(lt2);
+    // Stopper shine
+    fe(g, 'circle', { cx: 148, cy: 76, r: 2, fill: 'white', opacity: '0.6' }, false);
+    // Background wall hint
+    pp(g, ['M0 0 L0 240', 'M360 0 L360 240'], a, lt);
+    // Fridge hint (far left background)
+    pp(g, ['M0 20 L40 20 L40 200 L0 200', 'M0 120 L40 120'], a, lt);
+    fe(g, 'rect', { x: 0, y: 20, width: 40, height: 180, rx: 2, fill: '#546E7A', opacity: '0.15' }, false);
+    // Chair back
+    fe(g, 'rect', { x: 202, y: 62, width: 136, height: 155, rx: 6, fill: '#37474F', opacity: '0.12' }, false);
+    // Food crumb
+    fl(g, 'M230 138 C228 132 232 128 240 130 C244 132 244 138 240 140 Z', '#F5DEB3', a);
+    // Tablecloth wrinkle highlights
+    pp(g, ['M60 260 C80 256 100 258 120 260', 'M200 258 C220 254 240 256 260 258'], a, lt);
   }
 ];
 
-// ===================================================================
-// SANDRA - Woman, oval face, wavy brown hair in ponytail, pink jacket
-// over black top with cursive text, playing dominoes, gentle expression
-// ===================================================================
+// ==============================================================
+// SCENE 2: SANDRA - Woman playing dominoes at checkered table,
+// pink jacket, black top, phone and remote on table
+// ==============================================================
 const sandraLayers = [
-  // 0: Face shape - elegant oval, defined cheekbones, soft chin
+  // 0: Composition - checkered table, Sandra zone
   (g, a) => {
-    paths(g, [
-      // Face contour - oval, narrower at jaw, defined cheekbones
-      'M108 152 C106 124 116 98 134 86 C148 78 168 78 182 86 ' +
-      'C200 98 210 124 208 152 ' +
-      'C210 170 208 188 200 202 C194 212 186 220 176 226 ' +
-      'C168 232 148 232 140 226 C130 220 122 212 116 202 ' +
-      'C108 188 106 170 108 152',
-    ], a);
-    // Cheekbone definition
-    paths(g, [
-      'M112 168 C114 172 118 176 124 178',
-      'M204 168 C202 172 198 176 192 178',
-    ], a, light);
-    // Jawline refinement
-    paths(g, [
-      'M124 210 C132 220 148 226 160 228 C172 226 184 220 192 210',
-    ], a, light);
-    // Chin
-    paths(g, [
-      'M148 226 C154 232 162 232 168 226',
-    ], a, light);
+    // Table edge
+    pp(g, ['M0 250 L360 250'], a);
+    // Checkered pattern guides
+    for (let x = 0; x < 360; x += 40) { pp(g, [`M${x} 250 L${x} 450`], a, lt); }
+    for (let y = 250; y < 450; y += 30) { pp(g, [`M0 ${y} L360 ${y}`], a, lt); }
+    // Sandra center guide
+    pp(g, ['M120 20 L120 250 M240 20 L240 250', 'M120 130 L240 130'], a, lt);
   },
 
-  // 1: Eyes - almond shaped, expressive, looking down at dominoes
+  // 1: Sandra body - sitting, leaning slightly toward dominoes
   (g, a) => {
-    // Left eye - almond, looking slightly down
-    const le = ce('path', { d: 'M122 148 C126 140 136 137 144 140 C150 143 150 152 144 155 C138 158 126 156 122 148 Z', fill: 'none' });
-    stroke(le, a);
-    g.appendChild(le);
-    const li = ce('ellipse', { cx: 136, cy: 149, rx: 5.5, ry: 6, fill: a ? HIGHLIGHT : '#5E4023' });
-    if (a) li.classList.add('active-element');
-    g.appendChild(li);
-    const lpu = ce('circle', { cx: 137, cy: 150, r: 2.8, fill: '#1A0E04' });
-    g.appendChild(lpu);
-    // Upper lid crease
-    paths(g, ['M120 140 C128 132 140 130 148 136'], a, light);
-    // Lower lash line
-    paths(g, ['M124 152 C130 156 138 158 144 154'], a, light);
-    // Eyelashes (top)
-    paths(g, [
-      'M124 146 C122 144 121 142 122 140',
-      'M128 143 C126 140 126 138 127 136',
-      'M144 140 C146 138 148 137 149 138',
-    ], a, light);
-
-    // Right eye
-    const re = ce('path', { d: 'M172 148 C176 140 186 137 194 140 C200 143 200 152 194 155 C188 158 176 156 172 148 Z', fill: 'none' });
-    stroke(re, a);
-    g.appendChild(re);
-    const ri = ce('ellipse', { cx: 186, cy: 149, rx: 5.5, ry: 6, fill: a ? HIGHLIGHT : '#5E4023' });
-    if (a) ri.classList.add('active-element');
-    g.appendChild(ri);
-    const rpu = ce('circle', { cx: 187, cy: 150, r: 2.8, fill: '#1A0E04' });
-    g.appendChild(rpu);
-    paths(g, ['M170 140 C178 132 190 130 198 136'], a, light);
-    paths(g, ['M174 152 C180 156 188 158 194 154'], a, light);
-    paths(g, [
-      'M194 140 C196 138 198 137 199 138',
-      'M190 138 C192 136 192 134 191 132',
-    ], a, light);
-
-    // Eyebrows - thin, feminine, arched
-    paths(g, [
-      'M118 132 C126 124 138 122 148 126',
-      'M168 126 C178 122 190 124 198 132',
-    ], a);
-  },
-
-  // 2: Nose and gentle smile
-  (g, a) => {
-    // Nose - feminine, refined
-    paths(g, [
-      // Bridge (subtle)
-      'M156 144 C155 154 154 164 152 170',
-      // Tip and nostrils
-      'M146 172 C148 178 152 180 158 180 C162 180 166 178 168 172',
-      'M148 176 C146 174 145 170 147 168',
-      'M166 176 C168 174 169 170 167 168',
-    ], a);
-
-    // Mouth - gentle smile, lips together
-    paths(g, [
-      // Upper lip - cupid's bow
-      'M138 196 C142 192 148 190 154 192 C156 190 160 190 162 192 C168 190 174 192 178 196',
-      // Lower lip
-      'M138 196 C144 204 152 208 158 208 C164 208 172 204 178 196',
-      // Lip line
-      'M140 196 C148 198 158 198 168 198 C174 197 176 196 178 196',
-    ], a);
-    // Smile lines
-    paths(g, [
-      'M132 192 C134 196 136 200 136 196',
-      'M184 192 C182 196 180 200 180 196',
-    ], a, light);
-  },
-
-  // 3: Hair - wavy brown, pulled back, ponytail, loose strands framing face
-  (g, a) => {
-    // Hair mass
-    paths(g, [
-      // Top of head hair volume
-      'M104 148 C100 120 108 90 128 76 C142 66 164 64 180 70 ' +
-      'C196 76 210 94 214 120 C216 136 214 148 212 152',
-      // Hair line at forehead - with slight widow's peak
-      'M112 144 C114 128 120 110 132 98 C142 90 154 86 166 88 ' +
-      'C178 90 190 96 198 108 C204 118 208 132 208 148',
-    ], a);
-    // Ponytail going back
-    paths(g, [
-      'M190 84 C202 78 214 82 220 90 C228 100 232 116 230 132 ' +
-      'C228 146 224 158 218 168',
-      'M192 80 C198 76 206 74 214 78',
-    ], a);
-    // Loose strands framing face
-    paths(g, [
-      // Left side strands
-      'M112 140 C108 150 104 166 106 180 C108 192 112 200 114 206',
-      'M114 136 C110 148 108 162 110 174',
-      // Right side strands
-      'M208 140 C212 150 216 166 214 180 C212 192 210 198 208 204',
-    ], a, light);
-    // Hair wave texture
-    paths(g, [
-      'M126 80 C134 74 146 70 160 72 C172 74 182 78 190 84',
-      'M116 100 C124 90 138 84 152 84 C166 84 178 88 190 96',
-      'M112 120 C118 108 132 98 146 96 C160 96 174 100 186 108',
-      // Ponytail waves
-      'M214 86 C220 92 224 102 226 114 C228 124 226 136 222 148',
-      'M218 94 C222 100 224 112 224 124',
-      'M216 108 C220 114 222 126 220 138',
-    ], a, light);
-    // Hair band/elastic
-    paths(g, [
-      'M188 82 C192 78 196 78 200 82 C196 86 192 86 188 82',
-    ], a);
-  },
-
-  // 4: Ears (partially hidden by hair) and neck
-  (g, a) => {
-    // Left ear - partially visible behind hair
-    paths(g, [
-      'M108 154 C102 150 98 156 96 164 C94 172 98 180 104 180',
-      'M100 158 C98 164 98 172 102 176',
-    ], a);
-    // Right ear
-    paths(g, [
-      'M208 154 C214 150 218 156 220 164 C222 172 218 180 212 180',
-      'M216 158 C218 164 218 172 214 176',
-    ], a);
-    // Neck - slender, feminine
-    paths(g, [
-      'M142 228 C140 236 138 246 136 256',
-      'M174 228 C176 236 178 246 180 256',
-    ], a);
-    // Neck tendon hints
-    paths(g, [
-      'M148 232 C150 240 150 250 148 258',
-      'M168 232 C166 240 166 250 168 258',
-    ], a, light);
-  },
-
-  // 5: Pink jacket open over black top with cursive text
-  (g, a) => {
-    // Shoulders and jacket
-    paths(g, [
-      // Left shoulder
-      'M136 256 C118 260 88 270 70 286 C58 298 54 316 54 346 L54 420',
-      // Right shoulder
-      'M180 256 C198 260 228 270 246 286 C258 298 262 316 262 346 L262 420',
-    ], a);
-    // Jacket opening - V shape
-    paths(g, [
-      'M128 258 L140 310 L148 420',
-      'M188 258 L176 310 L168 420',
-    ], a);
-    // Collar/lapel
-    paths(g, [
-      'M128 258 C124 254 118 254 114 260 C110 266 114 272 120 270',
-      'M188 258 C192 254 198 254 202 260 C206 266 202 272 196 270',
-    ], a);
-    // Black top neckline (V-neck)
-    paths(g, [
-      'M132 260 C140 264 150 280 158 300',
-      'M184 260 C176 264 166 280 158 300',
-    ], a);
-    // Cursive text on black top (just suggesting it)
-    paths(g, [
-      'M144 290 C148 286 152 288 156 284 C160 286 164 284 168 288',
-    ], a, light);
-    // Jacket hem and fold lines
-    paths(g, [
-      'M120 270 C116 290 112 320 108 360',
-      'M196 270 C200 290 204 320 208 360',
-    ], a, light);
-  },
-
-  // 6: Arms and hands holding dominoes
-  (g, a) => {
+    // Head
+    pp(g, ['M152 90 C150 66 162 48 180 42 C198 48 210 66 208 90 C210 106 206 120 198 132 C192 140 186 146 180 148 C174 146 168 140 162 132 C154 120 150 106 152 90'], a);
+    // Neck
+    pp(g, ['M170 146 L168 162 M190 146 L192 162'], a);
+    // Shoulders + body
+    pp(g, ['M130 190 C140 170 160 162 180 162 C200 162 220 170 230 190 L234 250 M130 190 L126 250'], a);
     // Left arm
-    paths(g, [
-      'M70 286 C56 300 44 324 42 350 C40 368 44 380 52 386',
-      'M52 386 C60 378 72 360 84 340 C94 322 102 306 110 296',
-    ], a);
-    // Left hand - fingers spread, holding dominoes
-    paths(g, [
-      // Palm
-      'M98 300 C92 296 86 298 84 304 C82 310 86 316 92 318',
-      // Fingers
-      'M86 302 C82 298 78 294 76 290 C74 286 76 282 80 282 C84 282 86 286 86 290',
-      'M84 306 C78 302 74 296 72 292 C70 288 72 284 76 284',
-      'M84 310 C78 308 74 304 72 300 C70 296 72 292 76 294',
-      // Thumb
-      'M96 298 C100 294 102 288 100 284 C98 280 94 280 92 284',
-    ], a);
-    // Domino pieces in left hand
-    paths(g, [
-      'M72 278 L84 278 L84 292 L72 292 Z',
-      'M72 285 L84 285',
-      // Dots
-    ], a);
-    const dots1 = [[76, 282], [80, 282], [76, 288], [80, 288]];
-    dots1.forEach(([cx, cy]) => {
-      const d = ce('circle', { cx, cy, r: 1.2, fill: a ? HIGHLIGHT : PENCIL });
-      g.appendChild(d);
-    });
-
+    pp(g, ['M134 195 C118 210 106 230 100 248'], a);
     // Right arm
-    paths(g, [
-      'M246 286 C260 300 272 324 274 350 C276 368 272 380 264 386',
-      'M264 386 C256 378 244 360 232 340 C222 322 214 306 206 296',
-    ], a);
+    pp(g, ['M226 195 C242 210 254 230 260 248'], a);
+  },
+
+  // 2: Sandra face
+  (g, a) => {
+    // Eyes (looking down)
+    pp(g, ['M164 88 C168 82 176 80 180 84 C184 88 182 94 178 96 C174 98 166 94 164 88 Z'], a);
+    pp(g, ['M186 88 C190 82 198 80 202 84 C206 88 204 94 200 96 C196 98 188 94 186 88 Z'], a);
+    // Pupils (looking down)
+    fe(g, 'circle', { cx: 174, cy: 90, r: 3, fill: a ? HL : '#5E4023' }, a);
+    fe(g, 'circle', { cx: 196, cy: 90, r: 3, fill: a ? HL : '#5E4023' }, a);
+    // Eyelashes
+    pp(g, ['M164 86 C162 84 161 82 162 80', 'M202 84 C204 82 205 81 206 82'], a, lt);
+    // Eyebrows
+    pp(g, ['M160 76 C168 70 178 69 184 72', 'M186 72 C192 69 202 70 210 76'], a);
+    // Nose
+    pp(g, ['M178 84 C177 92 176 100 174 106', 'M170 108 C174 112 178 114 182 114 C186 112 188 108 190 106'], a);
+    // Gentle smile
+    pp(g, ['M166 124 C170 120 176 118 180 120 C184 118 190 120 194 124', 'M166 124 C172 130 178 134 180 134 C182 134 188 130 194 124'], a);
+  },
+
+  // 3: Hair - wavy, ponytail, loose strands
+  (g, a) => {
+    // Hair volume
+    pp(g, ['M150 86 C146 62 156 40 174 32 C190 26 206 30 216 42 C224 52 226 68 222 86'], a);
+    pp(g, ['M156 82 C158 68 164 52 176 44 C188 38 200 42 208 52 C214 62 216 74 216 84'], a);
+    // Ponytail
+    pp(g, ['M210 46 C222 40 234 44 238 54 C244 66 246 82 244 96 C242 108 238 118 232 126'], a);
+    // Hair band
+    pp(g, ['M208 44 C212 40 218 40 222 44 C218 48 212 48 208 44'], a);
+    // Loose strands
+    pp(g, ['M154 82 C150 92 148 106 150 118 C152 128 156 136 158 142', 'M220 82 C224 92 226 104 224 116'], a, lt);
+    // Wave texture
+    pp(g, ['M166 38 C176 32 188 30 198 36', 'M158 52 C166 44 178 40 190 44', 'M230 50 C236 56 240 68 242 80', 'M234 62 C238 70 240 80 238 90'], a, lt);
+  },
+
+  // 4: Clothing - pink jacket, black top
+  (g, a) => {
+    // Jacket shoulders
+    pp(g, ['M130 190 C140 170 160 162 180 162 C200 162 220 170 230 190'], a);
+    // Jacket opening V
+    pp(g, ['M160 168 L172 220 L178 250', 'M200 168 L188 220 L182 250'], a);
+    // Collar
+    pp(g, ['M160 168 C156 164 150 164 148 170 C146 176 150 180 156 178', 'M200 168 C204 164 210 164 212 170 C214 176 210 180 204 178'], a);
+    // V-neck top
+    pp(g, ['M164 170 C170 176 176 200 180 220', 'M196 170 C190 176 184 200 180 220'], a);
+    // Cursive text on top
+    pp(g, ['M172 196 C174 192 178 194 180 190 C182 192 186 190 188 194'], a, lt);
+    // Jacket folds
+    pp(g, ['M150 180 C148 200 146 220 144 240', 'M210 180 C212 200 214 220 216 240'], a, lt);
+  },
+
+  // 5: Hands holding dominoes
+  (g, a) => {
+    // Left hand + arm to table
+    pp(g, ['M100 248 C96 240 90 244 88 250 C86 256 90 260 96 258'], a);
+    // Fingers
+    pp(g, ['M90 248 C86 242 82 236 80 230 C78 226 80 222 84 222', 'M88 252 C82 248 78 240 76 234 C74 230 76 226 80 226', 'M94 246 C98 240 100 234 98 228 C96 224 92 224 90 228'], a);
+    // Domino in left hand
+    pp(g, ['M76 218 L90 218 L90 234 L76 234 Z', 'M76 226 L90 226'], a);
+    fe(g, 'circle', { cx: 80, cy: 222, r: 1.2, fill: a ? HL : P }, a);
+    fe(g, 'circle', { cx: 86, cy: 222, r: 1.2, fill: a ? HL : P }, a);
+    fe(g, 'circle', { cx: 83, cy: 230, r: 1.2, fill: a ? HL : P }, a);
+
     // Right hand
-    paths(g, [
-      'M218 300 C224 296 230 298 232 304 C234 310 230 316 224 318',
-      'M230 302 C234 298 238 294 240 290 C242 286 240 282 236 282 C232 282 230 286 230 290',
-      'M232 306 C238 302 242 296 244 292 C246 288 244 284 240 284',
-      'M220 298 C216 294 214 288 216 284 C218 280 222 280 224 284',
-    ], a);
+    pp(g, ['M260 248 C264 240 270 244 272 250 C274 256 270 260 264 258'], a);
+    pp(g, ['M268 248 C272 242 276 236 278 230 C280 226 278 222 274 222', 'M270 252 C276 248 280 240 282 234 C284 230 282 226 278 226', 'M264 246 C260 240 258 234 260 228 C262 224 266 224 268 228'], a);
     // Domino in right hand
-    paths(g, [
-      'M232 278 L244 278 L244 292 L232 292 Z',
-      'M232 285 L244 285',
-    ], a);
-    const dots2 = [[236, 282], [240, 282], [238, 288]];
-    dots2.forEach(([cx, cy]) => {
-      const d = ce('circle', { cx, cy, r: 1.2, fill: a ? HIGHLIGHT : PENCIL });
-      g.appendChild(d);
-    });
+    pp(g, ['M270 218 L284 218 L284 234 L270 234 Z', 'M270 226 L284 226'], a);
+    fe(g, 'circle', { cx: 275, cy: 222, r: 1.2, fill: a ? HL : P }, a);
+    fe(g, 'circle', { cx: 280, cy: 222, r: 1.2, fill: a ? HL : P }, a);
+    fe(g, 'circle', { cx: 275, cy: 230, r: 1.2, fill: a ? HL : P }, a);
+    fe(g, 'circle', { cx: 280, cy: 230, r: 1.2, fill: a ? HL : P }, a);
   },
 
-  // 7: Color - skin, hair (brown with golden highlights)
+  // 6: Table - dominoes played, phone, remote
   (g, a) => {
-    // Face skin
-    const skin = ce('path', {
-      d: 'M110 152 C108 126 118 100 136 88 C150 80 166 80 180 88 ' +
-         'C198 100 208 126 206 152 C208 170 206 188 198 202 ' +
-         'C192 212 184 220 174 226 C166 230 150 230 142 226 ' +
-         'C132 220 124 212 118 202 C110 188 108 170 110 152 Z',
-      fill: '#FADCC2'
+    // Played dominoes chain on table
+    const dominos = [
+      { x: 130, y: 270, r: 0 }, { x: 146, y: 268, r: 5 }, { x: 162, y: 272, r: -3 },
+      { x: 178, y: 269, r: 8 }, { x: 194, y: 274, r: -5 }, { x: 210, y: 270, r: 2 },
+    ];
+    dominos.forEach(({ x, y, r }) => {
+      const dg = ce('g', { transform: `rotate(${r} ${x + 7} ${y + 5})` });
+      const rect = ce('rect', { x, y, width: 14, height: 10, rx: 1, fill: 'none' });
+      sk(rect, a);
+      dg.appendChild(rect);
+      const line = ce('line', { x1: x + 7, y1: y, x2: x + 7, y2: y + 10 });
+      lt(line, a);
+      dg.appendChild(line);
+      // Random dots
+      fe(dg, 'circle', { cx: x + 3, cy: y + 3, r: 0.8, fill: a ? HL : P }, false);
+      fe(dg, 'circle', { cx: x + 10, cy: y + 7, r: 0.8, fill: a ? HL : P }, false);
+      g.appendChild(dg);
     });
-    if (a) skin.classList.add('active-element');
-    g.appendChild(skin);
-    // Ear skin
-    const earL = ce('path', { d: 'M108 154 C102 150 98 156 96 164 C94 172 98 180 104 180 L108 170 Z', fill: '#FADCC2' });
-    g.appendChild(earL);
-    const earR = ce('path', { d: 'M208 154 C214 150 218 156 220 164 C222 172 218 180 212 180 L208 170 Z', fill: '#FADCC2' });
-    g.appendChild(earR);
+
+    // Phone (right side of table)
+    pp(g, ['M280 290 L310 290 L310 310 L280 310 Z'], a);
+    pp(g, ['M282 292 L308 292 L308 308 L282 308 Z'], a, lt);
+
+    // TV remote (far right)
+    pp(g, ['M320 280 L338 280 L338 320 L320 320 Z'], a);
+    pp(g, ['M326 286 L332 286', 'M326 292 L332 292', 'M324 300 L326 300 M330 300 L332 300 M334 300 L336 300'], a, lt);
+  },
+
+  // 7: Color - Sandra
+  (g, a) => {
+    // Skin
+    fl(g, 'M154 90 C152 68 164 50 180 44 C196 50 208 68 206 90 C208 106 204 120 196 132 C190 140 184 146 180 148 C176 146 170 140 164 132 C156 120 152 106 154 90 Z', '#FADCC2', a);
+    // Hair
+    fl(g, 'M152 86 C148 64 158 42 176 34 C192 28 208 32 218 44 C226 54 228 70 224 86 L218 84 C220 72 216 58 210 50 C202 42 192 38 180 42 C168 46 160 58 158 72 Z', '#8B6538', a);
+    // Ponytail
+    fl(g, 'M212 46 C224 42 236 46 240 56 C246 68 248 84 246 98 C244 110 240 120 234 128 L230 124 C236 116 240 106 242 94 C244 82 242 66 238 56 C234 48 226 44 216 48 Z', '#8B6538', false);
+    // Jacket (pink)
+    fl(g, 'M132 190 C142 172 162 164 180 164 C198 164 218 172 228 190 L232 248 L128 248 Z', '#F48FB1', a);
+    // Black top V
+    fl(g, 'M166 170 C172 178 178 200 180 220 C182 200 188 178 194 170 L200 168 C204 164 210 164 212 170 L210 180 C212 200 214 220 216 240 L144 240 C146 220 148 200 150 180 L148 170 C146 164 150 164 156 168 Z', '#F48FB1', false);
+    fl(g, 'M166 172 C172 180 178 202 180 222 C182 202 188 180 194 172 Z', '#37474F', a);
     // Neck skin
-    const neck = ce('path', {
-      d: 'M142 228 C140 236 138 246 136 256 L180 256 C178 246 176 236 174 228 C168 232 148 232 142 228 Z',
-      fill: '#F0C8A8'
-    });
-    g.appendChild(neck);
-    // Hair fill - brown with warmth
-    const hair = ce('path', {
-      d: 'M104 148 C100 120 108 90 128 76 C142 66 164 64 180 70 ' +
-         'C196 76 210 94 214 120 C216 136 214 148 212 152 ' +
-         'L208 148 C208 132 204 118 198 108 C190 96 178 90 166 88 ' +
-         'C154 86 142 90 132 98 C120 110 114 128 112 144 Z',
-      fill: '#8B6538'
-    });
-    if (a) hair.classList.add('active-element');
-    g.appendChild(hair);
-    // Ponytail fill
-    const pony = ce('path', {
-      d: 'M190 84 C202 78 214 82 220 90 C228 100 232 116 230 132 ' +
-         'C228 146 224 158 218 168 L214 164 C220 154 224 142 226 128 ' +
-         'C228 114 224 98 218 90 C212 82 202 80 192 84 Z',
-      fill: '#8B6538'
-    });
-    g.appendChild(pony);
-    // Hair highlights
-    const hhl = ce('path', {
-      d: 'M130 80 C142 72 160 70 176 74 L174 78 C160 74 144 76 132 84 Z',
-      fill: '#A9804E'
-    });
-    g.appendChild(hhl);
-    // Side strand fills
-    const stL = ce('path', {
-      d: 'M112 140 C108 150 104 166 106 180 C108 192 112 200 114 206 ' +
-         'L118 204 C116 198 112 190 110 178 C108 166 112 150 116 140 Z',
-      fill: '#7A5830'
-    });
-    g.appendChild(stL);
-    // Hand skin
-    const hfL = ce('ellipse', { cx: 88, cy: 304, rx: 12, ry: 14, fill: '#FADCC2', stroke: 'none' });
-    g.appendChild(hfL);
-    const hfR = ce('ellipse', { cx: 228, cy: 304, rx: 12, ry: 14, fill: '#FADCC2', stroke: 'none' });
-    g.appendChild(hfR);
+    fe(g, 'rect', { x: 169, y: 146, width: 22, height: 18, rx: 4, fill: '#F0C8A8' }, false);
   },
 
-  // 8: Color - clothing (pink jacket, black top)
+  // 8: Color - table (checkered), dominoes, phone
   (g, a) => {
-    // Black top fill (V-neck area)
-    const top = ce('path', {
-      d: 'M134 260 C142 264 152 280 158 300 L158 420 L168 420 L158 300 ' +
-         'C166 280 176 264 182 260 L188 258 C192 254 198 254 202 260 ' +
-         'L196 270 C200 290 204 320 208 360 L208 420 L108 420 L108 360 ' +
-         'C112 320 116 290 120 270 L114 260 C110 266 114 272 120 270 ' +
-         'L128 258 Z',
-      fill: '#F48FB1'
-    });
-    if (a) top.classList.add('active-element');
-    g.appendChild(top);
-    // Black inner top
-    const inner = ce('path', {
-      d: 'M134 260 C142 264 152 280 158 300 L158 420 L168 420 L158 300 ' +
-         'C166 280 176 264 182 260 ' +
-         'C178 262 170 270 164 282 L158 420 L148 420 L152 282 ' +
-         'C146 270 138 262 134 260 Z',
-      fill: '#37474F'
-    });
-    if (a) inner.classList.add('active-element');
-    g.appendChild(inner);
-
+    // Checkered tablecloth
+    for (let y = 250; y < 450; y += 30) {
+      for (let x = 0; x < 360; x += 40) {
+        const dark = ((x / 40 + y / 30) % 2 === 0);
+        fe(g, 'rect', { x, y, width: 40, height: 30, fill: dark ? '#A1887F' : '#EFEBE9' }, false);
+      }
+    }
     // Domino fills
-    const df1 = ce('rect', { x: 73, y: 279, width: 10, height: 12, rx: 1, fill: '#ECEFF1' });
-    g.appendChild(df1);
-    const df2 = ce('rect', { x: 233, y: 279, width: 10, height: 12, rx: 1, fill: '#ECEFF1' });
-    g.appendChild(df2);
+    const dx = [130, 146, 162, 178, 194, 210];
+    dx.forEach(x => {
+      fe(g, 'rect', { x: x + 0.5, y: 270.5, width: 13, height: 9, rx: 1, fill: '#ECEFF1' }, false);
+    });
+    // Phone fill
+    fe(g, 'rect', { x: 281, y: 291, width: 28, height: 18, rx: 2, fill: '#CFD8DC' }, a);
+    // Remote fill
+    fe(g, 'rect', { x: 321, y: 281, width: 16, height: 38, rx: 2, fill: '#263238' }, a);
   },
 
   // 9: Final details
   (g, a) => {
-    // Rosy cheeks
-    [{ cx: 122, cy: 180 }, { cx: 194, cy: 180 }].forEach(p => {
-      const c = ce('ellipse', { ...p, rx: 12, ry: 7, fill: '#F48FB1', opacity: '0.3' });
-      if (a) c.classList.add('active-element');
-      g.appendChild(c);
-    });
     // Eye shine
-    [{ cx: 134, cy: 147 }, { cx: 184, cy: 147 }].forEach(p => {
-      const s = ce('circle', { ...p, r: 2, fill: 'white' });
-      if (a) s.classList.add('active-element');
-      g.appendChild(s);
-    });
+    fe(g, 'circle', { cx: 172, cy: 88, r: 1.5, fill: 'white' }, a);
+    fe(g, 'circle', { cx: 194, cy: 88, r: 1.5, fill: 'white' }, a);
+    // Cheeks
+    fe(g, 'ellipse', { cx: 164, cy: 114, rx: 8, ry: 5, fill: '#F48FB1', opacity: '0.3' }, a);
+    fe(g, 'ellipse', { cx: 198, cy: 114, rx: 8, ry: 5, fill: '#F48FB1', opacity: '0.3' }, a);
     // Lip color
-    const lips = ce('path', {
-      d: 'M140 197 C148 200 158 200 170 198 L178 196 ' +
-         'C172 204 164 208 158 208 C152 208 144 204 138 196 Z',
-      fill: '#E57373', opacity: '0.5'
+    fl(g, 'M168 124 C176 128 184 128 192 124 C188 130 182 134 180 134 C178 134 172 130 168 124 Z', '#E57373', false);
+    // Cursive text on top
+    const ct = ce('text', { x: 170, y: 198, fill: '#B0BEC5', 'font-size': '4.5', 'font-style': 'italic', 'font-family': 'cursive' });
+    ct.textContent = "It's all good"; if (a) ct.classList.add('active-element'); g.appendChild(ct);
+    // Watch
+    fe(g, 'rect', { x: 96, y: 250, width: 8, height: 6, rx: 2, fill: '#78909C' }, a);
+    // Hair highlights
+    pp(g, ['M168 40 C172 36 178 36 182 40', 'M190 36 C194 34 200 36 202 40'], a, lt);
+    // Background - kitchen hints
+    pp(g, ['M0 0 L0 30 L80 30 L80 0', 'M0 15 L80 15'], a, lt); // cabinet
+    fe(g, 'rect', { x: 2, y: 2, width: 76, height: 12, rx: 2, fill: '#ECEFF1', opacity: '0.2' }, false);
+    // Domino dots on played pieces
+    dx.forEach(x => {
+      fe(g, 'circle', { cx: x + 4, cy: 273, r: 0.8, fill: '#333' }, false);
+      fe(g, 'circle', { cx: x + 10, cy: 277, r: 0.8, fill: '#333' }, false);
     });
-    if (a) lips.classList.add('active-element');
-    g.appendChild(lips);
-    // Watch/bracelet
-    const watch = ce('rect', { x: 48, y: 378, width: 10, height: 8, rx: 2, fill: '#78909C' });
-    if (a) watch.classList.add('active-element');
-    g.appendChild(watch);
-    // Nose shadow
-    const ns = ce('path', {
-      d: 'M152 174 C154 178 158 180 162 178 C164 176 164 172 162 170 Z',
-      fill: '#E8C09A', opacity: '0.4'
-    });
-    g.appendChild(ns);
-    // Chin shadow
-    const cs = ce('path', {
-      d: 'M144 224 C152 230 164 230 172 224 C168 228 160 232 158 232 C156 232 148 228 144 224 Z',
-      fill: '#D4A87A', opacity: '0.25'
-    });
-    g.appendChild(cs);
-    // Jacket fold shadows
-    paths(g, [
-      'M108 290 C112 286 120 284 128 286',
-      'M208 290 C204 286 196 284 188 286',
-      'M106 340 C110 336 118 334 126 336',
-      'M210 340 C206 336 198 334 190 336',
-    ], a, light);
-    // Cursive text highlight on black top
-    const txt = ce('path', {
-      d: 'M146 290 C150 286 154 288 158 284 C162 286 166 284 170 288',
-      fill: 'none', stroke: '#B0BEC5', 'stroke-width': '0.8'
-    });
-    if (a) txt.classList.add('active-element');
-    g.appendChild(txt);
   }
 ];
 
-// ===================================================================
-// BRUNO - Man, angular lean face, buzzed dark hair, stubble/short beard,
-// dark navy jacket with orange accents + "PESSOAL" logo, focused expression
-// ===================================================================
-const brunoLayers = [
-  // 0: Face shape - angular, strong jaw, lean, slightly long
+// ==============================================================
+// SCENE 3: BRUNO + MIGUEL - Father and son at café table,
+// Bruno left (dark jacket, orange), Miguel right (navy "95" sweater),
+// toy in hands, blue ball, third person background
+// ==============================================================
+const brunomiguelLayers = [
+  // 0: Composition - two figures side by side, table below
   (g, a) => {
-    paths(g, [
-      // Face contour - angular jaw, high cheekbones, defined chin
-      'M104 150 C102 122 110 96 130 84 C144 76 168 76 182 84 ' +
-      'C200 96 208 122 210 150 ' +
-      'C212 170 210 190 204 204 ' +
-      'C198 216 190 226 180 232 ' +
-      'C172 238 164 240 158 240 C152 240 144 238 136 232 ' +
-      'C126 226 118 216 112 204 ' +
-      'C106 190 104 170 104 150',
-    ], a);
-    // Jawline - strong, angular
-    paths(g, [
-      'M112 196 C116 210 126 224 136 232',
-      'M204 196 C200 210 190 224 180 232',
-    ], a);
-    // Cheekbone lines (lean face)
-    paths(g, [
-      'M108 166 C112 172 116 176 122 178',
-      'M208 166 C204 172 200 176 194 178',
-    ], a, light);
-    // Chin cleft hint
-    paths(g, ['M154 236 C156 238 160 238 162 236'], a, light);
+    // Table/counter line
+    pp(g, ['M0 340 L360 340'], a);
+    // Bruno zone (left)
+    pp(g, ['M10 20 L10 340 M150 20 L150 340', 'M10 140 L150 140'], a, lt);
+    // Miguel zone (center-right)
+    pp(g, ['M155 50 L155 340 M280 50 L280 340', 'M155 140 L280 140'], a, lt);
+    // Third person zone (far right, just torso)
+    pp(g, ['M285 40 L285 200 L350 200 L350 40'], a, lt);
   },
 
-  // 1: Eyes - dark, slightly hooded, attentive, looking down
+  // 1: Bruno - body and face (angular, lean, looking at Miguel)
   (g, a) => {
-    // Left eye - slightly hooded lid
-    const le = ce('path', { d: 'M122 150 C126 143 134 140 140 143 C146 146 146 154 140 157 C134 160 126 157 122 150 Z', fill: 'none' });
-    stroke(le, a);
-    g.appendChild(le);
-    // Hooded lid fold
-    paths(g, [
-      'M120 146 C124 138 134 134 144 138',
-      'M120 142 C126 134 138 132 146 136',
-    ], a, light);
-    const li = ce('ellipse', { cx: 134, cy: 151, rx: 5, ry: 5.5, fill: a ? HIGHLIGHT : '#2C1810' });
-    if (a) li.classList.add('active-element');
-    g.appendChild(li);
-    const lpu = ce('circle', { cx: 135, cy: 151, r: 2.5, fill: '#0D0604' });
-    g.appendChild(lpu);
-
-    // Right eye
-    const re = ce('path', { d: 'M174 150 C178 143 186 140 192 143 C198 146 198 154 192 157 C186 160 178 157 174 150 Z', fill: 'none' });
-    stroke(re, a);
-    g.appendChild(re);
-    paths(g, [
-      'M172 146 C176 138 186 134 196 138',
-      'M172 142 C178 134 190 132 198 136',
-    ], a, light);
-    const ri = ce('ellipse', { cx: 186, cy: 151, rx: 5, ry: 5.5, fill: a ? HIGHLIGHT : '#2C1810' });
-    if (a) ri.classList.add('active-element');
-    g.appendChild(ri);
-    const rpu = ce('circle', { cx: 187, cy: 151, r: 2.5, fill: '#0D0604' });
-    g.appendChild(rpu);
-
+    // Head
+    pp(g, ['M48 100 C46 76 56 56 72 48 C86 42 98 46 106 56 C114 66 118 82 116 100 C118 116 114 130 108 140 C102 150 94 156 86 160 C78 156 70 150 64 140 C58 130 54 116 48 100'], a);
+    // Face details
+    pp(g, ['M62 96 C64 90 72 88 76 92 C80 96 78 102 74 104 C70 106 64 102 62 96 Z', 'M86 96 C88 90 96 88 100 92 C104 96 102 102 98 104 C94 106 88 102 86 96 Z'], a);
+    fe(g, 'circle', { cx: 70, cy: 98, r: 3, fill: a ? HL : '#2C1810' }, a);
+    fe(g, 'circle', { cx: 94, cy: 98, r: 3, fill: a ? HL : '#2C1810' }, a);
     // Thick eyebrows
-    paths(g, [
-      'M116 132 C124 124 136 122 146 126',
-      'M170 126 C180 122 192 124 200 132',
-    ], a);
-    // Brow ridge shadow
-    paths(g, [
-      'M118 136 C126 130 138 128 146 132',
-      'M170 132 C178 128 190 130 198 136',
-    ], a, light);
+    pp(g, ['M58 86 C64 80 74 79 80 82', 'M88 82 C94 79 104 80 110 86'], a);
+    // Nose
+    pp(g, ['M84 88 C83 96 82 104 80 110', 'M76 114 C80 118 84 120 88 120 C92 118 94 114 96 110'], a);
+    // Mouth
+    pp(g, ['M70 130 C76 126 82 125 86 126 C90 125 94 126 98 130', 'M72 132 C78 136 84 138 88 138 C92 138 96 136 100 132'], a);
+    // Neck
+    pp(g, ['M76 158 L74 172 M96 158 L98 172'], a);
+    // Body
+    pp(g, ['M40 200 C50 180 66 172 86 172 C106 172 122 180 132 200 L136 340 M40 200 L36 340'], a);
   },
 
-  // 2: Nose (straight, angular, prominent) and mouth (focused expression)
+  // 2: Bruno - hair (buzzed) and beard (stubble)
   (g, a) => {
-    // Nose - straight bridge, angular, slightly larger/more defined
-    paths(g, [
-      // Bridge
-      'M156 136 C155 146 153 158 152 168',
-      // Left side of nose
-      'M152 168 C148 172 144 176 142 178 C140 180 140 182 142 182',
-      // Right side
-      'M156 168 C160 172 164 176 166 178 C168 180 168 182 166 182',
-      // Nose tip
-      'M142 182 C146 186 154 188 158 188 C162 188 168 186 172 182',
-      // Nostrils
-      'M146 184 C144 182 143 178 145 176',
-      'M168 184 C170 182 171 178 169 176',
-    ], a);
-
-    // Mouth - slightly pressed, focused
-    paths(g, [
-      // Upper lip
-      'M136 204 C142 200 150 198 158 200 C162 198 166 200 170 200 C174 198 178 200 180 204',
-      // Lower lip
-      'M136 204 C142 210 150 214 158 214 C166 214 174 210 180 204',
-      // Lip line
-      'M138 204 C148 206 158 206 168 206 C174 205 178 204 180 204',
-    ], a);
-    // Nasolabial folds (subtle)
-    paths(g, [
-      'M130 184 C132 190 134 196 136 200',
-      'M186 184 C184 190 182 196 180 200',
-    ], a, light);
+    // Hairline
+    pp(g, ['M54 94 C52 78 58 60 72 52 C84 46 96 48 104 58 C112 68 114 82 112 94'], a);
+    // Buzz dots
+    const hd = [[66,52],[76,48],[86,50],[96,54],[62,62],[72,56],[82,52],[92,56],[102,62],[58,72],[68,64],[78,58],[88,60],[98,66],[108,74],[56,84],[66,74],[76,66],[86,66],[96,72],[106,82],[60,90],[70,82],[80,74],[90,76],[100,84],[110,92]];
+    hd.forEach(([cx, cy]) => { fe(g, 'circle', { cx, cy, r: 0.7, fill: a ? HL : '#3E2C20' }, a); });
+    // Beard stubble
+    const bd = [[58,132],[62,136],[66,140],[70,144],[74,148],[78,152],[82,154],[86,154],[90,152],[94,148],[98,144],[102,140],[106,136],[110,132],[66,148],[72,150],[78,154],[84,156],[90,154],[96,150],[100,146],[74,126],[100,126],[70,128],[102,128]];
+    bd.forEach(([cx, cy]) => { fe(g, 'circle', { cx, cy, r: 0.6, fill: a ? HL : '#4A3628' }, a); });
   },
 
-  // 3: Hair (buzzed, receding) and stubble/short beard
+  // 3: Bruno - jacket (dark + orange accents + PESSOAL)
   (g, a) => {
-    // Buzzed hair - very short, receding at temples
-    paths(g, [
-      // Hairline - receding at temples
-      'M116 138 C114 120 120 100 136 90 C148 82 166 80 178 86 ' +
-      'C192 92 202 106 206 122 C208 132 208 140 206 146',
-    ], a);
-    // Buzz texture - dots/stippling for very short hair
-    const hairArea = [
-      [130, 88], [140, 84], [150, 82], [160, 82], [170, 84], [180, 88],
-      [122, 96], [132, 92], [142, 88], [152, 86], [162, 86], [172, 88], [184, 94], [192, 100],
-      [118, 108], [128, 100], [138, 94], [148, 90], [158, 90], [168, 94], [178, 98], [188, 104], [198, 112],
-      [116, 120], [126, 110], [136, 102], [146, 96], [156, 96], [166, 100], [176, 106], [186, 112], [196, 120], [202, 128],
-      [114, 132], [124, 122], [134, 112], [144, 104], [154, 102], [164, 104], [174, 110], [184, 118], [194, 126], [204, 136],
-      [118, 140], [128, 130], [138, 120], [148, 112], [158, 110], [168, 112], [178, 118], [188, 126], [198, 134],
-    ];
-    hairArea.forEach(([cx, cy]) => {
-      const d = ce('circle', { cx, cy, r: 0.9, fill: a ? HIGHLIGHT : '#3E2C20' });
-      if (a) d.classList.add('active-element');
-      g.appendChild(d);
-    });
-
-    // Stubble/beard - along jawline, chin, upper lip
-    // Jaw stubble
-    const beardDots = [
-      // Along jaw left
-      [112, 196], [114, 200], [116, 204], [118, 208], [120, 212], [122, 216], [124, 220], [128, 224], [132, 228], [136, 230],
-      // Chin
-      [140, 234], [144, 236], [148, 238], [152, 240], [156, 240], [160, 238], [164, 236], [168, 234],
-      // Along jaw right
-      [172, 230], [176, 228], [180, 224], [184, 220], [186, 216], [188, 212], [190, 208], [192, 204], [194, 200], [196, 196],
-      // Under chin
-      [142, 232], [148, 234], [154, 236], [160, 236], [166, 234], [172, 232],
-      // Cheek stubble
-      [114, 190], [116, 194], [194, 190], [192, 194],
-      [120, 186], [196, 186],
-      // Mustache area
-      [140, 198], [144, 196], [148, 196], [152, 196], [156, 196], [160, 196], [164, 196], [168, 196], [172, 198],
-      [142, 200], [146, 198], [150, 198], [154, 198], [158, 198], [162, 198], [166, 198], [170, 200],
-    ];
-    beardDots.forEach(([cx, cy]) => {
-      const d = ce('circle', { cx, cy, r: 0.7, fill: a ? HIGHLIGHT : '#4A3628' });
-      if (a) d.classList.add('active-element');
-      g.appendChild(d);
-    });
-  },
-
-  // 4: Ears and wider neck
-  (g, a) => {
-    // Left ear
-    paths(g, [
-      'M104 148 C96 142 90 148 88 158 C86 170 90 182 98 184 C104 186 108 178 108 170',
-      'M96 152 C92 158 92 170 96 178',
-      'M98 156 C96 162 96 170 98 174',
-    ], a);
-    // Right ear
-    paths(g, [
-      'M210 148 C218 142 224 148 226 158 C228 170 224 182 218 184 C212 186 208 178 208 170',
-      'M218 152 C222 158 222 170 218 178',
-      'M216 156 C218 162 218 170 216 174',
-    ], a);
-    // Neck - thicker, masculine
-    paths(g, [
-      'M138 238 C136 248 132 260 130 268',
-      'M178 238 C180 248 184 260 186 268',
-    ], a);
-    // Adam's apple hint
-    paths(g, [
-      'M156 248 C158 244 162 244 164 248 C162 252 158 252 156 248',
-    ], a, light);
-    // Neck tendons
-    paths(g, [
-      'M144 240 C142 250 140 260 138 268',
-      'M172 240 C174 250 176 260 178 268',
-    ], a, light);
-  },
-
-  // 5: Dark navy jacket with orange accents, zipper, PESSOAL logo
-  (g, a) => {
-    // Shoulders and jacket body
-    paths(g, [
-      'M130 268 C112 274 80 286 62 302 C50 314 46 336 46 366 L46 420',
-      'M186 268 C204 274 236 286 254 302 C266 314 270 336 270 366 L270 420',
-    ], a);
-    // Collar - stand-up collar
-    paths(g, [
-      'M120 268 C116 264 110 264 108 270 C106 276 110 280 116 278',
-      'M196 268 C200 264 206 264 208 270 C210 276 206 280 200 278',
-      'M116 278 C128 282 142 284 158 284 C174 284 188 282 200 278',
-    ], a);
-    // Zipper - center
-    paths(g, ['M158 284 L158 420'], a);
-    // Zipper teeth detail
-    for (let y = 290; y < 415; y += 8) {
-      const t = ce('path', { d: `M156 ${y} L160 ${y}`, fill: 'none' });
-      light(t, a);
-      g.appendChild(t);
-    }
+    // Collar
+    pp(g, ['M66 172 C62 168 56 168 54 174 C52 180 56 184 62 182', 'M106 172 C110 168 116 168 118 174 C120 180 116 184 110 182', 'M62 182 C72 186 80 188 86 188 C92 188 100 186 110 182'], a);
+    // Zipper
+    pp(g, ['M86 188 L86 340'], a);
+    for (let y = 194; y < 335; y += 8) { pp(g, [`M84 ${y} L88 ${y}`], a, lt); }
+    // Orange patches
+    pp(g, ['M44 204 L58 200 L58 212 L44 216 Z', 'M128 204 L114 200 L114 212 L128 216 Z'], a);
+    // PESSOAL logo
+    pp(g, ['M56 224 L80 224 L80 240 L56 240 Z'], a);
+    pp(g, ['M60 230 L62 230 L62 236 L60 236', 'M64 230 L68 230 L68 234 L64 234 L64 238'], a, lt);
+    // Logo dots
+    fe(g, 'circle', { cx: 64, cy: 238, r: 1.5, fill: '#FF6F00' }, a);
+    fe(g, 'circle', { cx: 69, cy: 238, r: 1.5, fill: '#4CAF50' }, a);
+    fe(g, 'circle', { cx: 74, cy: 238, r: 1.5, fill: '#2196F3' }, a);
     // Zipper pull
-    paths(g, ['M155 286 L161 286 L161 294 L155 294 Z'], a);
-    // Orange shoulder patches
-    paths(g, [
-      'M76 296 L96 290 L96 306 L76 312 Z',
-      'M240 296 L220 290 L220 306 L240 312 Z',
-    ], a);
-    // PESSOAL logo area on chest
-    paths(g, [
-      'M108 310 L140 310 L140 330 L108 330 Z',
-    ], a);
-    // "PESSOAL" text (simplified)
-    paths(g, [
-      'M112 316 L114 316 L114 324 L112 324 L112 316',
-      'M116 316 L120 316 L120 320 L116 320 L116 324',
-      'M122 316 L126 316 M122 320 L126 320 M122 324 L126 324',
-    ], a, light);
-    // Logo dots (3 colored dots under text)
-    [{ cx: 118, cy: 328, fill: '#FF6F00' }, { cx: 124, cy: 328, fill: '#4CAF50' }, { cx: 130, cy: 328, fill: '#2196F3' }].forEach(attrs => {
-      const d = ce('circle', { ...attrs, r: 2, stroke: a ? HIGHLIGHT : PENCIL, 'stroke-width': a ? 1 : 0.5 });
-      if (a) d.classList.add('active-element');
-      g.appendChild(d);
-    });
-    // Pocket flap
-    paths(g, [
-      'M180 330 L240 330',
-      'M185 334 L235 334',
-    ], a, light);
+    fe(g, 'rect', { x: 83, y: 188, width: 6, height: 8, rx: 1, fill: 'none', stroke: a ? HL : P, 'stroke-width': a ? HW : PW }, a);
   },
 
-  // 6: Arms and hands - left hand gesturing, right hand holding/pinching
+  // 4: Miguel - body and face (round child face, looking down)
   (g, a) => {
-    // Left arm (gesturing)
-    paths(g, [
-      'M62 302 C48 318 36 342 34 366 C32 382 36 392 44 396',
-      'M44 396 C54 388 66 370 78 348 C88 330 96 314 104 304',
-    ], a);
-    // Left hand - fingers in pinch/gesture
-    paths(g, [
-      // Thumb and index pinching together
-      'M72 342 C68 336 62 332 58 334 C54 336 52 342 56 346 C60 350 66 348 70 344',
-      // Index finger
-      'M70 344 C66 338 60 330 56 324 C54 320 56 316 60 316 C64 316 66 320 66 324 C66 328 68 334 72 340',
-      // Middle finger
-      'M74 346 C70 340 66 332 62 326 C60 322 62 318 66 318',
-      // Ring finger
-      'M76 350 C74 344 70 336 68 330 C66 326 68 322 72 322',
-      // Thumb
-      'M80 348 C84 344 86 338 84 332 C82 328 78 326 74 330 C70 334 72 340 76 344',
-    ], a);
-
-    // Right arm
-    paths(g, [
-      'M254 302 C268 318 276 342 278 366 C280 380 276 390 268 394',
-      'M268 394 C258 386 248 370 238 350 C228 332 220 316 212 306',
-    ], a);
-    // Right hand - more relaxed
-    paths(g, [
-      'M234 344 C230 338 224 334 220 336 C216 338 214 344 218 348',
-      'M228 340 C224 334 218 326 216 322 C214 318 216 314 220 314 C224 314 226 318 226 322',
-      'M232 344 C230 338 226 330 224 324 C222 320 224 316 228 316',
-      'M236 348 C238 344 240 338 238 332 C236 328 232 326 228 330',
-    ], a);
+    // Head
+    pp(g, ['M188 110 C188 90 200 76 216 72 C232 76 244 90 244 110 C246 126 240 138 234 146 C228 152 222 156 216 158 C210 156 204 152 198 146 C192 138 188 126 188 110'], a);
+    // Eyes (looking down)
+    pp(g, ['M200 106 C202 100 208 98 212 102 C216 106 214 112 210 114 C206 116 200 112 200 106 Z', 'M222 106 C224 100 230 98 234 102 C238 106 236 112 232 114 C228 116 222 112 222 106 Z'], a);
+    fe(g, 'circle', { cx: 208, cy: 108, r: 3, fill: a ? HL : '#3E2518' }, a);
+    fe(g, 'circle', { cx: 230, cy: 108, r: 3, fill: a ? HL : '#3E2518' }, a);
+    // Eyebrows
+    pp(g, ['M198 98 C204 94 212 93 216 96', 'M224 96 C228 93 236 94 242 98'], a);
+    // Nose
+    pp(g, ['M214 102 C213 108 212 114 210 118', 'M207 120 C210 124 214 126 218 126 C222 124 224 120 226 118'], a);
+    // Mouth (slightly open)
+    pp(g, ['M206 134 C210 130 214 129 218 130 C222 129 226 130 230 134', 'M208 136 C214 140 222 140 228 136'], a);
+    // Hair (darker in this photo, short)
+    pp(g, ['M190 106 C188 88 196 72 210 66 C224 62 236 66 244 76 C250 86 252 96 248 108'], a);
+    pp(g, ['M194 102 C196 86 202 74 214 70 C226 68 236 72 242 80 C246 88 248 96 246 104'], a);
+    // Hair texture
+    pp(g, ['M206 68 C212 64 220 64 226 68', 'M200 76 C208 70 218 68 228 72', 'M196 86 C204 78 214 76 224 80'], a, lt);
+    // Neck + body
+    pp(g, ['M208 156 L206 168 M224 156 L226 168'], a);
+    pp(g, ['M170 198 C180 178 200 168 216 168 C232 168 252 178 262 198 L266 340 M170 198 L166 340'], a);
   },
 
-  // 7: Color - skin, hair/beard
+  // 5: Miguel - sweater "95" + hands with toy
   (g, a) => {
-    // Face skin
-    const skin = ce('path', {
-      d: 'M106 150 C104 124 112 98 132 86 C146 78 166 78 180 86 ' +
-         'C198 98 206 124 208 150 C210 170 208 190 202 204 ' +
-         'C196 216 188 226 178 232 C170 238 162 240 158 240 ' +
-         'C154 240 146 238 138 232 C128 226 120 216 114 204 ' +
-         'C108 190 106 170 106 150 Z',
-      fill: '#EDBE8C'
-    });
-    if (a) skin.classList.add('active-element');
-    g.appendChild(skin);
+    // Crew neck
+    pp(g, ['M200 170 C208 174 216 176 224 174 C228 172 232 170 234 168'], a);
+    // "95" on chest
+    const t95 = ce('text', { x: 204, y: 220, fill: a ? HL : P, 'font-size': '16', 'font-weight': 'bold', 'font-family': 'Arial' });
+    t95.textContent = '95'; if (a) t95.classList.add('active-element'); g.appendChild(t95);
+    // Hands holding toy (centered, below face)
+    pp(g, ['M196 260 C190 254 184 256 182 262 C180 268 184 272 190 270', 'M236 260 C242 254 248 256 250 262 C252 268 248 272 242 270'], a);
+    // Fingers
+    pp(g, ['M184 260 C180 254 176 248 178 244 C180 240 184 240 186 244', 'M246 260 C250 254 254 248 252 244 C250 240 246 240 244 244'], a);
+    // Toy (colorful object - blue and red)
+    pp(g, ['M194 244 C194 236 202 230 214 230 C226 230 234 236 234 244 C234 252 226 256 214 256 C202 256 194 252 194 244 Z'], a);
+    pp(g, ['M214 230 L214 256'], a, lt); // divide
+    // Small text "YEARS" under 95
+    const ty = ce('text', { x: 207, y: 230, fill: a ? HL : LP, 'font-size': '5', 'font-family': 'Arial' });
+    ty.textContent = 'YEARS'; if (a) ty.classList.add('active-element'); g.appendChild(ty);
+  },
 
-    // Ear skin
-    [{ d: 'M104 148 C96 142 90 148 88 158 C86 170 90 182 98 184 C104 186 108 178 108 170 Z' },
-     { d: 'M210 148 C218 142 224 148 226 158 C228 170 224 182 218 184 C212 186 208 178 208 170 Z' }
-    ].forEach(attrs => {
-      const ear = ce('path', { ...attrs, fill: '#EDBE8C' });
-      g.appendChild(ear);
-    });
+  // 6: Table, objects, third person background
+  (g, a) => {
+    // Table/counter
+    pp(g, ['M0 340 L360 340', 'M0 340 L0 450 M360 340 L360 450'], a);
+    // Blue ball on table
+    pp(g, ['M180 336 C180 324 188 316 200 316 C212 316 220 324 220 336'], a);
+    // White cup
+    pp(g, ['M244 320 L242 340 M264 320 L262 340', 'M242 340 C246 344 256 344 262 340', 'M244 320 L264 320'], a);
+    // Bruno's gesturing hand
+    pp(g, ['M40 200 C28 216 20 240 18 264 C16 280 20 290 28 294', 'M28 294 C36 286 46 268 56 248 C62 234 66 222 68 214'], a);
+    pp(g, ['M54 242 C48 236 42 230 38 226 C34 222 36 218 40 218', 'M56 246 C50 240 44 232 42 228 C40 224 42 220 46 220', 'M60 250 C64 244 66 236 64 230 C62 226 58 224 54 228'], a);
 
+    // Third person (right, only torso visible)
+    pp(g, ['M290 50 C296 46 310 44 320 46 C336 50 348 60 350 80 L352 200 M286 80 L284 200'], a, lt);
+    // Third person's hands
+    pp(g, ['M340 160 C346 170 348 180 344 190', 'M290 170 C286 178 284 188 286 196'], a, lt);
+    // Napkin/paper on table
+    pp(g, ['M270 328 L300 328 L300 340 L270 340 Z'], a, lt);
+  },
+
+  // 7: Color - figures
+  (g, a) => {
+    // Bruno skin
+    fl(g, 'M50 100 C48 78 58 58 74 50 C88 44 100 48 108 58 C116 68 120 84 118 100 C120 116 116 130 110 140 C104 150 96 156 88 160 C80 156 72 150 66 140 C60 130 56 116 50 100 Z', '#EDBE8C', a);
+    fe(g, 'ellipse', { cx: 42, cy: 96, rx: 6, ry: 10, fill: '#EDBE8C' }, false);
+    fe(g, 'ellipse', { cx: 122, cy: 96, rx: 6, ry: 10, fill: '#EDBE8C' }, false);
+    // Bruno jacket
+    fl(g, 'M40 200 C50 180 66 172 86 172 C106 172 122 180 132 200 L136 340 L36 340 Z', '#1B2632', a);
+    // Collar
+    fl(g, 'M66 172 C62 168 56 168 54 174 C52 180 56 184 62 182 C72 186 80 188 86 188 C92 188 100 186 110 182 C116 184 120 180 118 174 C116 168 110 168 106 172 Z', '#263842', false);
+    // Orange patches
+    fe(g, 'path', { d: 'M46 206 L60 202 L60 210 L46 214 Z', fill: '#FF6F00' }, a);
+    fe(g, 'path', { d: 'M126 206 L112 202 L112 210 L126 214 Z', fill: '#FF6F00' }, a);
+    // Zipper
+    fe(g, 'rect', { x: 84, y: 188, width: 4, height: 152, fill: '#546E7A' }, false);
+    fe(g, 'rect', { x: 82, y: 188, width: 8, height: 8, rx: 1, fill: '#FF6F00' }, false);
+
+    // Miguel skin
+    fl(g, 'M190 110 C190 92 202 78 218 74 C234 78 246 92 246 110 C248 126 242 140 236 148 C230 154 224 158 218 160 C212 158 206 154 200 148 C194 140 190 126 190 110 Z', '#F5D0A9', a);
+    // Miguel sweater (navy)
+    fl(g, 'M172 198 C182 180 202 170 218 170 C234 170 254 180 264 198 L268 340 L168 340 Z', '#1A237E', a);
+
+    // Third person (brown shirt)
+    fl(g, 'M288 80 C292 54 310 46 322 48 C338 52 350 62 352 82 L354 200 L286 200 Z', '#795548', false);
     // Neck skin
-    const neck = ce('path', {
-      d: 'M138 238 C136 248 132 260 130 268 L186 268 C184 260 180 248 178 238 ' +
-         'C170 242 148 242 138 238 Z',
-      fill: '#DEB07A'
-    });
-    g.appendChild(neck);
-
-    // Buzzed hair fill
-    const hairFill = ce('path', {
-      d: 'M116 138 C114 120 120 100 136 90 C148 82 166 80 178 86 ' +
-         'C192 92 202 106 206 122 C208 132 208 140 206 146 ' +
-         'L204 140 C202 130 198 118 192 108 C184 96 174 90 164 88 ' +
-         'C152 86 142 90 134 98 C124 108 118 122 116 136 Z',
-      fill: '#3E2C20', opacity: '0.5'
-    });
-    if (a) hairFill.classList.add('active-element');
-    g.appendChild(hairFill);
-
-    // Beard/stubble shadow on jaw
-    const beardShadow = ce('path', {
-      d: 'M116 196 C118 210 126 224 136 232 C144 238 152 240 158 240 ' +
-         'C164 240 172 238 180 232 C190 224 198 210 200 196 ' +
-         'C196 200 190 210 182 218 C174 226 164 232 158 232 ' +
-         'C152 232 142 226 134 218 C126 210 120 200 116 196 Z',
-      fill: '#5D4037', opacity: '0.25'
-    });
-    if (a) beardShadow.classList.add('active-element');
-    g.appendChild(beardShadow);
-
-    // Hand skin
-    const hfL = ce('ellipse', { cx: 68, cy: 340, rx: 14, ry: 12, fill: '#EDBE8C', stroke: 'none' });
-    g.appendChild(hfL);
-    const hfR = ce('ellipse', { cx: 228, cy: 340, rx: 14, ry: 12, fill: '#EDBE8C', stroke: 'none' });
-    g.appendChild(hfR);
+    fe(g, 'rect', { x: 76, y: 158, width: 22, height: 14, rx: 4, fill: '#DEB07A' }, false);
+    fe(g, 'rect', { x: 208, y: 156, width: 18, height: 12, rx: 4, fill: '#F0C8A0' }, false);
   },
 
-  // 8: Color - jacket (dark navy + orange accents)
+  // 8: Color - scene
   (g, a) => {
-    // Jacket fill
-    const jacket = ce('path', {
-      d: 'M130 268 C112 274 80 286 62 302 C50 314 46 336 46 366 L46 420 ' +
-         'L270 420 L270 366 C270 336 266 314 254 302 C236 286 204 274 186 268 ' +
-         'C182 272 170 280 158 284 C146 280 134 272 130 268 Z',
-      fill: '#1B2632'
-    });
-    if (a) jacket.classList.add('active-element');
-    g.appendChild(jacket);
-
-    // Collar fill
-    const collar = ce('path', {
-      d: 'M120 268 C116 264 110 264 108 270 C106 276 110 280 116 278 ' +
-         'C128 282 142 284 158 284 C174 284 188 282 200 278 ' +
-         'C206 280 210 276 208 270 C206 264 200 264 196 268 ' +
-         'C190 272 174 278 158 280 C142 278 128 274 120 268 Z',
-      fill: '#263842'
-    });
-    g.appendChild(collar);
-
-    // Orange accent patches
-    const op1 = ce('path', { d: 'M78 298 L98 292 L98 304 L78 310 Z', fill: '#FF6F00' });
-    if (a) op1.classList.add('active-element');
-    g.appendChild(op1);
-    const op2 = ce('path', { d: 'M238 298 L218 292 L218 304 L238 310 Z', fill: '#FF6F00' });
-    if (a) op2.classList.add('active-element');
-    g.appendChild(op2);
-
-    // Logo background
-    const logoBg = ce('rect', { x: 110, y: 312, width: 30, height: 18, rx: 2, fill: '#2C3E4E' });
-    g.appendChild(logoBg);
-
-    // Zipper fill
-    const zip = ce('rect', { x: 156, y: 284, width: 4, height: 136, fill: '#546E7A' });
-    g.appendChild(zip);
-
-    // Orange zipper pull
-    const pull = ce('rect', { x: 154, y: 286, width: 8, height: 10, rx: 1, fill: '#FF6F00' });
-    if (a) pull.classList.add('active-element');
-    g.appendChild(pull);
+    // Table/counter dark
+    fe(g, 'rect', { x: 0, y: 340, width: 360, height: 110, fill: '#37474F' }, a);
+    // Blue ball
+    fl(g, 'M182 336 C182 326 190 318 200 318 C210 318 218 326 218 336 Z', '#1E88E5', a);
+    // Ball highlight
+    fe(g, 'ellipse', { cx: 196, cy: 324, rx: 4, ry: 3, fill: '#64B5F6', opacity: '0.5' }, false);
+    // White cup
+    fl(g, 'M245 322 L243 338 C247 342 257 342 261 338 L263 322 Z', '#FAFAFA', a);
+    // Toy color (blue + red halves)
+    fl(g, 'M196 244 C196 238 204 232 214 232 L214 254 C204 254 196 250 196 244 Z', '#1E88E5', a);
+    fl(g, 'M214 232 C224 232 232 238 232 244 C232 250 224 254 214 254 Z', '#E53935', a);
+    // Napkin
+    fe(g, 'rect', { x: 271, y: 329, width: 28, height: 10, fill: '#FAFAFA' }, false);
+    // Hair fills
+    fl(g, 'M56 94 C54 80 60 62 74 54 C86 48 98 50 106 60 C114 70 116 84 114 94 L110 92 C112 82 108 72 102 64 C96 56 86 52 76 56 C66 60 60 72 58 86 Z', '#3E2C20', false);
+    fl(g, 'M192 106 C190 90 198 74 212 68 C226 64 238 68 246 78 C252 88 254 98 250 108 L246 104 C248 96 246 86 242 80 C236 72 228 68 218 70 C208 72 200 80 196 92 Z', '#4E342E', false);
+    // Warm ambient background
+    fe(g, 'rect', { x: 0, y: 0, width: 360, height: 340, rx: 0, fill: '#FFF8E1', opacity: '0.1' }, false);
   },
 
-  // 9: Final details - eye shine, lip tone, shadows
+  // 9: Final details
   (g, a) => {
-    // Eye shine
-    [{ cx: 132, cy: 149 }, { cx: 184, cy: 149 }].forEach(p => {
-      const s = ce('circle', { ...p, r: 2, fill: 'white' });
-      if (a) s.classList.add('active-element');
-      g.appendChild(s);
-    });
-    // Lip color (subtle, masculine)
-    const lips = ce('path', {
-      d: 'M140 204 C148 207 158 207 170 205 L180 204 ' +
-         'C174 210 166 214 158 214 C150 214 142 210 136 204 Z',
-      fill: '#C8907A', opacity: '0.35'
-    });
-    if (a) lips.classList.add('active-element');
-    g.appendChild(lips);
-    // Under-eye slight shadow (tired/focused look)
-    [{ d: 'M124 156 C128 160 136 162 142 158' },
-     { d: 'M174 156 C178 160 186 162 192 158' }
-    ].forEach(attrs => {
-      const s = ce('path', { ...attrs, fill: 'none', stroke: '#B8976E', 'stroke-width': '0.7' });
-      if (a) s.classList.add('active-element');
-      g.appendChild(s);
-    });
-    // Chin shadow / beard emphasis
-    const chinSh = ce('path', {
-      d: 'M140 234 C150 240 166 240 176 234 C172 238 164 242 158 242 C152 242 144 238 140 234 Z',
-      fill: '#5D4037', opacity: '0.2'
-    });
-    if (a) chinSh.classList.add('active-element');
-    g.appendChild(chinSh);
-    // Nose bridge shadow
-    const noseSh = ce('path', {
-      d: 'M154 142 C153 152 152 162 150 170 L148 170 C150 160 151 150 152 140 Z',
-      fill: '#D4A87A', opacity: '0.25'
-    });
-    g.appendChild(noseSh);
-    // Logo text detail (white)
-    const logoTxt = ce('text', {
-      x: '114', y: '324', fill: '#ECEFF1', 'font-size': '6', 'font-weight': 'bold', 'font-family': 'Arial'
-    });
-    logoTxt.textContent = 'PESSOAL';
-    if (a) logoTxt.classList.add('active-element');
-    g.appendChild(logoTxt);
-    // Logo dots colored
-    [{ cx: 118, cy: 328, fill: '#FF6F00' }, { cx: 124, cy: 328, fill: '#4CAF50' }, { cx: 130, cy: 328, fill: '#2196F3' }].forEach(attrs => {
-      const d = ce('circle', { ...attrs, r: 2 });
-      g.appendChild(d);
-    });
-    // Jacket wrinkle lines
-    paths(g, [
-      'M100 340 C110 334 124 330 140 332',
-      'M216 340 C206 334 192 330 176 332',
-      'M90 380 C100 374 116 370 132 372',
-      'M226 380 C216 374 200 370 184 372',
-    ], a, light);
+    // Eye shines
+    fe(g, 'circle', { cx: 68, cy: 96, r: 1.5, fill: 'white' }, a);
+    fe(g, 'circle', { cx: 92, cy: 96, r: 1.5, fill: 'white' }, a);
+    fe(g, 'circle', { cx: 206, cy: 106, r: 1.5, fill: 'white' }, a);
+    fe(g, 'circle', { cx: 228, cy: 106, r: 1.5, fill: 'white' }, a);
+    // PESSOAL text
+    const pt = ce('text', { x: 58, y: 234, fill: '#ECEFF1', 'font-size': '5', 'font-weight': 'bold', 'font-family': 'Arial' });
+    pt.textContent = 'PESSOAL'; if (a) pt.classList.add('active-element'); g.appendChild(pt);
+    fe(g, 'circle', { cx: 64, cy: 238, r: 1.5, fill: '#FF6F00' }, false);
+    fe(g, 'circle', { cx: 69, cy: 238, r: 1.5, fill: '#4CAF50' }, false);
+    fe(g, 'circle', { cx: 74, cy: 238, r: 1.5, fill: '#2196F3' }, false);
+    // "95" on Miguel's sweater
+    const t95 = ce('text', { x: 206, y: 222, fill: '#ECEFF1', 'font-size': '14', 'font-weight': 'bold', 'font-family': 'Arial' });
+    t95.textContent = '95'; if (a) t95.classList.add('active-element'); g.appendChild(t95);
+    const ty = ce('text', { x: 209, y: 230, fill: '#B0BEC5', 'font-size': '4.5', 'font-family': 'Arial' });
+    ty.textContent = 'YEARS'; g.appendChild(ty);
+    // Beard shadow (Bruno)
+    fl(g, 'M62 134 C68 144 76 152 86 156 C96 152 102 146 108 138 C104 144 96 150 86 152 C76 150 68 144 62 134 Z', '#5D4037', false);
+    // Miguel cheeks
+    fe(g, 'ellipse', { cx: 202, cy: 126, rx: 8, ry: 4, fill: '#FFAB91', opacity: '0.3' }, a);
+    fe(g, 'ellipse', { cx: 234, cy: 126, rx: 8, ry: 4, fill: '#FFAB91', opacity: '0.3' }, a);
+    // Background cafe hints - vertical lines
+    pp(g, ['M0 0 L0 340', 'M360 0 L360 340'], a, lt);
+    // Ceiling light hint
+    pp(g, ['M140 0 L140 20 M220 0 L220 20', 'M140 20 L220 20'], a, lt);
+    fe(g, 'rect', { x: 142, y: 10, width: 76, height: 10, rx: 2, fill: '#FFF9C4', opacity: '0.2' }, false);
+    // Table reflection
+    pp(g, ['M40 360 C80 356 120 358 160 360', 'M200 358 C240 354 280 356 320 360'], a, lt);
+    // Hand skin fill for Bruno's gesture
+    fe(g, 'ellipse', { cx: 48, cy: 240, rx: 12, ry: 10, fill: '#EDBE8C' }, false);
   }
 ];
 
-// ===================================================================
+// ==============================================================
 // RENDER ENGINE
-// ===================================================================
-const drawingData = {
-  miguel: miguelLayers,
-  sandra: sandraLayers,
-  bruno: brunoLayers
-};
+// ==============================================================
+const drawingData = { miguel: miguelLayers, sandra: sandraLayers, brunomiguel: brunomiguelLayers };
 
 function renderDrawing(memberId, step) {
   const layers = drawingData[memberId];
   if (!layers) return null;
-
-  const svg = ce('svg', { viewBox: VIEWBOX, width: '100%', height: '100%', xmlns: SVG_NS });
-
-  // Paper background
-  const bg = ce('rect', { width: 320, height: 450, rx: 12, fill: '#FEFCF8', stroke: '#E8E0D4', 'stroke-width': 1 });
-  svg.appendChild(bg);
-  // Subtle paper lines
-  for (let y = 30; y < 440; y += 16) {
-    const line = ce('line', { x1: 16, y1: y, x2: 304, y2: y, stroke: '#F2EDE6', 'stroke-width': 0.4 });
-    svg.appendChild(line);
-  }
-
-  // Coloring layers FIRST (behind outlines) - layers 7+
-  const colorStart = 7;
-  for (let i = colorStart; i <= step && i < layers.length; i++) {
-    const grp = ce('g', { class: `layer layer-${i}` });
-    layers[i](grp, i === step);
-    svg.appendChild(grp);
-  }
-
-  // Outline layers ON TOP - layers 0-6
-  for (let i = 0; i < Math.min(step + 1, colorStart, layers.length); i++) {
-    const grp = ce('g', { class: `layer layer-${i}` });
-    layers[i](grp, i === step);
-    svg.appendChild(grp);
-  }
-
+  const svg = ce('svg', { viewBox: VB, width: '100%', height: '100%', xmlns: SVG_NS });
+  // Paper bg
+  svg.appendChild(ce('rect', { width: 360, height: 450, rx: 10, fill: '#FEFCF8', stroke: '#E8E0D4', 'stroke-width': 0.8 }));
+  // Paper lines
+  for (let y = 25; y < 445; y += 14) svg.appendChild(ce('line', { x1: 12, y1: y, x2: 348, y2: y, stroke: '#F2EDE6', 'stroke-width': 0.3 }));
+  // Color layers first (7+)
+  for (let i = 7; i <= step && i < layers.length; i++) { const grp = ce('g', { class: `layer layer-${i}` }); layers[i](grp, i === step); svg.appendChild(grp); }
+  // Outline layers on top (0-6)
+  for (let i = 0; i < Math.min(step + 1, 7, layers.length); i++) { const grp = ce('g', { class: `layer layer-${i}` }); layers[i](grp, i === step); svg.appendChild(grp); }
   return svg;
 }
