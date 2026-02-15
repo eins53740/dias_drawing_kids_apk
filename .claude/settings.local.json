@@ -9,7 +9,9 @@
       "Bash(node -e:*)",
       "Bash(ls:*)",
       "Bash(wc:*)",
-      "Bash(node --check:*)"
+      "Bash(node --check:*)",
+      "Bash(start:*)",
+      "Bash(npx serve www -l 3333)"
     ]
   }
 }
