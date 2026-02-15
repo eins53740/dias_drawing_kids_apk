@@ -8,12 +8,29 @@ const PW = 1.6;
 const HW = 2.5;
 const SW = 1.0;
 
+// Core helpers
 function ce(t, a) { const e = document.createElementNS(SVG_NS, t); for (const [k, v] of Object.entries(a)) e.setAttribute(k, v); return e; }
 function sk(e, a, w) { e.setAttribute('stroke', a ? HL : P); e.setAttribute('stroke-width', a ? HW : (w || PW)); e.setAttribute('stroke-linecap', 'round'); e.setAttribute('stroke-linejoin', 'round'); if (!e.getAttribute('fill')) e.setAttribute('fill', 'none'); if (a) e.classList.add('active-element'); }
 function lt(e, a) { e.setAttribute('stroke', a ? HL : LP); e.setAttribute('stroke-width', a ? 1.5 : SW); e.setAttribute('stroke-linecap', 'round'); if (!e.getAttribute('fill')) e.setAttribute('fill', 'none'); if (a) e.classList.add('active-element'); }
 function pp(g, ds, a, fn) { ds.forEach(d => { const p = ce('path', { d, fill: 'none' }); (fn || sk)(p, a); g.appendChild(p); }); }
 function fl(g, d, c, a) { const e = ce('path', { d, fill: c, stroke: 'none' }); if (a) e.classList.add('active-element'); g.appendChild(e); }
 function fe(g, t, a2, a) { const e = ce(t, { ...a2, stroke: 'none' }); if (a) e.classList.add('active-element'); g.appendChild(e); }
+
+// Photorealistic helpers — gradients, opacity fills, shadows, highlights
+let _gid = 0;
+function gd(defs, type, stops, attrs) {
+  const id = '_g' + (++_gid);
+  const el = ce(type === 'r' ? 'radialGradient' : 'linearGradient', { id, gradientUnits: 'userSpaceOnUse', ...attrs });
+  stops.forEach(s => { el.appendChild(ce('stop', { offset: s[0], 'stop-color': s[1], 'stop-opacity': s[2] !== undefined ? s[2] : 1 })); });
+  defs.appendChild(el);
+  return 'url(#' + id + ')';
+}
+function fo(g, d, c, o, a) { const e = ce('path', { d, fill: c, 'fill-opacity': o, stroke: 'none' }); if (a) e.classList.add('active-element'); g.appendChild(e); }
+function sh(g, d, o, a) { fo(g, d, '#1a1a2e', o || 0.12, a); }
+function hi(g, d, o, a) { fo(g, d, '#FFFFFF', o || 0.18, a); }
+function feo(g, t, a2, o, a) { const e = ce(t, { ...a2, 'fill-opacity': o, stroke: 'none' }); if (a) e.classList.add('active-element'); g.appendChild(e); }
+function ssk(e, a, w, c) { e.setAttribute('stroke', a ? HL : (c || P)); e.setAttribute('stroke-width', a ? HW : (w || PW)); e.setAttribute('stroke-linecap', 'round'); e.setAttribute('stroke-linejoin', 'round'); e.setAttribute('fill', 'none'); if (a) e.classList.add('active-element'); }
+function pps(g, ds, a, w, c) { ds.forEach(d => { const p = ce('path', { d, fill: 'none' }); ssk(p, a, w, c); g.appendChild(p); }); }
 
 
 const miguelbebeLayers = [
@@ -11012,12 +11029,15 @@ const drawingData = {
 };
 
 function renderDrawing(memberId, step) {
+  _gid = 0;
   const layers = drawingData[memberId];
   if (!layers) return null;
   const svg = ce('svg', { viewBox: VB, width: '100%', height: '100%', xmlns: SVG_NS });
+  const defs = ce('defs', {});
+  svg.appendChild(defs);
   svg.appendChild(ce('rect', { width: 360, height: 450, rx: 10, fill: '#FEFCF8', stroke: '#E8E0D4', 'stroke-width': 0.8 }));
   for (let y = 25; y < 445; y += 14) svg.appendChild(ce('line', { x1: 12, y1: y, x2: 348, y2: y, stroke: '#F2EDE6', 'stroke-width': 0.3 }));
-  for (let i = 7; i <= step && i < layers.length; i++) { const grp = ce('g', { class: `layer layer-${i}` }); layers[i](grp, i === step); svg.appendChild(grp); }
-  for (let i = 0; i < Math.min(step + 1, 7, layers.length); i++) { const grp = ce('g', { class: `layer layer-${i}` }); layers[i](grp, i === step); svg.appendChild(grp); }
+  for (let i = 7; i <= step && i < layers.length; i++) { const grp = ce('g', { class: `layer layer-${i}` }); layers[i](grp, i === step, defs); svg.appendChild(grp); }
+  for (let i = 0; i < Math.min(step + 1, 7, layers.length); i++) { const grp = ce('g', { class: `layer layer-${i}` }); layers[i](grp, i === step, defs); svg.appendChild(grp); }
   return svg;
 }

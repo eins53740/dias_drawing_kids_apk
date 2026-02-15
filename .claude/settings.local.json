@@ -11,7 +11,12 @@
       "Bash(wc:*)",
       "Bash(node --check:*)",
       "Bash(start:*)",
-      "Bash(npx serve www -l 3333)"
+      "Bash(npx serve www -l 3333)",
+      "Bash(node -c:*)",
+      "Bash(pkill:*)",
+      "Bash(npx serve:*)",
+      "Bash(taskkill:*)",
+      "Bash(netstat:*)"
     ]
   }
 }

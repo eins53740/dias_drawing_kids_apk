@@ -1,630 +1,1243 @@
 // ==============================================================
-// SCENE: AVÓS DUARTE — Grandparents Duarte with baby Miguel
+// SCENE: AVOS DUARTE — Grandparents Duarte with baby Miguel
+// PHOTOREALISTIC REWRITE
 // Grandfather (center-left, bald, glasses, goatee, striped shirt)
 // Grandmother (right, gray-blonde hair, glasses, navy blouse, pearls)
 // Baby Miguel (on grandfather's lap, huge smile)
-// Background: rustic stone wall, dark wooden door, flower boxes
+// Background: rustic stone wall, dark wooden shutters, flower boxes
 // ==============================================================
 const avoesduarteLayers = [
+  // ================================================================
   // Layer 0: Composition guides
+  // ================================================================
   (g, a) => {
     // Floor / seat line
     pp(g, ['M 0 395 L 360 395'], a, lt);
-    // Grandfather zone (center-left)
-    pp(g, ['M 70 30 L 70 395', 'M 250 30 L 250 395'], a, lt);
-    // Grandmother zone (right)
-    pp(g, ['M 200 30 L 200 395', 'M 350 30 L 350 395'], a, lt);
+    // Grandfather zone
+    pp(g, ['M 60 30 L 60 395', 'M 240 30 L 240 395'], a, lt);
+    // Grandmother zone
+    pp(g, ['M 210 30 L 210 395', 'M 355 30 L 355 395'], a, lt);
     // Head-line guides
-    pp(g, ['M 70 140 L 250 140'], a, lt);
-    pp(g, ['M 200 150 L 350 150'], a, lt);
+    pp(g, ['M 60 140 L 240 140'], a, lt);
+    pp(g, ['M 210 150 L 355 150'], a, lt);
     // Baby zone on grandfather's lap
-    pp(g, ['M 110 220 L 210 220', 'M 110 220 L 110 360', 'M 210 220 L 210 360'], a, lt);
+    pp(g, ['M 100 220 L 210 220', 'M 100 220 L 100 370', 'M 210 220 L 210 370'], a, lt);
     // Grandfather head center cross
-    pp(g, ['M 160 70 L 160 170', 'M 120 120 L 200 120'], a, lt);
+    pp(g, ['M 155 60 L 155 175', 'M 110 115 L 200 115'], a, lt);
     // Grandmother head center cross
-    pp(g, ['M 276 80 L 276 180', 'M 240 130 L 312 130'], a, lt);
+    pp(g, ['M 280 70 L 280 180', 'M 240 125 L 320 125'], a, lt);
+    // Golden ratio diagonals
+    pp(g, ['M 0 0 L 360 450', 'M 360 0 L 0 450'], a, lt);
   },
 
-  // Layer 1: Bodies — proper seated proportions
+  // ================================================================
+  // Layer 1: Body outlines — seated elderly couple + baby
+  // ================================================================
   (g, a) => {
-    // === GRANDFATHER (center-left) ===
-    // Head — round, slightly wider face
+    // === GRANDFATHER ===
+    // Head — round, slightly wide, bald dome shape
     pp(g, [
-      'M 160 68 C 130 68 116 88 116 112 C 116 136 130 156 148 162 C 154 164 157 166 160 167 C 163 166 166 164 172 162 C 190 156 204 136 204 112 C 204 88 190 68 160 68 Z'
+      'M 155 62 C 138 62 124 70 118 82 C 112 94 110 108 112 118 C 114 132 120 144 130 152 C 138 160 146 166 155 168 C 164 166 172 160 180 152 C 190 144 196 132 198 118 C 200 108 198 94 192 82 C 186 70 172 62 155 62 Z'
     ], a);
-    // Neck
-    pp(g, ['M 148 165 L 146 182', 'M 172 165 L 174 182'], a);
-    // Torso — seated, broad
+    // Neck — thick, older man
     pp(g, [
-      'M 100 210 C 112 192 136 182 160 182 C 184 182 208 192 220 210 L 224 395 L 96 395 Z'
+      'M 142 166 C 140 172 139 178 138 184',
+      'M 168 166 C 170 172 171 178 172 184'
     ], a);
-    // Left arm resting / holding baby
-    pp(g, ['M 104 214 C 96 228 90 248 88 268 C 86 284 88 296 92 306'], a);
-    // Right arm on baby's other side
-    pp(g, ['M 216 214 C 224 228 228 248 226 268 C 225 284 222 296 218 306'], a);
+    // Torso — broad seated man, slightly forward lean
+    pp(g, [
+      'M 90 215 C 100 200 118 188 138 184 C 148 182 162 182 172 184 C 192 188 210 200 220 215',
+      'M 90 215 C 88 260 86 310 88 355 C 89 370 90 385 92 400',
+      'M 220 215 C 222 260 224 310 222 355 C 221 370 220 385 218 400',
+      'M 92 400 L 218 400'
+    ], a);
+    // Left shoulder curve
+    pp(g, ['M 90 215 C 82 220 76 228 72 238'], a);
+    // Right shoulder curve
+    pp(g, ['M 220 215 C 228 220 234 228 238 238'], a);
+    // Left upper arm
+    pp(g, [
+      'M 72 238 C 68 252 66 268 66 282 C 66 296 68 306 72 312'
+    ], a);
+    // Left forearm (cradling baby)
+    pp(g, [
+      'M 72 312 C 78 318 86 322 96 324 C 108 326 120 324 130 320'
+    ], a);
+    // Right upper arm
+    pp(g, [
+      'M 238 238 C 242 252 244 268 244 282 C 244 296 242 306 238 312'
+    ], a);
+    // Right forearm (supporting baby)
+    pp(g, [
+      'M 238 312 C 232 318 224 322 214 324 C 202 326 190 324 180 320'
+    ], a);
 
-    // === GRANDMOTHER (right) ===
-    // Head — slightly narrower, elegant
+    // === GRANDMOTHER ===
+    // Head — slightly narrower, elegant feminine shape
     pp(g, [
-      'M 276 78 C 250 78 238 96 238 118 C 238 140 250 158 266 164 C 270 166 273 168 276 169 C 279 168 282 166 286 164 C 302 158 314 140 314 118 C 314 96 302 78 276 78 Z'
+      'M 280 72 C 266 72 254 78 248 88 C 242 98 240 110 242 120 C 244 132 250 142 258 150 C 264 156 272 162 280 164 C 288 162 296 156 302 150 C 310 142 316 132 318 120 C 320 110 318 98 312 88 C 306 78 294 72 280 72 Z'
     ], a);
-    // Neck
-    pp(g, ['M 266 167 L 264 184', 'M 286 167 L 288 184'], a);
-    // Torso — seated, slightly turned toward baby
+    // Neck — slender, feminine
     pp(g, [
-      'M 232 212 C 242 196 258 186 276 186 C 294 186 310 196 320 212 L 324 395 L 228 395 Z'
+      'M 270 162 C 268 168 267 174 266 180',
+      'M 290 162 C 292 168 293 174 294 180'
     ], a);
-    // Left arm
-    pp(g, ['M 236 216 C 228 230 222 250 220 268'], a);
+    // Torso — seated, slightly turned left toward baby
+    pp(g, [
+      'M 230 210 C 240 196 256 186 272 182 C 282 180 292 182 302 186 C 316 194 328 206 334 218',
+      'M 230 210 C 228 250 226 295 228 340 C 229 360 230 380 232 400',
+      'M 334 218 C 336 250 338 295 336 340 C 335 360 334 380 332 400',
+      'M 232 400 L 332 400'
+    ], a);
+    // Left shoulder
+    pp(g, ['M 230 210 C 224 216 220 224 218 234'], a);
+    // Right shoulder
+    pp(g, ['M 334 218 C 340 224 344 232 346 242'], a);
+    // Left arm (resting on lap/side)
+    pp(g, [
+      'M 218 234 C 214 250 212 268 212 284 C 212 298 214 308 218 316'
+    ], a);
     // Right arm
-    pp(g, ['M 316 216 C 324 230 328 248 330 266'], a);
+    pp(g, [
+      'M 346 242 C 350 258 352 274 350 290 C 348 304 344 314 340 322'
+    ], a);
 
-    // === BABY MIGUEL (on grandfather's lap) ===
-    // Head — large round baby head
+    // === BABY MIGUEL ===
+    // Head — large round baby head, slightly tilted, facing forward
     pp(g, [
-      'M 160 228 C 140 228 130 242 130 258 C 130 274 140 290 152 296 C 156 298 158 299 160 300 C 162 299 164 298 168 296 C 180 290 190 274 190 258 C 190 242 180 228 160 228 Z'
+      'M 156 230 C 142 230 130 238 126 250 C 122 262 124 276 130 286 C 136 296 144 302 154 304 C 158 305 162 305 166 304 C 176 302 184 296 190 286 C 196 276 198 262 194 250 C 190 238 178 230 164 230 C 162 230 158 230 156 230 Z'
     ], a);
-    // Baby body — small torso on lap
+    // Baby neck (very short, chubby)
     pp(g, [
-      'M 142 298 L 140 310 C 140 316 146 320 160 320 C 174 316 180 310 178 298'
+      'M 148 302 C 147 306 146 310 146 312',
+      'M 172 302 C 173 306 174 310 174 312'
     ], a);
-    // Baby legs dangling
+    // Baby torso — small, sitting on lap
     pp(g, [
-      'M 140 318 C 136 334 130 350 128 368 C 127 376 130 384 136 388',
-      'M 178 318 C 182 334 188 350 190 368 C 191 376 188 384 182 388'
+      'M 136 318 C 140 312 148 308 160 308 C 172 308 180 312 184 318',
+      'M 136 318 L 132 352',
+      'M 184 318 L 188 352',
+      'M 132 352 L 188 352'
+    ], a);
+    // Baby left leg dangling
+    pp(g, [
+      'M 134 352 C 130 362 126 374 124 384 C 122 392 124 398 130 400'
+    ], a);
+    // Baby right leg dangling
+    pp(g, [
+      'M 186 352 C 190 362 194 374 196 384 C 198 392 196 398 190 400'
     ], a);
   },
 
-  // Layer 2: Faces — eyes, glasses, noses, mouths, goatee, baby smile
+  // ================================================================
+  // Layer 2: Faces — EXTREMELY detailed: wrinkles, age lines, glasses
+  // ================================================================
   (g, a) => {
     // === GRANDFATHER FACE ===
-    // Eyes — almond shapes
+    // Left eye — almond, slightly hooded with age
     pp(g, [
-      'M 140 110 C 142 104 148 102 153 106 C 158 110 156 116 152 118 C 148 120 140 116 140 110 Z',
-      'M 168 110 C 170 104 176 102 181 106 C 186 110 184 116 180 118 C 176 120 168 116 168 110 Z'
+      'M 134 108 C 136 102 140 99 145 100 C 150 101 154 104 155 108 C 156 112 154 117 150 119 C 146 121 140 120 137 116 C 135 113 134 110 134 108 Z'
     ], a);
-    // Pupils
-    fe(g, 'circle', { cx: 149, cy: 111, r: 3.2, fill: a ? HL : '#5E4023' }, a);
-    fe(g, 'circle', { cx: 177, cy: 111, r: 3.2, fill: a ? HL : '#5E4023' }, a);
-    // Glasses — rectangular, thick frames
+    // Left upper eyelid fold (aging)
+    pp(g, ['M 132 106 C 136 100 142 97 148 98 C 153 99 156 102 158 106'], a);
+    // Right eye
     pp(g, [
-      // Left lens
-      'M 134 104 L 160 104 L 160 122 L 134 122 Z',
-      // Right lens
-      'M 164 104 L 190 104 L 190 122 L 164 122 Z',
+      'M 163 108 C 165 102 169 99 174 100 C 179 101 183 104 184 108 C 185 112 183 117 179 119 C 175 121 169 120 166 116 C 164 113 163 110 163 108 Z'
+    ], a);
+    // Right upper eyelid fold
+    pp(g, ['M 161 106 C 165 100 171 97 177 98 C 182 99 185 102 187 106'], a);
+    // Pupils — looking down at baby
+    fe(g, 'ellipse', { cx: 146, cy: 112, rx: 3.5, ry: 3, fill: a ? HL : '#4A3520' }, a);
+    fe(g, 'ellipse', { cx: 175, cy: 112, rx: 3.5, ry: 3, fill: a ? HL : '#4A3520' }, a);
+    // Iris rings
+    pp(g, [
+      'M 146 108 C 149 108 151 110 151 112 C 151 115 149 117 146 117 C 143 117 141 115 141 112 C 141 110 143 108 146 108 Z',
+      'M 175 108 C 178 108 180 110 180 112 C 180 115 178 117 175 117 C 172 117 170 115 170 112 C 170 110 172 108 175 108 Z'
+    ], a, lt);
+
+    // Glasses — thick black rectangular frames
+    pp(g, [
+      // Left lens frame
+      'M 128 100 L 158 100 L 160 102 L 160 120 L 158 122 L 128 122 L 126 120 L 126 102 Z',
+      // Right lens frame
+      'M 160 100 L 190 100 L 192 102 L 192 120 L 190 122 L 160 122 L 158 120 L 158 102 Z',
       // Bridge
-      'M 160 112 L 164 112',
-      // Left arm
-      'M 134 112 L 118 108',
-      // Right arm
-      'M 190 112 L 206 108'
+      'M 158 110 L 160 109 L 162 110',
+      // Left temple arm
+      'M 126 110 C 122 109 118 108 112 108',
+      // Right temple arm
+      'M 192 110 C 196 109 200 108 206 108'
     ], a);
-    // Nose — wider, rounded
-    pp(g, ['M 162 108 C 160 118 158 128 156 134', 'M 152 136 C 156 140 160 142 164 140 C 168 138 170 134 168 132'], a);
-    // Mouth — warm, slight smile, looking down at baby
-    pp(g, ['M 148 148 C 152 144 158 142 162 144 C 166 142 170 144 174 148'], a);
-    pp(g, ['M 150 150 C 156 154 164 154 172 150'], a);
-    // Goatee — multiple short strokes for texture
+    // Glasses frame thickness (double-line effect)
+    pps(g, [
+      'M 128 100 L 158 100', 'M 128 122 L 158 122',
+      'M 160 100 L 190 100', 'M 160 122 L 190 122'
+    ], a, 2.2, a ? HL : '#222');
+
+    // Nose — broad, rounded, strong
     pp(g, [
-      'M 150 152 C 148 156 148 162 152 166',
-      'M 154 152 C 152 158 152 164 156 168',
-      'M 158 154 C 157 160 157 166 160 170',
-      'M 164 154 C 165 160 165 166 162 170',
-      'M 168 152 C 170 158 170 164 166 168',
-      'M 172 150 C 174 156 174 162 170 166'
+      'M 158 104 C 156 112 154 122 152 130',
+      'M 148 132 C 150 136 154 139 158 140 C 162 141 166 139 168 136 C 170 133 170 130 168 128',
+      'M 152 130 C 150 132 148 134 148 132'
     ], a);
-    // Chin outline through goatee
-    pp(g, ['M 148 152 C 146 160 148 168 154 172 C 160 174 166 172 170 168 C 176 162 178 154 176 150'], a, lt);
-    // Eyebrows — thick, expressive
-    pp(g, ['M 136 100 C 142 96 150 95 158 98', 'M 166 98 C 174 95 182 96 188 100'], a);
+    // Nostril shadows
+    pp(g, ['M 150 136 C 152 134 154 134 155 136', 'M 163 136 C 165 134 167 134 168 136'], a, lt);
+
+    // Mouth — warm, gentle half-smile looking at baby
+    pp(g, [
+      'M 142 150 C 146 146 152 143 158 144 C 162 145 166 146 170 148 C 174 150 176 152 178 154'
+    ], a);
+    // Lower lip
+    pp(g, [
+      'M 142 152 C 148 158 154 160 160 160 C 166 160 172 158 178 154'
+    ], a);
+    // Upper lip definition
+    pp(g, ['M 148 148 C 152 144 158 143 160 144 C 162 143 168 144 172 148'], a);
+    // Lip corner creases
+    pp(g, ['M 140 150 C 138 148 138 145 139 142', 'M 180 152 C 182 150 182 147 181 144'], a, lt);
+
+    // Goatee — dense, textured gray beard around chin
+    pp(g, [
+      'M 144 154 C 142 158 140 164 142 170 C 144 176 148 180 154 182',
+      'M 148 156 C 146 162 146 168 148 174 C 150 178 154 182 158 183',
+      'M 152 158 C 150 164 150 170 152 176 C 154 180 158 183 162 184',
+      'M 158 160 C 157 166 157 172 158 178 C 160 182 162 184 164 184',
+      'M 164 160 C 165 166 165 172 164 178 C 162 182 160 184 158 184',
+      'M 168 158 C 170 164 170 170 168 176 C 166 180 162 183 158 183',
+      'M 172 156 C 174 162 174 168 172 174 C 170 178 166 182 162 183',
+      'M 176 154 C 178 158 180 164 178 170 C 176 176 172 180 168 182'
+    ], a);
+    // Goatee horizontal texture
+    pp(g, [
+      'M 142 162 C 150 164 160 164 172 162',
+      'M 144 168 C 152 170 162 170 174 168',
+      'M 146 174 C 154 176 162 176 170 174'
+    ], a, lt);
+    // Chin contour through beard
+    pp(g, ['M 140 154 C 138 162 140 172 148 180 C 156 186 164 186 172 180 C 180 172 182 162 180 154'], a, lt);
+
+    // Forehead wrinkles
+    pp(g, [
+      'M 126 82 C 138 78 152 77 166 78 C 178 79 190 82 196 86',
+      'M 128 88 C 140 84 154 83 168 84 C 180 85 190 88 194 92'
+    ], a, lt);
+    // Crow's feet (left)
+    pp(g, [
+      'M 130 108 C 126 106 122 104 118 103',
+      'M 130 112 C 126 112 122 112 118 113',
+      'M 130 116 C 126 118 122 120 118 122'
+    ], a, lt);
+    // Crow's feet (right)
+    pp(g, [
+      'M 192 108 C 196 106 200 104 204 103',
+      'M 192 112 C 196 112 200 112 204 113',
+      'M 192 116 C 196 118 200 120 204 122'
+    ], a, lt);
+    // Nasolabial folds (smile lines)
+    pp(g, [
+      'M 138 126 C 136 132 136 140 138 148',
+      'M 182 126 C 184 132 184 140 182 148'
+    ], a, lt);
+    // Under-eye creases
+    pp(g, ['M 134 118 C 138 120 144 122 150 120', 'M 168 120 C 174 122 180 120 186 118'], a, lt);
+    // Eyebrows — thick, slightly bushy, graying
+    pp(g, [
+      'M 128 96 C 134 90 142 88 150 90 C 154 91 157 93 158 96',
+      'M 162 96 C 163 93 166 91 170 90 C 178 88 186 90 192 96'
+    ], a);
+    // Eyebrow texture (individual hairs)
+    pp(g, [
+      'M 132 94 L 136 90', 'M 138 92 L 142 88', 'M 144 91 L 148 88',
+      'M 168 91 L 172 88', 'M 174 90 L 178 88', 'M 182 92 L 186 90'
+    ], a, lt);
 
     // === GRANDMOTHER FACE ===
-    // Eyes — slightly smaller, elegant
+    // Left eye — elegant, slightly narrower
     pp(g, [
-      'M 258 116 C 260 110 266 108 271 112 C 276 116 274 122 270 124 C 266 126 258 122 258 116 Z',
-      'M 282 116 C 284 110 290 108 295 112 C 300 116 298 122 294 124 C 290 126 282 122 282 116 Z'
+      'M 260 114 C 262 108 266 105 272 106 C 278 107 282 110 283 114 C 284 118 282 123 278 125 C 274 127 268 126 264 122 C 262 119 261 116 260 114 Z'
     ], a);
-    // Pupils
-    fe(g, 'circle', { cx: 267, cy: 118, r: 2.8, fill: a ? HL : '#5E4023' }, a);
-    fe(g, 'circle', { cx: 291, cy: 118, r: 2.8, fill: a ? HL : '#5E4023' }, a);
-    // Glasses — rectangular, similar to grandfather
+    // Left upper eyelid
+    pp(g, ['M 258 112 C 262 106 268 104 274 105 C 280 106 284 108 286 112'], a);
+    // Right eye
+    pp(g, [
+      'M 288 112 C 290 106 294 103 300 104 C 306 105 310 108 311 112 C 312 116 310 121 306 123 C 302 125 296 124 292 120 C 290 117 289 114 288 112 Z'
+    ], a);
+    // Right upper eyelid
+    pp(g, ['M 286 110 C 290 104 296 102 302 103 C 308 104 312 106 314 110'], a);
+    // Pupils — looking left toward baby
+    fe(g, 'ellipse', { cx: 273, cy: 116, rx: 3.2, ry: 2.8, fill: a ? HL : '#4A3520' }, a);
+    fe(g, 'ellipse', { cx: 301, cy: 114, rx: 3.2, ry: 2.8, fill: a ? HL : '#4A3520' }, a);
+
+    // Glasses — rectangular, similar style to grandfather
     pp(g, [
       // Left lens
-      'M 254 110 L 278 110 L 278 126 L 254 126 Z',
+      'M 254 106 L 284 106 L 286 108 L 286 126 L 284 128 L 254 128 L 252 126 L 252 108 Z',
       // Right lens
-      'M 282 110 L 306 110 L 306 126 L 282 126 Z',
+      'M 288 104 L 316 104 L 318 106 L 318 124 L 316 126 L 288 126 L 286 124 L 286 106 Z',
       // Bridge
-      'M 278 118 L 282 118',
-      // Left arm
-      'M 254 118 L 240 114',
-      // Right arm
-      'M 306 118 L 320 114'
+      'M 286 116 L 288 115',
+      // Left temple
+      'M 252 116 C 248 115 244 114 238 114',
+      // Right temple
+      'M 318 114 C 322 113 326 112 330 112'
     ], a);
-    // Eyebrows — thinner, arched
-    pp(g, ['M 254 106 C 260 102 268 101 276 104', 'M 282 104 C 290 101 298 102 304 106'], a);
-    // Nose — delicate
-    pp(g, ['M 278 112 C 277 120 276 128 274 134', 'M 270 136 C 274 140 278 142 282 140'], a);
-    // Mouth — warm smile, turned toward baby
-    pp(g, ['M 264 148 C 268 144 274 142 278 144 C 282 142 286 144 290 148'], a);
-    pp(g, ['M 266 150 C 272 156 280 156 288 150'], a);
-    // Smile lines
-    pp(g, ['M 260 146 C 258 142 258 138 260 136', 'M 294 146 C 296 142 296 138 294 136'], a, lt);
+    pps(g, [
+      'M 254 106 L 284 106', 'M 254 128 L 284 128',
+      'M 288 104 L 316 104', 'M 288 126 L 316 126'
+    ], a, 2.0, a ? HL : '#222');
+
+    // Eyebrows — thinner, feminine arch
+    pp(g, [
+      'M 256 102 C 262 96 270 94 278 96 C 282 97 285 100 286 103',
+      'M 288 101 C 292 96 298 94 306 96 C 310 97 314 100 316 103'
+    ], a);
+
+    // Nose — refined, straight bridge
+    pp(g, [
+      'M 282 108 C 280 116 278 126 276 134',
+      'M 272 136 C 274 140 278 142 282 141 C 286 140 288 137 288 134',
+      'M 276 134 C 274 136 272 137 272 136'
+    ], a);
+
+    // Mouth — warm smile turned toward baby, slightly open
+    pp(g, [
+      'M 264 148 C 268 144 274 142 280 143 C 286 144 290 146 294 148'
+    ], a);
+    pp(g, [
+      'M 266 150 C 272 156 280 157 288 152'
+    ], a);
+    pp(g, ['M 268 148 C 272 145 278 143 282 144 C 286 143 290 145 292 148'], a);
+    // Smile lines / nasolabial folds
+    pp(g, [
+      'M 258 128 C 256 134 256 142 258 148',
+      'M 306 126 C 308 132 308 140 306 146'
+    ], a, lt);
+    // Lip corners
+    pp(g, ['M 262 148 C 260 146 260 143 261 140', 'M 296 148 C 298 146 298 143 297 140'], a, lt);
+
+    // Crow's feet
+    pp(g, [
+      'M 252 114 C 248 112 244 110 240 110',
+      'M 252 118 C 248 118 244 119 240 120',
+      'M 318 112 C 322 110 326 109 330 110',
+      'M 318 116 C 322 117 326 118 330 119'
+    ], a, lt);
+    // Forehead lines
+    pp(g, [
+      'M 252 86 C 264 82 278 81 292 82 C 304 83 314 86 318 90',
+      'M 254 92 C 266 88 280 87 294 88 C 306 89 314 92 316 96'
+    ], a, lt);
+    // Under-eye areas
+    pp(g, ['M 260 124 C 266 126 272 128 278 126', 'M 292 122 C 298 124 304 126 310 124'], a, lt);
+    // Chin definition
+    pp(g, ['M 266 158 C 272 164 280 166 288 164 C 294 162 298 158 300 154'], a, lt);
 
     // === BABY MIGUEL FACE ===
-    // Eyes — big round baby eyes
+    // Big round eyes — sparkling with joy
     pp(g, [
-      'M 144 254 C 146 248 152 246 157 250 C 162 254 160 260 156 262 C 152 264 144 260 144 254 Z',
-      'M 166 254 C 168 248 174 246 179 250 C 184 254 182 260 178 262 C 174 264 166 260 166 254 Z'
+      'M 142 256 C 144 248 150 244 156 246 C 162 248 166 252 166 258 C 166 264 162 270 156 272 C 150 274 144 268 142 262 C 141 260 141 258 142 256 Z'
     ], a);
-    // Big round pupils
-    fe(g, 'circle', { cx: 153, cy: 256, r: 3.5, fill: a ? HL : '#3E2518' }, a);
-    fe(g, 'circle', { cx: 175, cy: 256, r: 3.5, fill: a ? HL : '#3E2518' }, a);
+    pp(g, [
+      'M 170 254 C 172 246 178 242 184 244 C 190 246 194 250 194 256 C 194 262 190 268 184 270 C 178 272 172 266 170 260 C 169 258 169 256 170 254 Z'
+    ], a);
+    // Baby pupils — large, dark, shining
+    fe(g, 'circle', { cx: 155, cy: 258, r: 4.5, fill: a ? HL : '#2C1810' }, a);
+    fe(g, 'circle', { cx: 183, cy: 256, r: 4.5, fill: a ? HL : '#2C1810' }, a);
+    // Iris detail
+    pp(g, [
+      'M 155 253 C 159 253 161 255 161 258 C 161 262 159 264 155 264 C 151 264 149 262 149 258 C 149 255 151 253 155 253 Z',
+      'M 183 251 C 187 251 189 253 189 256 C 189 260 187 262 183 262 C 179 262 177 260 177 256 C 177 253 179 251 183 251 Z'
+    ], a, lt);
+
     // Baby nose — tiny button
-    pp(g, ['M 162 260 C 160 264 159 268 161 270 C 163 272 165 270 164 266'], a);
-    // HUGE SMILE — mouth wide open with joy, teeth showing
     pp(g, [
-      'M 146 276 C 150 272 156 270 160 272 C 164 270 170 272 176 276',
-      'M 146 276 C 150 288 156 294 160 294 C 164 294 170 288 176 276'
+      'M 166 262 C 164 266 163 270 164 273 C 165 275 167 276 169 274 C 171 272 170 268 168 264'
     ], a);
-    // Upper teeth — small rectangles
+    // Nostrils
+    pp(g, ['M 162 274 C 164 272 166 272 167 274', 'M 170 273 C 172 271 174 272 174 274'], a, lt);
+
+    // HUGE SMILE — mouth wide open with delight
     pp(g, [
-      'M 152 278 L 152 282 L 156 282 L 156 278',
-      'M 158 278 L 158 282 L 162 282 L 162 278',
-      'M 164 278 L 164 282 L 168 282 L 168 278'
+      // Upper lip curve
+      'M 144 282 C 148 278 154 275 160 276 C 166 275 172 278 178 280 C 182 282 186 284 190 288',
+      // Lower lip curve (open mouth)
+      'M 144 284 C 148 296 156 304 164 306 C 172 304 180 296 188 286',
+      // Mouth opening outline
+      'M 146 284 C 150 280 156 278 164 278 C 172 278 178 280 186 286'
     ], a);
+    // Upper baby teeth
+    pp(g, [
+      'M 152 280 L 152 286 L 157 286 L 157 280',
+      'M 158 280 L 158 286 L 163 286 L 163 280',
+      'M 164 280 L 164 286 L 169 286 L 169 280',
+      'M 170 280 L 170 286 L 175 286 L 175 280'
+    ], a);
+    // Lower gum line
+    pp(g, ['M 154 298 C 160 300 168 300 176 298'], a, lt);
     // Lower teeth hint
-    pp(g, ['M 154 288 L 166 288'], a, lt);
-    // Baby ears
+    pp(g, ['M 156 296 L 172 296'], a, lt);
+
+    // Baby ears — round, prominent
     pp(g, [
-      'M 130 254 C 124 250 120 256 120 264 C 120 272 124 278 130 278',
-      'M 190 254 C 196 250 200 256 200 264 C 200 272 196 278 190 278'
+      'M 126 254 C 120 248 114 252 114 262 C 114 272 118 280 126 280',
+      'M 194 252 C 200 246 206 250 206 260 C 206 270 202 278 194 278'
     ], a);
-    // Baby cheek lines
-    pp(g, ['M 138 270 C 140 274 142 276 144 276', 'M 182 270 C 180 274 178 276 176 276'], a, lt);
+    // Ear inner detail
+    pp(g, ['M 118 258 C 116 264 116 270 118 276', 'M 202 256 C 204 262 204 268 202 274'], a, lt);
+
+    // Baby cheek dimples
+    pp(g, [
+      'M 136 276 C 138 280 140 282 142 282',
+      'M 186 274 C 184 278 182 280 180 280'
+    ], a, lt);
+    // Baby chin
+    pp(g, ['M 148 304 C 154 310 162 312 170 310 C 176 308 180 304 182 300'], a, lt);
   },
 
-  // Layer 3: Hair and accessories
+  // ================================================================
+  // Layer 3: Hair — gray/white textures
+  // ================================================================
   (g, a) => {
     // === GRANDFATHER — bald dome with gray side hair ===
-    // Bald dome outline — smooth curve over top of head
+    // Bald dome outline — smooth high curve
     pp(g, [
-      'M 120 108 C 118 84 130 64 150 58 C 160 54 170 54 180 58 C 196 64 206 82 204 108'
+      'M 116 104 C 114 84 120 66 132 56 C 140 48 150 44 160 44 C 170 44 178 48 186 56 C 196 66 202 84 200 104'
     ], a);
-    // Shine lines on bald head
+    // Crown highlight curve
     pp(g, [
-      'M 140 72 C 150 66 168 64 178 70',
-      'M 144 82 C 154 76 172 74 182 80'
+      'M 130 60 C 142 50 158 46 172 50 C 184 54 192 62 196 74'
     ], a, lt);
-    // Left side hair — gray, short
+    // Second highlight curve
+    pp(g, ['M 134 70 C 146 62 164 58 178 64 C 188 68 194 76 196 86'], a, lt);
+    // Scalp texture — very fine lines
     pp(g, [
-      'M 116 106 C 114 112 112 120 114 128 C 115 134 116 140 118 144'
+      'M 140 52 C 148 48 160 46 170 50',
+      'M 136 62 C 148 56 166 54 178 60',
+      'M 132 74 C 146 66 168 64 182 72'
+    ], a, lt);
+
+    // Left side hair — short gray
+    pp(g, [
+      'M 112 102 C 110 108 108 116 109 124 C 110 132 112 140 114 146 C 116 150 118 152 119 152'
     ], a);
+    // Left side hair texture strands
+    pp(g, [
+      'M 110 106 L 108 112', 'M 111 112 L 109 118', 'M 110 118 L 108 124',
+      'M 111 124 L 109 130', 'M 112 130 L 110 136', 'M 113 136 L 111 142',
+      'M 114 142 L 112 148'
+    ], a, lt);
+
     // Right side hair
     pp(g, [
-      'M 204 106 C 206 112 208 120 206 128 C 205 134 204 140 202 144'
+      'M 200 102 C 202 108 204 116 203 124 C 202 132 200 140 198 146 C 196 150 194 152 193 152'
     ], a);
-    // Side hair texture — small strokes
-    const gSideHair = [
-      [114, 110], [113, 116], [114, 122], [115, 128], [116, 134],
-      [205, 110], [206, 116], [205, 122], [204, 128], [203, 134]
-    ];
-    gSideHair.forEach(([cx, cy]) => {
-      pp(g, [`M ${cx} ${cy} L ${cx - 2} ${cy + 4}`], a, lt);
-    });
-    // Ears — visible, slightly large (older man)
+    // Right side hair texture
     pp(g, [
-      'M 116 108 C 108 104 104 110 104 120 C 104 130 108 138 116 138',
-      'M 204 108 C 212 104 216 110 216 120 C 216 130 212 138 204 138'
-    ], a);
-
-    // === GRANDMOTHER — long gray-blonde hair pulled back, volume ===
-    // Top of hair with volume
-    pp(g, [
-      'M 242 114 C 240 90 250 72 268 66 C 280 62 292 64 302 72 C 312 80 318 94 316 114'
-    ], a);
-    // Hair texture — swept back
-    pp(g, [
-      'M 248 108 C 252 92 262 78 276 72 C 290 68 302 74 310 86 C 314 94 316 106 314 114',
-      'M 256 82 C 266 74 282 70 294 78',
-      'M 252 94 C 262 86 278 82 292 88'
+      'M 202 106 L 204 112', 'M 201 112 L 203 118', 'M 202 118 L 204 124',
+      'M 201 124 L 203 130', 'M 200 130 L 202 136', 'M 199 136 L 201 142',
+      'M 198 142 L 200 148'
     ], a, lt);
-    // Hair flowing down past shoulders — long
+
+    // Ears — visible, slightly large
     pp(g, [
-      'M 242 118 C 238 132 234 150 232 168 C 230 186 228 200 226 214',
-      'M 316 118 C 320 132 322 150 324 168 C 326 186 326 200 326 212'
+      'M 112 102 C 104 98 100 104 100 114 C 100 124 104 134 112 134',
+      'M 200 102 C 208 98 212 104 212 114 C 212 124 208 134 200 134'
     ], a);
-    // Hair texture strands on sides
+    // Inner ear detail
     pp(g, [
-      'M 236 140 C 234 154 232 168 230 180',
-      'M 318 140 C 320 154 322 168 324 180'
+      'M 104 108 C 102 114 102 122 104 128',
+      'M 208 108 C 210 114 210 122 208 128'
+    ], a, lt);
+    // Ear lobes
+    pp(g, ['M 106 128 C 108 132 110 134 112 134', 'M 206 128 C 204 132 202 134 200 134'], a, lt);
+
+    // === GRANDMOTHER — long gray-blonde hair, volume, swept back ===
+    // Hair top with volume
+    pp(g, [
+      'M 244 116 C 242 92 248 74 262 66 C 272 60 284 58 296 62 C 308 68 316 82 318 100 C 319 108 318 114 318 118'
+    ], a);
+    // Hair part line
+    pp(g, ['M 280 64 C 278 72 276 82 276 92'], a, lt);
+    // Hair volume strands (top)
+    pp(g, [
+      'M 252 80 C 260 72 272 66 286 66 C 298 68 308 76 314 88',
+      'M 254 90 C 264 82 278 76 292 78 C 302 80 310 88 314 98',
+      'M 250 100 C 260 92 276 88 290 90 C 302 92 312 100 316 110'
+    ], a, lt);
+
+    // Hair flowing down left side — past shoulder
+    pp(g, [
+      'M 244 120 C 240 136 236 154 234 172 C 232 190 230 208 228 224 C 226 236 224 246 222 256'
+    ], a);
+    // Hair texture strands (left side)
+    pp(g, [
+      'M 238 130 C 236 146 234 162 232 178',
+      'M 240 140 C 238 156 236 172 234 188',
+      'M 242 132 C 240 148 238 164 236 180'
+    ], a, lt);
+
+    // Hair flowing down right side
+    pp(g, [
+      'M 318 120 C 322 136 324 154 326 172 C 328 190 328 208 328 224 C 328 236 326 246 324 256'
+    ], a);
+    // Hair texture strands (right side)
+    pp(g, [
+      'M 322 130 C 324 146 326 162 328 178',
+      'M 320 140 C 322 156 324 172 326 188',
+      'M 324 132 C 326 148 328 164 330 180'
+    ], a, lt);
+
+    // Wispy strands around face
+    pp(g, [
+      'M 248 106 C 246 110 244 116 244 120',
+      'M 314 104 C 316 108 318 114 318 118'
     ], a, lt);
 
     // === BABY — fine light hair ===
     pp(g, [
-      'M 134 252 C 132 238 140 226 154 220 C 164 216 174 218 182 226 C 188 234 192 246 190 256'
+      'M 130 250 C 128 236 134 224 148 216 C 158 210 170 210 180 218 C 190 226 196 242 194 256'
     ], a);
-    // Baby hair wisps
+    // Baby hair wisps — very fine
     pp(g, [
-      'M 148 224 C 154 218 164 216 172 222',
-      'M 142 232 C 148 226 158 222 168 226'
+      'M 144 218 C 152 212 164 210 174 216',
+      'M 140 226 C 148 220 162 216 172 222',
+      'M 136 234 C 144 228 158 224 170 230',
+      'M 150 214 C 158 210 168 212 176 218',
+      'M 146 222 C 156 216 166 214 174 220'
     ], a, lt);
   },
 
-  // Layer 4: Clothing details
+  // ================================================================
+  // Layer 4: Clothing details and folds
+  // ================================================================
   (g, a) => {
-    // === GRANDFATHER — striped shirt with collar open ===
-    // Collar — open V-neck
+    // === GRANDFATHER — blue/white striped button-up, open collar ===
+    // Collar — open V, folded over
     pp(g, [
-      'M 142 184 C 136 180 130 182 128 188 L 136 200',
-      'M 178 184 C 184 180 190 182 192 188 L 184 200'
+      'M 136 186 C 130 182 124 184 122 190 C 120 196 122 202 128 206',
+      'M 174 186 C 180 182 186 184 188 190 C 190 196 188 202 182 206'
     ], a);
-    // Collar points
+    // Collar fold inner
     pp(g, [
-      'M 136 200 C 142 196 150 192 160 190 C 170 192 178 196 184 200'
+      'M 128 190 C 134 192 142 192 148 190',
+      'M 182 190 C 176 192 168 192 162 190'
+    ], a, lt);
+    // Collar points spread
+    pp(g, [
+      'M 128 206 C 136 202 146 198 155 196 C 160 196 165 196 170 198 C 178 200 186 204 192 208'
     ], a);
-    // Vertical stripes on shirt — blue/white pattern
-    for (let x = 108; x <= 216; x += 10) {
-      pp(g, [`M ${x} 210 L ${x} 395`], a, lt);
-    }
-    // Shirt seam at shoulder
-    pp(g, ['M 104 212 C 108 208 114 206 120 206', 'M 216 212 C 212 208 206 206 200 206'], a, lt);
-    // Sleeve edges
-    pp(g, ['M 98 232 C 94 236 90 242 88 248', 'M 222 232 C 226 236 228 242 228 248'], a, lt);
+    // V-opening of shirt
+    pp(g, ['M 148 196 C 150 210 152 226 154 242', 'M 162 196 C 160 210 158 226 156 242'], a);
+    // Button line (center)
+    pp(g, ['M 155 210 L 155 395'], a, lt);
+    // Buttons
+    const btnY = [218, 240, 262, 284, 310, 336, 362];
+    btnY.forEach(y => {
+      fe(g, 'circle', { cx: 155, cy: y, r: 1.8, fill: 'none', stroke: a ? HL : P, 'stroke-width': a ? HW : PW }, a);
+    });
 
-    // === GRANDMOTHER — navy blouse with chiffon neckline ===
+    // Vertical stripes — denser, varied spacing
+    for (let x = 96; x <= 224; x += 8) {
+      pp(g, [`M ${x} 208 L ${x + (x < 155 ? -2 : 2)} 400`], a, lt);
+    }
+    // Horizontal fold creases across shirt
+    pp(g, [
+      'M 96 240 C 120 238 150 236 180 238 C 200 240 218 242 224 244',
+      'M 94 280 C 118 278 148 276 178 278 C 198 280 216 282 222 284',
+      'M 92 320 C 116 318 148 316 178 318 C 198 320 216 322 220 324',
+      'M 90 360 C 114 358 148 356 178 358 C 198 360 216 362 218 364'
+    ], a, lt);
+
+    // Sleeve edges — rolled up slightly
+    pp(g, [
+      'M 78 244 C 74 248 70 254 68 260',
+      'M 232 244 C 236 248 240 254 242 260'
+    ], a);
+    // Sleeve fold lines
+    pp(g, [
+      'M 74 250 C 72 254 70 258 68 264',
+      'M 236 250 C 238 254 240 258 242 264'
+    ], a, lt);
+    // Shoulder seams
+    pp(g, ['M 92 216 C 96 210 106 206 118 204', 'M 218 216 C 214 210 204 206 192 204'], a, lt);
+
+    // === GRANDMOTHER — navy chiffon blouse with sheer neckline ===
     // Shoulder seams
     pp(g, [
-      'M 236 212 C 240 208 248 204 256 204',
-      'M 316 212 C 312 208 304 204 296 204'
+      'M 232 212 C 238 206 248 200 260 198',
+      'M 332 218 C 326 212 316 206 304 202'
     ], a, lt);
-    // Chiffon neckline — sheer overlay with delicate texture
+    // Sheer chiffon neckline — delicate overlay
     pp(g, [
-      'M 256 190 C 262 194 270 198 276 198 C 282 198 290 194 296 190'
+      'M 260 192 C 266 196 274 200 280 200 C 286 200 294 196 300 192'
     ], a);
-    // Chiffon texture — light, airy lines
+    // Chiffon texture lines
     pp(g, [
-      'M 258 192 C 264 196 272 200 278 198 C 284 196 290 192 294 188',
-      'M 262 194 C 268 198 276 200 282 198 C 288 194 292 190 296 186',
-      'M 260 190 C 266 192 274 196 280 194 C 286 192 290 188 294 184'
+      'M 262 194 C 268 198 276 202 282 200 C 288 198 294 194 298 190',
+      'M 264 196 C 270 200 278 204 284 202 C 290 200 296 196 300 192',
+      'M 260 190 C 266 194 274 198 280 196 C 286 194 292 190 296 186',
+      'M 266 192 C 272 196 280 198 286 196 C 292 192 296 188 300 184'
     ], a, lt);
-    // Blouse V-neckline
-    pp(g, ['M 258 196 C 264 204 270 210 276 212 C 282 210 288 204 294 196'], a);
+    // V-neckline
+    pp(g, ['M 260 198 C 266 208 272 216 280 218 C 288 216 294 208 300 198'], a);
+    // Blouse center seam
+    pp(g, ['M 282 218 L 282 400'], a, lt);
+    // Blouse fold lines
+    pp(g, [
+      'M 232 250 C 256 248 280 246 300 248 C 320 250 332 252 336 254',
+      'M 230 290 C 254 288 280 286 300 288 C 318 290 332 292 336 294',
+      'M 230 330 C 254 328 280 326 300 328 C 318 330 332 332 336 334',
+      'M 230 370 C 254 368 280 366 300 368 C 318 370 332 372 336 374'
+    ], a, lt);
+    // Sleeve fabric drape (left)
+    pp(g, ['M 222 234 C 218 246 216 260 214 272', 'M 226 238 C 222 250 220 264 218 276'], a, lt);
+    // Sleeve fabric drape (right)
+    pp(g, ['M 342 242 C 346 254 348 268 348 280', 'M 338 246 C 342 258 344 272 344 284'], a, lt);
 
-    // === PEARL NECKLACE — loop of small circles ===
-    for (let i = 0; i < 11; i++) {
-      const angle = Math.PI * 0.12 + (Math.PI * 0.76 / 10) * i;
-      const cx = 276 + Math.cos(angle) * 24;
-      const cy = 182 + Math.sin(angle) * 16;
-      fe(g, 'circle', { cx: cx.toFixed(1), cy: cy.toFixed(1), r: 2.2, fill: 'none', stroke: a ? HL : P, 'stroke-width': a ? HW : PW }, a);
+    // === PEARL NECKLACE — detailed individual pearls in arc ===
+    for (let i = 0; i < 13; i++) {
+      const angle = Math.PI * 0.1 + (Math.PI * 0.8 / 12) * i;
+      const cx = 280 + Math.cos(angle) * 26;
+      const cy = 184 + Math.sin(angle) * 18;
+      fe(g, 'circle', { cx: cx.toFixed(1), cy: cy.toFixed(1), r: 2.4, fill: 'none', stroke: a ? HL : P, 'stroke-width': a ? HW : PW }, a);
     }
 
     // === BABY CLOTHES ===
-    // White shirt neckline
-    pp(g, ['M 144 300 C 148 296 154 294 160 294 C 166 294 172 296 176 300'], a);
-    // Baby white shirt
-    pp(g, ['M 140 310 L 138 340', 'M 180 310 L 182 340'], a, lt);
-    // Dark pants
-    pp(g, ['M 138 340 L 134 368', 'M 182 340 L 186 368'], a, lt);
-    // Pants waistband
-    pp(g, ['M 136 338 L 184 338'], a);
+    // White shirt collar
+    pp(g, ['M 146 310 C 150 306 156 304 160 304 C 164 304 170 306 174 310'], a);
+    // White shirt body
+    pp(g, ['M 138 318 L 134 352', 'M 184 318 L 188 352'], a, lt);
+    // Shirt fold lines
+    pp(g, ['M 142 322 L 140 348', 'M 180 322 L 182 348'], a, lt);
+    // Dark pants waistband
+    pp(g, ['M 132 350 L 190 350'], a);
+    // Pants legs
+    pp(g, [
+      'M 134 352 L 128 386', 'M 156 352 L 154 386',
+      'M 166 352 L 168 386', 'M 188 352 L 192 386'
+    ], a, lt);
+    // Pants center seam
+    pp(g, ['M 160 352 L 160 386'], a, lt);
   },
 
+  // ================================================================
   // Layer 5: Hands, watch, baby hands/feet
+  // ================================================================
   (g, a) => {
-    // === GRANDFATHER HANDS — cradling baby with fingers ===
-    // Left hand under baby
+    // === GRANDFATHER LEFT HAND — cradling baby ===
+    // Hand base
     pp(g, [
-      'M 92 300 C 88 292 82 290 78 296 C 74 302 78 310 84 308 L 100 298'
+      'M 72 312 C 68 306 62 302 58 306 C 54 310 56 318 62 320 C 68 322 76 320 84 316'
     ], a);
-    // Left hand fingers — individual
+    // Individual fingers — wrapped around baby
     pp(g, [
-      'M 80 294 C 76 288 72 282 74 278 C 76 274 80 274 82 278',
-      'M 78 298 C 72 294 68 286 70 282 C 72 278 76 278 78 282',
-      'M 76 302 C 70 298 66 292 68 288 C 70 284 74 284 76 288',
-      'M 82 306 C 78 304 74 300 74 296 C 76 292 80 292 82 296'
-    ], a);
-    // Thumb
-    pp(g, ['M 86 292 C 90 286 94 284 96 288 C 98 292 94 296 90 296'], a);
-
-    // Right hand on baby's side
-    pp(g, [
-      'M 218 300 C 222 292 228 290 232 296 C 236 302 232 310 226 308 L 210 298'
-    ], a);
-    // Right hand fingers
-    pp(g, [
-      'M 230 294 C 234 288 238 282 236 278 C 234 274 230 274 228 278',
-      'M 232 298 C 238 294 242 286 240 282 C 238 278 234 278 232 282',
-      'M 234 302 C 240 298 244 292 242 288 C 240 284 236 284 234 288',
-      'M 228 306 C 232 304 236 300 236 296 C 234 292 230 292 228 296'
+      'M 58 304 C 54 298 50 292 52 286 C 54 282 58 280 60 284 C 62 288 62 294 60 300',
+      'M 56 308 C 50 302 46 296 48 290 C 50 286 54 284 56 288 C 58 292 56 298 54 304',
+      'M 54 312 C 48 308 44 302 46 296 C 48 292 52 290 54 294 C 56 298 54 304 52 310',
+      'M 60 316 C 56 314 52 310 52 306 C 54 302 58 300 60 304 C 62 308 60 312 58 316'
     ], a);
     // Thumb
-    pp(g, ['M 224 292 C 220 286 216 284 214 288 C 212 292 216 296 220 296'], a);
+    pp(g, ['M 66 306 C 70 300 74 296 76 300 C 78 304 74 308 70 310'], a);
+    // Knuckle creases
+    pp(g, ['M 54 296 C 56 294 58 294 60 296', 'M 50 302 C 52 300 54 300 56 302'], a, lt);
 
-    // Watch on grandfather's left wrist
-    pp(g, ['M 86 280 L 96 278 L 98 286 L 88 288 Z'], a);
+    // Right hand — supporting baby's other side
+    pp(g, [
+      'M 238 312 C 242 306 248 302 252 306 C 256 310 254 318 248 320 C 242 322 234 320 226 316'
+    ], a);
+    // Right fingers
+    pp(g, [
+      'M 252 304 C 256 298 260 292 258 286 C 256 282 252 280 250 284 C 248 288 248 294 250 300',
+      'M 254 308 C 260 302 264 296 262 290 C 260 286 256 284 254 288 C 252 292 254 298 256 304',
+      'M 256 312 C 262 308 266 302 264 296 C 262 292 258 290 256 294 C 254 298 256 304 258 310',
+      'M 250 316 C 254 314 258 310 258 306 C 256 302 252 300 250 304 C 248 308 250 312 252 316'
+    ], a);
+    // Thumb
+    pp(g, ['M 244 306 C 240 300 236 296 234 300 C 232 304 236 308 240 310'], a);
+    // Knuckle creases
+    pp(g, ['M 256 296 C 258 294 260 294 262 296', 'M 260 302 C 262 300 264 300 266 302'], a, lt);
+
+    // === WATCH on grandfather's left wrist ===
     // Watch band
-    pp(g, ['M 84 282 L 80 278', 'M 90 290 L 94 296'], a, lt);
-    // Watch face circle
-    fe(g, 'circle', { cx: 92, cy: 283, r: 4, fill: 'none', stroke: a ? HL : P, 'stroke-width': a ? HW : PW }, a);
+    pp(g, [
+      'M 64 278 C 62 282 60 286 60 290',
+      'M 72 290 C 74 294 76 298 76 302'
+    ], a);
+    // Watch face — rectangular with rounded corners
+    pp(g, ['M 60 282 L 76 280 L 78 294 L 62 296 Z'], a);
+    // Watch face detail
+    fe(g, 'ellipse', { cx: 69, cy: 288, rx: 6, ry: 5.5, fill: 'none', stroke: a ? HL : P, 'stroke-width': a ? HW : PW }, a);
+    // Watch crown
+    pp(g, ['M 76 286 L 79 285 L 79 290 L 76 289'], a, lt);
+    // Watch hands
+    pp(g, ['M 69 288 L 69 284', 'M 69 288 L 73 290'], a, lt);
 
     // === BABY TINY HANDS ===
-    fe(g, 'circle', { cx: 136, cy: 310, r: 7, fill: 'none', stroke: a ? HL : P, 'stroke-width': a ? HW : PW }, a);
-    fe(g, 'circle', { cx: 184, cy: 310, r: 7, fill: 'none', stroke: a ? HL : P, 'stroke-width': a ? HW : PW }, a);
-    // Tiny finger bumps on baby hands
+    // Left hand — chubby fist
     pp(g, [
-      'M 130 306 C 128 304 128 302 130 300',
-      'M 132 304 C 130 302 130 300 132 298',
-      'M 190 306 C 192 304 192 302 190 300',
-      'M 188 304 C 190 302 190 300 188 298'
+      'M 130 316 C 126 312 120 310 118 314 C 116 318 118 324 122 326 C 126 328 132 326 136 322'
+    ], a);
+    // Baby finger bumps
+    pp(g, [
+      'M 120 312 C 118 310 116 308 118 306',
+      'M 118 316 C 116 314 114 312 116 310',
+      'M 122 324 C 124 326 126 328 128 326'
+    ], a, lt);
+    // Right hand
+    pp(g, [
+      'M 190 314 C 194 310 200 308 202 312 C 204 316 202 322 198 324 C 194 326 188 324 184 320'
+    ], a);
+    pp(g, [
+      'M 200 310 C 202 308 204 306 202 304',
+      'M 202 314 C 204 312 206 310 204 308',
+      'M 198 322 C 196 324 194 326 192 324'
     ], a, lt);
 
     // === BABY BARE FEET ===
-    // Left foot
+    // Left foot — chubby baby foot
     pp(g, [
-      'M 128 370 C 124 374 120 380 122 386 C 124 392 130 394 134 390 C 138 386 136 378 132 372'
+      'M 124 386 C 120 390 116 396 118 402 C 120 408 126 410 132 406 C 138 402 136 392 132 388'
     ], a);
     // Left toes
-    pp(g, ['M 122 384 C 120 382 118 380 120 378', 'M 124 386 C 122 384 120 382 122 380'], a, lt);
+    pp(g, [
+      'M 116 400 C 114 398 112 396 114 394',
+      'M 118 402 C 116 400 114 398 116 396',
+      'M 120 404 C 118 402 116 400 118 398',
+      'M 122 406 C 120 404 118 402 120 400',
+      'M 126 408 C 124 406 122 404 124 402'
+    ], a, lt);
     // Right foot
     pp(g, [
-      'M 190 370 C 194 374 198 380 196 386 C 194 392 188 394 184 390 C 180 386 182 378 186 372'
+      'M 196 386 C 200 390 204 396 202 402 C 200 408 194 410 188 406 C 182 402 184 392 188 388'
     ], a);
     // Right toes
-    pp(g, ['M 196 384 C 198 382 200 380 198 378', 'M 194 386 C 196 384 198 382 196 380'], a, lt);
+    pp(g, [
+      'M 204 400 C 206 398 208 396 206 394',
+      'M 202 402 C 204 400 206 398 204 396',
+      'M 200 404 C 202 402 204 400 202 398',
+      'M 198 406 C 200 404 202 402 200 400',
+      'M 194 408 C 196 406 198 404 196 402'
+    ], a, lt);
+    // Ankle creases
+    pp(g, ['M 126 388 C 128 386 130 386 132 388', 'M 190 388 C 192 386 194 386 196 388'], a, lt);
+
+    // === GRANDMOTHER HANDS (resting on lap, partially visible) ===
+    pp(g, [
+      'M 218 316 C 216 320 214 326 216 332 C 218 336 222 338 226 336'
+    ], a);
+    pp(g, [
+      'M 340 322 C 342 326 344 332 342 336 C 340 340 336 342 332 340'
+    ], a);
+    // Grandmother finger hints
+    pp(g, [
+      'M 216 330 C 214 328 212 324 214 322',
+      'M 342 334 C 344 332 346 328 344 326'
+    ], a, lt);
   },
 
-  // Layer 6: Background — stone wall, wooden door, flower boxes, bench
+  // ================================================================
+  // Layer 6: Background — stone wall, wooden shutters, flower boxes
+  // ================================================================
   (g, a) => {
-    // === STONE WALL — irregular rectangles ===
-    const stoneRows = [
-      { y: 0, h: 32, offsets: [0, 58, 110, 175, 240, 300] },
-      { y: 36, h: 30, offsets: [-15, 45, 105, 160, 225, 285, 345] },
-      { y: 70, h: 34, offsets: [5, 65, 130, 195, 255, 320] },
-      { y: 108, h: 28, offsets: [-10, 50, 115, 175, 240, 305] },
-      { y: 140, h: 32, offsets: [0, 60, 125, 190, 250, 315] },
-      { y: 176, h: 30, offsets: [-20, 42, 100, 165, 230, 290, 350] },
-      { y: 210, h: 34, offsets: [10, 75, 140, 200, 265, 330] },
-      { y: 248, h: 28, offsets: [-5, 55, 118, 180, 245, 310] },
-      { y: 280, h: 32, offsets: [0, 62, 128, 192, 255, 318] },
-      { y: 316, h: 30, offsets: [-12, 48, 110, 172, 238, 300] },
-      { y: 350, h: 34, offsets: [8, 70, 135, 200, 260, 325] }
+    // === STONE WALL — irregular granite blocks ===
+    const rows = [
+      { y: 0, h: 34, xs: [0, 62, 120, 182, 245, 310, 360] },
+      { y: 38, h: 30, xs: [-18, 48, 108, 168, 232, 292, 355, 360] },
+      { y: 72, h: 36, xs: [5, 68, 135, 198, 260, 328, 360] },
+      { y: 112, h: 28, xs: [-12, 52, 118, 178, 242, 308, 360] },
+      { y: 144, h: 32, xs: [0, 64, 128, 195, 258, 322, 360] },
+      { y: 180, h: 30, xs: [-22, 44, 106, 170, 236, 298, 360] },
+      { y: 214, h: 34, xs: [12, 78, 142, 206, 270, 336, 360] },
+      { y: 252, h: 28, xs: [-8, 56, 122, 186, 250, 316, 360] },
+      { y: 284, h: 32, xs: [0, 66, 132, 196, 262, 326, 360] },
+      { y: 320, h: 30, xs: [-14, 50, 114, 178, 244, 308, 360] },
+      { y: 354, h: 34, xs: [8, 72, 138, 202, 268, 332, 360] },
+      { y: 392, h: 28, xs: [-6, 58, 124, 190, 256, 320, 360] }
     ];
-    stoneRows.forEach(row => {
-      for (let i = 0; i < row.offsets.length - 1; i++) {
-        const x1 = Math.max(0, row.offsets[i]);
-        const x2 = Math.min(360, row.offsets[i + 1] - 4);
-        const w = x2 - x1;
-        if (w > 10) {
-          pp(g, [`M ${x1} ${row.y} L ${x2} ${row.y} L ${x2} ${row.y + row.h} L ${x1} ${row.y + row.h} Z`], a, lt);
+    rows.forEach(r => {
+      for (let i = 0; i < r.xs.length - 1; i++) {
+        const x1 = Math.max(0, r.xs[i]);
+        const x2 = Math.min(360, r.xs[i + 1] - 3);
+        if (x2 - x1 > 8) {
+          // Slightly irregular stone shapes (not perfect rectangles)
+          const jy1 = r.y + (i % 3 === 0 ? 1 : 0);
+          const jy2 = r.y + r.h - (i % 2 === 0 ? 1 : 0);
+          pp(g, [`M ${x1 + 1} ${jy1} L ${x2 - 1} ${jy1 + (i % 2)} L ${x2} ${jy2 - (i % 3)} L ${x1} ${jy2} Z`], a, lt);
         }
       }
     });
+    // Mortar gaps (horizontal emphasis)
+    pp(g, [
+      'M 0 36 L 360 36', 'M 0 70 L 360 70', 'M 0 110 L 360 110',
+      'M 0 142 L 360 142', 'M 0 178 L 360 178', 'M 0 212 L 360 212',
+      'M 0 250 L 360 250', 'M 0 282 L 360 282', 'M 0 318 L 360 318',
+      'M 0 352 L 360 352', 'M 0 390 L 360 390'
+    ], a, lt);
 
-    // === DARK WOODEN DOOR / WINDOW — behind left side ===
+    // === DARK WOODEN SHUTTERS / WINDOW — upper left area ===
+    // Frame
+    pp(g, ['M 6 28 L 80 28 L 80 205 L 6 205 Z'], a);
+    // Frame molding
     pp(g, [
-      'M 10 30 L 75 30 L 75 200 L 10 200 Z'
-    ], a);
-    // Door frame
+      'M 8 30 L 78 30 L 78 203 L 8 203 Z',
+      'M 10 32 L 76 32 L 76 201 L 10 201 Z'
+    ], a, lt);
+    // Center divider
+    pp(g, ['M 43 30 L 43 203'], a);
+    // Left shutter slats
     pp(g, [
-      'M 10 30 L 75 30',
-      'M 10 30 L 10 200',
-      'M 75 30 L 75 200',
-      'M 10 200 L 75 200'
-    ], a);
-    // Door center divider
-    pp(g, ['M 42 30 L 42 200'], a);
-    // Door wood grain
-    pp(g, ['M 26 40 L 26 190', 'M 58 40 L 58 190'], a, lt);
+      'M 12 40 L 41 40', 'M 12 56 L 41 56', 'M 12 72 L 41 72',
+      'M 12 88 L 41 88', 'M 12 104 L 41 104', 'M 12 120 L 41 120',
+      'M 12 136 L 41 136', 'M 12 152 L 41 152', 'M 12 168 L 41 168',
+      'M 12 184 L 41 184', 'M 12 196 L 41 196'
+    ], a, lt);
+    // Right shutter slats
+    pp(g, [
+      'M 45 40 L 76 40', 'M 45 56 L 76 56', 'M 45 72 L 76 72',
+      'M 45 88 L 76 88', 'M 45 104 L 76 104', 'M 45 120 L 76 120',
+      'M 45 136 L 76 136', 'M 45 152 L 76 152', 'M 45 168 L 76 168',
+      'M 45 184 L 76 184', 'M 45 196 L 76 196'
+    ], a, lt);
+    // Shutter wood grain (vertical subtle lines)
+    pp(g, [
+      'M 20 34 L 20 199', 'M 30 34 L 30 199',
+      'M 55 34 L 55 199', 'M 65 34 L 65 199'
+    ], a, lt);
 
-    // === FLOWER BOXES with plants ===
-    // Left flower box on wall
-    pp(g, ['M 4 210 L 52 210 L 52 240 L 4 240 Z'], a);
-    // Plants in left box — green stems and leaves
+    // === FLOWER PLANTER BOXES ===
+    // Left planter on wall
+    pp(g, ['M 2 215 L 56 215 L 56 248 L 2 248 Z'], a);
+    // Planter wood slats
+    pp(g, ['M 2 224 L 56 224', 'M 2 236 L 56 236'], a, lt);
+    // Planter legs/brackets
+    pp(g, ['M 8 248 L 8 256', 'M 50 248 L 50 256'], a, lt);
+
+    // Plants — green stems with leaves
     pp(g, [
-      'M 14 208 C 12 196 16 186 20 180 C 24 174 28 178 26 186',
-      'M 28 208 C 26 194 30 184 34 178 C 38 172 42 176 40 184',
-      'M 42 208 C 40 198 44 190 48 184 C 52 178 54 182 50 190'
+      'M 12 213 C 10 200 14 188 18 180 C 22 172 26 176 24 186 C 22 196 18 206 14 212',
+      'M 26 213 C 24 198 28 186 32 178 C 36 170 40 174 38 184 C 36 194 32 204 28 212',
+      'M 40 213 C 38 202 42 192 46 184 C 50 176 54 180 50 190 C 48 198 44 208 42 212'
     ], a);
-    // Leaves
+    // Leaves — individual shapes
     pp(g, [
-      'M 16 190 C 12 186 10 180 14 178 C 18 176 20 182 18 188',
-      'M 34 186 C 30 182 28 176 32 174 C 36 172 38 178 36 184',
-      'M 46 192 C 50 188 54 182 50 180 C 46 178 44 184 46 190'
+      'M 14 192 C 10 188 8 182 12 178 C 16 174 20 180 18 188',
+      'M 20 186 C 24 182 28 178 26 174 C 24 170 20 172 18 178',
+      'M 32 188 C 28 184 26 178 30 174 C 34 170 38 176 36 184',
+      'M 38 182 C 42 178 46 174 44 170 C 42 166 38 168 36 174',
+      'M 46 194 C 50 190 54 184 50 180 C 46 176 44 182 46 190',
+      'M 48 186 C 52 182 56 178 54 174 C 52 170 48 174 48 180'
     ], a);
 
-    // Right flower box hint
-    pp(g, ['M 336 240 L 358 240 L 358 268 L 336 268 Z'], a, lt);
+    // Right planter (partially visible)
+    pp(g, ['M 338 245 L 358 245 L 358 272 L 338 272 Z'], a, lt);
     pp(g, [
-      'M 342 238 C 340 228 344 220 348 214',
-      'M 352 238 C 350 230 354 222 356 218'
+      'M 344 243 C 342 232 346 222 350 216',
+      'M 352 243 C 350 234 354 226 356 220'
     ], a, lt);
 
     // === SEAT / BENCH ===
-    pp(g, ['M 86 388 L 230 388 L 230 395 L 86 395 Z'], a);
-    // Bench legs
-    pp(g, ['M 92 395 L 92 410', 'M 224 395 L 224 410'], a, lt);
-    // Wooden pedestal hint (right side)
-    pp(g, ['M 312 370 L 340 370 L 340 395 L 312 395 Z'], a, lt);
+    pp(g, ['M 80 392 L 240 392 L 240 400 L 80 400 Z'], a);
+    // Bench details
+    pp(g, ['M 84 400 L 84 416', 'M 236 400 L 236 416'], a, lt);
+    pp(g, ['M 80 396 L 240 396'], a, lt);
+
+    // Wooden pedestal (far right, partially visible)
+    pp(g, ['M 316 375 L 348 375 L 348 400 L 316 400 Z'], a, lt);
+    pp(g, ['M 332 375 L 332 400'], a, lt);
+
+    // Stone wall texture — random small cracks
+    pp(g, [
+      'M 285 20 C 287 24 286 28 284 32',
+      'M 140 55 C 142 59 141 63 139 67',
+      'M 330 90 C 332 94 331 98 329 102',
+      'M 95 160 C 97 164 96 168 94 172',
+      'M 310 230 C 312 234 311 238 309 242',
+      'M 45 300 C 47 304 46 308 44 312',
+      'M 260 340 C 262 344 261 348 259 352'
+    ], a, lt);
   },
 
-  // Layer 7: Color — figures (skin, clothing base fills)
-  (g, a) => {
-    // === GRANDFATHER SKIN — warmer tone ===
-    fl(g, 'M 160 68 C 130 68 116 88 116 112 C 116 136 130 156 148 162 C 154 164 157 166 160 167 C 163 166 166 164 172 162 C 190 156 204 136 204 112 C 204 88 190 68 160 68 Z', '#EDBE8C', a);
-    // Ears skin
-    fe(g, 'ellipse', { cx: 110, cy: 122, rx: 7, ry: 14, fill: '#EDBE8C' }, false);
-    fe(g, 'ellipse', { cx: 210, cy: 122, rx: 7, ry: 14, fill: '#EDBE8C' }, false);
-    // Neck fill
-    fe(g, 'rect', { x: 146, y: 164, width: 28, height: 20, rx: 5, fill: '#DEB07A' }, false);
-    // Grandfather shirt — white base
-    fl(g, 'M 100 210 C 112 192 136 182 160 182 C 184 182 208 192 220 210 L 224 395 L 96 395 Z', '#FAFAFA', a);
+  // ================================================================
+  // Layer 7: Gradient skin/clothing fills — aged skin tones
+  // ================================================================
+  (g, a, defs) => {
+    // === GRANDFATHER SKIN — warm aged tones with gradient ===
+    const gfSkin = gd(defs, 'r', [
+      ['0%', '#EDBE8C', 1], ['50%', '#E0AC78', 1], ['100%', '#D49A66', 1]
+    ], { cx: 155, cy: 115, r: 55 });
+    fl(g, 'M 155 62 C 138 62 124 70 118 82 C 112 94 110 108 112 118 C 114 132 120 144 130 152 C 138 160 146 166 155 168 C 164 166 172 160 180 152 C 190 144 196 132 198 118 C 200 108 198 94 192 82 C 186 70 172 62 155 62 Z', gfSkin, a);
+    // Ears
+    const gfEarSkin = '#DCA870';
+    fe(g, 'ellipse', { cx: 106, cy: 118, rx: 8, ry: 16, fill: gfEarSkin }, false);
+    fe(g, 'ellipse', { cx: 206, cy: 118, rx: 8, ry: 16, fill: gfEarSkin }, false);
+    // Neck
+    const gfNeck = gd(defs, 'l', [
+      ['0%', '#DCA870', 1], ['100%', '#C89660', 1]
+    ], { x1: 140, y1: 166, x2: 170, y2: 186 });
+    fl(g, 'M 140 166 C 142 168 148 170 155 170 C 162 170 168 168 170 166 L 172 186 C 168 188 162 190 155 190 C 148 190 142 188 138 186 Z', gfNeck, false);
 
-    // === GRANDMOTHER SKIN — lighter, elegant tone ===
-    fl(g, 'M 276 78 C 250 78 238 96 238 118 C 238 140 250 158 266 164 C 270 166 273 168 276 169 C 279 168 282 166 286 164 C 302 158 314 140 314 118 C 314 96 302 78 276 78 Z', '#FADCC2', a);
-    // Neck fill
-    fe(g, 'rect', { x: 264, y: 166, width: 24, height: 20, rx: 5, fill: '#F0C8A8' }, false);
-    // Grandmother blouse — navy blue
-    fl(g, 'M 232 212 C 242 196 258 186 276 186 C 294 186 310 196 320 212 L 324 395 L 228 395 Z', '#1A237E', a);
+    // Grandfather bald dome — skin with sheen
+    const gfBald = gd(defs, 'r', [
+      ['0%', '#F2D0A0', 1], ['40%', '#EDBE8C', 1], ['100%', '#D49A66', 1]
+    ], { cx: 158, cy: 68, r: 42 });
+    fl(g, 'M 116 104 C 114 84 120 66 132 56 C 140 48 150 44 160 44 C 170 44 178 48 186 56 C 196 66 202 84 200 104 C 196 100 190 96 182 94 C 170 92 144 92 132 96 C 124 98 118 102 116 104 Z', gfBald, false);
 
-    // === BABY SKIN — pinkish, soft ===
-    fl(g, 'M 160 228 C 140 228 130 242 130 258 C 130 274 140 290 152 296 C 156 298 158 299 160 300 C 162 299 164 298 168 296 C 180 290 190 274 190 258 C 190 242 180 228 160 228 Z', '#F5D0A9', a);
+    // Gray side hair fills
+    const gfHair = gd(defs, 'l', [
+      ['0%', '#A0A0A0', 1], ['50%', '#8A8A8A', 1], ['100%', '#707070', 1]
+    ], { x1: 108, y1: 102, x2: 120, y2: 152 });
+    fl(g, 'M 112 102 C 110 108 108 116 109 124 C 110 132 112 140 114 146 C 116 150 118 152 119 152 L 118 146 C 116 140 114 132 114 124 C 114 116 116 108 116 102 Z', gfHair, false);
+    fl(g, 'M 200 102 C 202 108 204 116 203 124 C 202 132 200 140 198 146 C 196 150 194 152 193 152 L 194 146 C 196 140 198 132 198 124 C 198 116 196 108 196 102 Z', gfHair, false);
+
+    // Grandfather shirt — white with blue stripe gradient
+    const gfShirt = gd(defs, 'l', [
+      ['0%', '#F8F8FF', 1], ['50%', '#F0F0F8', 1], ['100%', '#E8E8F0', 1]
+    ], { x1: 90, y1: 215, x2: 220, y2: 400 });
+    fl(g, 'M 90 215 C 100 200 118 188 138 184 C 148 182 162 182 172 184 C 192 188 210 200 220 215 C 222 260 224 310 222 355 C 221 370 220 385 218 400 L 92 400 C 90 385 89 370 88 355 C 86 310 88 260 90 215 Z', gfShirt, a);
+
+    // Grandfather arms skin
+    fl(g, 'M 72 238 C 68 252 66 268 66 282 C 66 296 68 306 72 312 L 84 308 C 80 302 78 292 78 280 C 78 266 80 252 84 240 Z', '#DCA870', false);
+    fl(g, 'M 238 238 C 242 252 244 268 244 282 C 244 296 242 306 238 312 L 226 308 C 230 302 232 292 232 280 C 232 266 230 252 226 240 Z', '#DCA870', false);
+
+    // === GRANDMOTHER SKIN — lighter, more pink-cool tone ===
+    const gmSkin = gd(defs, 'r', [
+      ['0%', '#FADCC2', 1], ['50%', '#F0C8A8', 1], ['100%', '#E4B898', 1]
+    ], { cx: 280, cy: 118, r: 50 });
+    fl(g, 'M 280 72 C 266 72 254 78 248 88 C 242 98 240 110 242 120 C 244 132 250 142 258 150 C 264 156 272 162 280 164 C 288 162 296 156 302 150 C 310 142 316 132 318 120 C 320 110 318 98 312 88 C 306 78 294 72 280 72 Z', gmSkin, a);
+    // Grandmother neck
+    fl(g, 'M 268 162 C 272 164 276 166 280 166 C 284 166 288 164 292 162 L 294 182 C 290 184 286 186 280 186 C 274 186 270 184 266 182 Z', '#F0C8A8', false);
+
+    // Grandmother blouse — deep navy with gradient
+    const gmBlouse = gd(defs, 'l', [
+      ['0%', '#1A237E', 1], ['40%', '#1B2680', 1], ['100%', '#0D1854', 1]
+    ], { x1: 230, y1: 210, x2: 334, y2: 400 });
+    fl(g, 'M 230 210 C 240 196 256 186 272 182 C 282 180 292 182 302 186 C 316 194 328 206 334 218 C 336 250 338 295 336 340 C 335 360 334 380 332 400 L 232 400 C 230 380 229 360 228 340 C 226 295 228 250 230 210 Z', gmBlouse, a);
+
+    // Grandmother hair — gray-blonde gradient
+    const gmHair = gd(defs, 'l', [
+      ['0%', '#C4B09A', 1], ['50%', '#B0A090', 1], ['100%', '#968878', 1]
+    ], { x1: 244, y1: 66, x2: 318, y2: 256 });
+    fl(g, 'M 244 116 C 242 92 248 74 262 66 C 272 60 284 58 296 62 C 308 68 316 82 318 100 C 319 108 318 118 318 118 L 314 114 C 314 98 308 82 298 72 C 288 64 276 62 266 68 C 254 76 248 92 248 114 Z', gmHair, false);
+    // Hair side fills
+    fl(g, 'M 244 120 C 240 136 236 154 234 172 C 232 190 230 208 228 224 C 226 236 224 246 222 256 L 228 256 C 230 246 232 236 234 224 C 236 208 238 190 240 172 C 242 154 244 136 246 120 Z', gmHair, false);
+    fl(g, 'M 318 120 C 322 136 324 154 326 172 C 328 190 328 208 328 224 C 328 236 326 246 324 256 L 320 256 C 322 246 322 236 322 224 C 322 208 322 190 320 172 C 318 154 316 136 314 120 Z', gmHair, false);
+
+    // === BABY SKIN — soft warm pink ===
+    const babySkin = gd(defs, 'r', [
+      ['0%', '#F8D8B4', 1], ['50%', '#F5D0A9', 1], ['100%', '#EABC94', 1]
+    ], { cx: 160, cy: 268, r: 45 });
+    fl(g, 'M 156 230 C 142 230 130 238 126 250 C 122 262 124 276 130 286 C 136 296 144 302 154 304 C 158 305 162 305 166 304 C 176 302 184 296 190 286 C 196 276 198 262 194 250 C 190 238 178 230 164 230 C 162 230 158 230 156 230 Z', babySkin, a);
     // Baby ears
-    fe(g, 'ellipse', { cx: 125, cy: 264, rx: 6, ry: 10, fill: '#F5D0A9' }, false);
-    fe(g, 'ellipse', { cx: 195, cy: 264, rx: 6, ry: 10, fill: '#F5D0A9' }, false);
+    fe(g, 'ellipse', { cx: 120, cy: 266, rx: 7, ry: 12, fill: '#F5D0A9' }, false);
+    fe(g, 'ellipse', { cx: 200, cy: 264, rx: 7, ry: 12, fill: '#F5D0A9' }, false);
+    // Baby neck/chin area
+    fl(g, 'M 146 302 C 150 306 156 310 160 310 C 164 310 170 306 174 302 L 174 314 C 170 316 166 318 160 318 C 154 318 150 316 146 314 Z', '#F0C49E', false);
     // Baby white shirt
-    fl(g, 'M 142 298 C 142 296 148 292 160 292 C 172 292 178 296 178 298 L 182 340 L 138 340 Z', '#FAFAFA', false);
+    fl(g, 'M 136 318 C 140 312 148 308 160 308 C 172 308 180 312 184 318 L 188 352 L 132 352 Z', '#FAFAF8', false);
     // Baby dark pants
-    fl(g, 'M 136 338 L 134 370 L 186 370 L 184 338 Z', '#1A237E', false);
+    const babyPants = gd(defs, 'l', [
+      ['0%', '#1A237E', 1], ['100%', '#141C64', 1]
+    ], { x1: 132, y1: 350, x2: 190, y2: 400 });
+    fl(g, 'M 132 350 L 124 400 L 196 400 L 188 350 Z', babyPants, false);
     // Baby feet skin
-    fe(g, 'ellipse', { cx: 127, cy: 384, rx: 8, ry: 10, fill: '#F5D0A9' }, false);
-    fe(g, 'ellipse', { cx: 191, cy: 384, rx: 8, ry: 10, fill: '#F5D0A9' }, false);
+    fe(g, 'ellipse', { cx: 125, cy: 398, rx: 10, ry: 12, fill: '#F5D0A9' }, false);
+    fe(g, 'ellipse', { cx: 195, cy: 398, rx: 10, ry: 12, fill: '#F5D0A9' }, false);
     // Baby hands skin
-    fe(g, 'circle', { cx: 136, cy: 310, r: 7, fill: '#F5D0A9' }, false);
-    fe(g, 'circle', { cx: 184, cy: 310, r: 7, fill: '#F5D0A9' }, false);
-    // Grandfather hands skin
-    fl(g, 'M 92 300 C 88 292 82 290 78 296 C 74 302 78 310 84 308 L 100 298 Z', '#DEB07A', false);
-    fl(g, 'M 218 300 C 222 292 228 290 232 296 C 236 302 232 310 226 308 L 210 298 Z', '#DEB07A', false);
-    // Grandfather arm skin
-    fl(g, 'M 88 268 C 86 274 86 280 88 286 L 98 286 C 96 280 96 274 98 268 Z', '#DEB07A', false);
-    fl(g, 'M 226 268 C 228 274 228 280 226 286 L 216 286 C 218 280 218 274 216 268 Z', '#DEB07A', false);
+    fe(g, 'ellipse', { cx: 126, cy: 318, rx: 8, ry: 7, fill: '#F5D0A9' }, false);
+    fe(g, 'ellipse', { cx: 196, cy: 316, rx: 8, ry: 7, fill: '#F5D0A9' }, false);
+
+    // Grandfather hands
+    fl(g, 'M 58 306 C 54 310 56 318 62 320 C 68 322 76 320 84 316 L 72 312 C 68 306 62 302 58 306 Z', '#DCA870', false);
+    fl(g, 'M 252 306 C 256 310 254 318 248 320 C 242 322 234 320 226 316 L 238 312 C 242 306 248 302 252 306 Z', '#DCA870', false);
+
+    // Baby hair fill
+    fl(g, 'M 130 250 C 128 236 134 224 148 216 C 158 210 170 210 180 218 C 190 226 196 242 194 256 L 190 252 C 190 240 186 232 178 224 C 170 218 160 216 152 220 C 142 226 136 238 134 250 Z', '#B8A896', false);
   },
 
-  // Layer 8: Color — scene (wall, door, plants, hair, pearls, stripes)
-  (g, a) => {
-    // === STONE WALL fill — subtle texture ===
-    fe(g, 'rect', { x: 0, y: 0, width: 360, height: 400, fill: '#A1887F', opacity: '0.12' }, a);
-    // Individual stone tint variation
-    const stoneTints = [
-      { x: 5, y: 5, w: 52, h: 28, c: '#BCAAA4', o: '0.15' },
-      { x: 115, y: 40, w: 48, h: 26, c: '#D7CCC8', o: '0.12' },
-      { x: 200, y: 75, w: 52, h: 30, c: '#A1887F', o: '0.1' },
-      { x: 70, y: 112, w: 50, h: 24, c: '#BCAAA4', o: '0.14' },
-      { x: 260, y: 145, w: 48, h: 28, c: '#D7CCC8', o: '0.1' },
-      { x: 10, y: 250, w: 46, h: 28, c: '#BCAAA4', o: '0.12' },
-      { x: 320, y: 284, w: 38, h: 28, c: '#D7CCC8', o: '0.1' }
+  // ================================================================
+  // Layer 8: Scene colors — wall, door, plants, stripes, bench
+  // ================================================================
+  (g, a, defs) => {
+    // === STONE WALL — warm granite tones ===
+    const wallGrad = gd(defs, 'l', [
+      ['0%', '#B0A090', 0.18], ['50%', '#A89888', 0.14], ['100%', '#C0B0A0', 0.16]
+    ], { x1: 0, y1: 0, x2: 360, y2: 450 });
+    fe(g, 'rect', { x: 0, y: 0, width: 360, height: 450, fill: wallGrad }, false);
+
+    // Individual stone color variations
+    const stones = [
+      { x: 2, y: 2, w: 58, h: 32, c: '#BCAAA4', o: 0.16 },
+      { x: 64, y: 2, w: 54, h: 32, c: '#D7CCC8', o: 0.12 },
+      { x: 122, y: 2, w: 58, h: 32, c: '#B0A090', o: 0.14 },
+      { x: 48, y: 40, w: 56, h: 28, c: '#C4B4A8', o: 0.13 },
+      { x: 170, y: 40, w: 60, h: 28, c: '#A89888', o: 0.15 },
+      { x: 8, y: 74, w: 60, h: 34, c: '#BCAAA4', o: 0.12 },
+      { x: 198, y: 74, w: 58, h: 34, c: '#D0C0B4', o: 0.11 },
+      { x: 328, y: 74, w: 30, h: 34, c: '#BCA898', o: 0.13 },
+      { x: 54, y: 114, w: 62, h: 26, c: '#C4B8AC', o: 0.14 },
+      { x: 178, y: 114, w: 60, h: 26, c: '#A89080', o: 0.12 },
+      { x: 310, y: 114, w: 48, h: 26, c: '#BCAAA4', o: 0.1 },
+      { x: 66, y: 146, w: 60, h: 30, c: '#D0C4B8', o: 0.11 },
+      { x: 260, y: 146, w: 58, h: 30, c: '#B8A898', o: 0.13 },
+      { x: 44, y: 182, w: 58, h: 28, c: '#C8B8AC', o: 0.12 },
+      { x: 172, y: 182, w: 62, h: 28, c: '#A89888', o: 0.14 },
+      { x: 300, y: 182, w: 56, h: 28, c: '#BCAAA4', o: 0.11 },
+      { x: 12, y: 216, w: 64, h: 32, c: '#D0C0B0', o: 0.1 },
+      { x: 142, y: 216, w: 60, h: 32, c: '#B8A898', o: 0.13 },
+      { x: 272, y: 216, w: 62, h: 32, c: '#C4B4A8', o: 0.12 },
+      { x: 56, y: 254, w: 64, h: 26, c: '#A89080', o: 0.14 },
+      { x: 252, y: 254, w: 60, h: 26, c: '#D0C4B8', o: 0.11 },
+      { x: 0, y: 286, w: 62, h: 30, c: '#BCAAA4', o: 0.13 },
+      { x: 198, y: 286, w: 62, h: 30, c: '#C8B8A8', o: 0.12 },
+      { x: 326, y: 286, w: 32, h: 30, c: '#B0A090', o: 0.14 },
+      { x: 50, y: 322, w: 60, h: 28, c: '#D0C0B4', o: 0.11 },
+      { x: 246, y: 322, w: 56, h: 28, c: '#A89888', o: 0.13 },
+      { x: 72, y: 356, w: 64, h: 32, c: '#C4B8AC', o: 0.12 },
+      { x: 268, y: 356, w: 60, h: 32, c: '#BCAAA4', o: 0.1 }
     ];
-    stoneTints.forEach(s => {
+    stones.forEach(s => {
       fe(g, 'rect', { x: s.x, y: s.y, width: s.w, height: s.h, rx: 2, fill: s.c, opacity: s.o }, false);
     });
 
-    // === DARK WOODEN DOOR ===
-    fe(g, 'rect', { x: 12, y: 32, width: 61, height: 166, rx: 2, fill: '#4E342E' }, a);
-    // Door wood grain highlights
-    fe(g, 'rect', { x: 14, y: 34, width: 26, height: 162, fill: '#5D4037', opacity: '0.5' }, false);
-    fe(g, 'rect', { x: 44, y: 34, width: 26, height: 162, fill: '#5D4037', opacity: '0.5' }, false);
+    // === DARK WOODEN SHUTTERS fill ===
+    const doorGrad = gd(defs, 'l', [
+      ['0%', '#3E2723', 1], ['50%', '#4E342E', 1], ['100%', '#3E2723', 1]
+    ], { x1: 8, y1: 30, x2: 78, y2: 30 });
+    fe(g, 'rect', { x: 8, y: 30, width: 70, height: 173, rx: 2, fill: doorGrad }, false);
+    // Left shutter panel
+    fe(g, 'rect', { x: 10, y: 32, width: 31, height: 169, fill: '#5D4037', opacity: '0.4' }, false);
+    // Right shutter panel
+    fe(g, 'rect', { x: 45, y: 32, width: 31, height: 169, fill: '#5D4037', opacity: '0.35' }, false);
+    // Wood grain subtle
+    feo(g, 'rect', { x: 16, y: 34, width: 2, height: 165, fill: '#6D5040' }, 0.3, false);
+    feo(g, 'rect', { x: 26, y: 34, width: 2, height: 165, fill: '#6D5040' }, 0.25, false);
+    feo(g, 'rect', { x: 36, y: 34, width: 2, height: 165, fill: '#6D5040' }, 0.2, false);
+    feo(g, 'rect', { x: 52, y: 34, width: 2, height: 165, fill: '#6D5040' }, 0.3, false);
+    feo(g, 'rect', { x: 62, y: 34, width: 2, height: 165, fill: '#6D5040' }, 0.25, false);
+    feo(g, 'rect', { x: 72, y: 34, width: 2, height: 165, fill: '#6D5040' }, 0.2, false);
 
-    // === FLOWER BOX ===
-    fe(g, 'rect', { x: 6, y: 212, width: 44, height: 26, rx: 2, fill: '#795548' }, false);
-    // Plant fills — green foliage
-    fl(g, 'M 10 210 C 8 196 14 184 20 178 C 26 172 32 176 30 186 L 30 210 Z', '#4CAF50', false);
-    fl(g, 'M 24 210 C 22 194 28 182 34 176 C 40 170 44 174 42 184 L 42 210 Z', '#388E3C', false);
-    fl(g, 'M 38 210 C 36 200 40 190 46 184 C 50 180 54 184 50 192 L 50 210 Z', '#66BB6A', false);
+    // === FLOWER BOX fill ===
+    const planterGrad = gd(defs, 'l', [
+      ['0%', '#8D6E63', 1], ['50%', '#795548', 1], ['100%', '#6D4C41', 1]
+    ], { x1: 2, y1: 215, x2: 56, y2: 248 });
+    fe(g, 'rect', { x: 4, y: 217, width: 50, height: 29, rx: 3, fill: planterGrad }, false);
+    // Plant fills — varied greens
+    const plantGreen1 = gd(defs, 'l', [
+      ['0%', '#4CAF50', 1], ['100%', '#2E7D32', 1]
+    ], { x1: 10, y1: 178, x2: 28, y2: 213 });
+    fl(g, 'M 10 213 C 8 198 12 186 16 178 C 20 172 24 174 22 184 C 20 194 16 204 12 212 Z', plantGreen1, false);
+    fl(g, 'M 24 213 C 22 196 26 184 30 176 C 34 168 38 172 36 182 C 34 192 30 202 26 212 Z', '#388E3C', false);
+    fl(g, 'M 38 213 C 36 200 40 190 44 182 C 48 174 52 178 48 188 C 46 196 42 206 40 212 Z', '#66BB6A', false);
+    // Leaf fills
+    fo(g, 'M 14 192 C 10 188 8 182 12 178 C 16 174 20 180 18 188 Z', '#43A047', 0.8, false);
+    fo(g, 'M 32 188 C 28 184 26 178 30 174 C 34 170 38 176 36 184 Z', '#388E3C', 0.8, false);
+    fo(g, 'M 46 194 C 50 190 54 184 50 180 C 46 176 44 182 46 190 Z', '#4CAF50', 0.8, false);
 
-    // === GRANDFATHER BALD HEAD — skin on top, gray on sides ===
-    fl(g, 'M 120 108 C 118 84 130 64 150 58 C 160 54 170 54 180 58 C 196 64 206 82 204 108 L 200 106 C 202 86 192 70 178 62 C 168 58 152 60 142 68 C 132 76 124 90 122 106 Z', '#EDBE8C', false);
-    // Gray side hair fill
-    fe(g, 'rect', { x: 111, y: 106, width: 7, height: 34, rx: 2, fill: '#9E9E9E' }, false);
-    fe(g, 'rect', { x: 202, y: 106, width: 7, height: 34, rx: 2, fill: '#9E9E9E' }, false);
+    // Right planter
+    fe(g, 'rect', { x: 340, y: 247, width: 16, height: 23, rx: 2, fill: '#795548', opacity: '0.6' }, false);
+    fo(g, 'M 344 245 C 342 234 346 224 350 218 L 352 218 C 348 224 346 234 348 245 Z', '#4CAF50', 0.7, false);
 
-    // === GRANDMOTHER HAIR fill ===
-    fl(g, 'M 242 114 C 240 90 250 72 268 66 C 280 62 292 64 302 72 C 312 80 318 94 316 114 L 312 112 C 314 96 308 82 300 76 C 292 68 280 66 268 70 C 256 76 246 92 246 112 Z', '#B0A090', false);
-    // Hair flowing down — side fills
-    fl(g, 'M 242 118 C 238 132 234 150 232 168 C 230 186 228 200 226 214 L 230 214 C 232 200 234 186 236 168 C 238 150 240 134 244 118 Z', '#B0A090', false);
-    fl(g, 'M 316 118 C 320 132 322 150 324 168 C 326 186 326 200 326 212 L 322 212 C 322 200 322 186 320 168 C 318 150 316 134 316 118 Z', '#B0A090', false);
+    // === BENCH fill ===
+    const benchGrad = gd(defs, 'l', [
+      ['0%', '#9E8070', 1], ['50%', '#8D6E63', 1], ['100%', '#7D5E53', 1]
+    ], { x1: 80, y1: 392, x2: 240, y2: 400 });
+    fe(g, 'rect', { x: 82, y: 393, width: 156, height: 6, rx: 2, fill: benchGrad }, false);
 
-    // === BABY HAIR fill ===
-    fl(g, 'M 134 252 C 132 238 140 226 154 220 C 164 216 174 218 182 226 C 188 234 192 246 190 256 L 186 254 C 186 244 184 236 178 230 C 172 224 164 222 156 224 C 148 228 140 238 138 250 Z', '#A1887F', false);
+    // Pedestal fill
+    fe(g, 'rect', { x: 318, y: 377, width: 28, height: 21, rx: 2, fill: '#8D6E63', opacity: '0.5' }, false);
 
-    // === BENCH ===
-    fe(g, 'rect', { x: 86, y: 388, width: 144, height: 7, rx: 2, fill: '#8D6E63' }, false);
+    // === SHIRT STRIPE OVERLAYS — blue vertical stripes ===
+    for (let x = 96; x <= 222; x += 9) {
+      const xEnd = x + (x < 155 ? -1 : 1);
+      feo(g, 'rect', { x, y: 210, width: 3, height: 190, fill: '#5C8CC4' }, 0.22, false);
+    }
 
     // === PEARL NECKLACE fills ===
-    for (let i = 0; i < 11; i++) {
-      const angle = Math.PI * 0.12 + (Math.PI * 0.76 / 10) * i;
-      const cx = 276 + Math.cos(angle) * 24;
-      const cy = 182 + Math.sin(angle) * 16;
-      fe(g, 'circle', { cx: cx.toFixed(1), cy: cy.toFixed(1), r: 2, fill: '#F5F5F5' }, false);
+    for (let i = 0; i < 13; i++) {
+      const angle = Math.PI * 0.1 + (Math.PI * 0.8 / 12) * i;
+      const cx = 280 + Math.cos(angle) * 26;
+      const cy = 184 + Math.sin(angle) * 18;
+      const pearlGrad = gd(defs, 'r', [
+        ['0%', '#FFFFFF', 1], ['40%', '#F5F0E8', 1], ['100%', '#E0D8D0', 1]
+      ], { cx: cx - 0.5, cy: cy - 0.5, r: 2.4 });
+      fe(g, 'circle', { cx: cx.toFixed(1), cy: cy.toFixed(1), r: 2.2, fill: pearlGrad }, false);
     }
 
-    // === SHIRT STRIPE OVERLAYS (blue on white) ===
-    for (let x = 108; x <= 214; x += 14) {
-      fe(g, 'rect', { x, y: 210, width: 4, height: 185, fill: '#42A5F5', opacity: '0.25' }, false);
-    }
-
-    // === RIGHT FLOWER BOX ===
-    fe(g, 'rect', { x: 338, y: 242, width: 18, height: 24, rx: 2, fill: '#795548', opacity: '0.6' }, false);
-    fl(g, 'M 342 240 C 340 230 344 222 348 216 L 350 216 C 346 222 344 230 346 240 Z', '#4CAF50', false);
-
-    // === PEDESTAL ===
-    fe(g, 'rect', { x: 314, y: 372, width: 24, height: 23, rx: 2, fill: '#8D6E63', opacity: '0.5' }, false);
+    // === GLASSES LENS TINT (very subtle) ===
+    feo(g, 'rect', { x: 128, y: 102, width: 30, height: 18, rx: 1, fill: '#607080' }, 0.06, false);
+    feo(g, 'rect', { x: 160, y: 102, width: 30, height: 18, rx: 1, fill: '#607080' }, 0.06, false);
+    feo(g, 'rect', { x: 254, y: 108, width: 30, height: 18, rx: 1, fill: '#607080' }, 0.06, false);
+    feo(g, 'rect', { x: 288, y: 106, width: 28, height: 18, rx: 1, fill: '#607080' }, 0.06, false);
   },
 
-  // Layer 9: Polish — eye shines, blush, reflections, goatee shadow, mouth color
-  (g, a) => {
-    // === EYE SHINES ===
-    // Grandfather
-    fe(g, 'circle', { cx: 147, cy: 109, r: 1.8, fill: 'white' }, a);
-    fe(g, 'circle', { cx: 175, cy: 109, r: 1.8, fill: 'white' }, a);
+  // ================================================================
+  // Layer 9: Polish — catchlights, shadows, highlights, final details
+  // ================================================================
+  (g, a, defs) => {
+    // === EYE CATCHLIGHTS ===
+    // Grandfather — dual catchlights per eye
+    fe(g, 'circle', { cx: 143, cy: 109, r: 2, fill: 'white' }, a);
+    fe(g, 'circle', { cx: 148, cy: 114, r: 1, fill: 'white', opacity: '0.7' }, false);
+    fe(g, 'circle', { cx: 172, cy: 109, r: 2, fill: 'white' }, a);
+    fe(g, 'circle', { cx: 177, cy: 114, r: 1, fill: 'white', opacity: '0.7' }, false);
     // Grandmother
-    fe(g, 'circle', { cx: 265, cy: 116, r: 1.5, fill: 'white' }, a);
-    fe(g, 'circle', { cx: 289, cy: 116, r: 1.5, fill: 'white' }, a);
-    // Baby — larger, more alive
-    fe(g, 'circle', { cx: 151, cy: 254, r: 2, fill: 'white' }, a);
-    fe(g, 'circle', { cx: 173, cy: 254, r: 2, fill: 'white' }, a);
+    fe(g, 'circle', { cx: 270, cy: 113, r: 1.8, fill: 'white' }, a);
+    fe(g, 'circle', { cx: 275, cy: 118, r: 0.9, fill: 'white', opacity: '0.7' }, false);
+    fe(g, 'circle', { cx: 298, cy: 111, r: 1.8, fill: 'white' }, a);
+    fe(g, 'circle', { cx: 303, cy: 116, r: 0.9, fill: 'white', opacity: '0.7' }, false);
+    // Baby — large sparkling catchlights
+    fe(g, 'circle', { cx: 152, cy: 254, r: 2.5, fill: 'white' }, a);
+    fe(g, 'circle', { cx: 158, cy: 260, r: 1.2, fill: 'white', opacity: '0.8' }, false);
+    fe(g, 'circle', { cx: 180, cy: 252, r: 2.5, fill: 'white' }, a);
+    fe(g, 'circle', { cx: 186, cy: 258, r: 1.2, fill: 'white', opacity: '0.8' }, false);
 
-    // === BABY CHEEK BLUSH ===
-    fe(g, 'ellipse', { cx: 140, cy: 274, rx: 10, ry: 5, fill: '#FFAB91', opacity: '0.45' }, a);
-    fe(g, 'ellipse', { cx: 180, cy: 274, rx: 10, ry: 5, fill: '#FFAB91', opacity: '0.45' }, a);
+    // === BABY CHEEK BLUSH — warm pink ===
+    const blushL = gd(defs, 'r', [
+      ['0%', '#FFAB91', 0.5], ['100%', '#FFAB91', 0]
+    ], { cx: 138, cy: 278, r: 14 });
+    fe(g, 'ellipse', { cx: 138, cy: 278, rx: 14, ry: 8, fill: blushL }, false);
+    const blushR = gd(defs, 'r', [
+      ['0%', '#FFAB91', 0.5], ['100%', '#FFAB91', 0]
+    ], { cx: 184, cy: 276, r: 14 });
+    fe(g, 'ellipse', { cx: 184, cy: 276, rx: 14, ry: 8, fill: blushR }, false);
+
+    // === BABY MOUTH INTERIOR ===
+    // Mouth cavity
+    fl(g, 'M 146 284 C 150 296 158 304 164 306 C 172 304 180 296 188 286 L 186 284 C 178 294 170 300 164 302 C 158 300 150 294 148 284 Z', '#C62828', false);
+    // Tongue
+    fo(g, 'M 154 294 C 158 300 164 302 170 298 C 176 294 178 290 174 288 C 168 286 158 288 154 294 Z', '#E57373', 0.8, false);
+    // Teeth fill
+    fl(g, 'M 152 280 L 175 280 L 175 286 L 152 286 Z', '#FAFAFA', false);
+    // Tooth separators
+    pps(g, ['M 157 280 L 157 286', 'M 163 280 L 163 286', 'M 169 280 L 169 286'], a, 0.5, '#E0E0E0');
+    // Lower gum hint
+    fo(g, 'M 156 294 C 160 298 168 298 174 294 L 174 296 C 168 300 160 300 156 296 Z', '#F48FB1', 0.5, false);
+
+    // === GRANDMOTHER MOUTH ===
+    fo(g, 'M 266 150 C 272 156 280 157 288 152 L 286 150 C 280 154 272 154 268 150 Z', '#E57373', 0.8, false);
+    // Teeth hint inside smile
+    fo(g, 'M 270 150 L 286 150 L 286 153 L 270 153 Z', '#FAFAFA', 0.6, false);
+
+    // === GRANDFATHER GOATEE — layered shadow fills ===
+    sh(g, 'M 140 154 C 138 162 140 172 148 180 C 156 186 164 186 172 180 C 180 172 182 162 180 154 C 172 158 162 160 155 158 C 148 156 142 154 140 154 Z', 0.25, false);
+    fo(g, 'M 144 158 C 142 164 144 172 150 178 C 156 182 162 182 168 178 C 174 172 176 164 174 158 C 168 162 160 164 154 162 C 148 160 144 158 144 158 Z', '#757575', 0.35, false);
+    // Goatee speckle texture
+    fo(g, 'M 148 162 C 150 166 154 170 158 172 C 162 170 164 166 166 162 C 162 164 156 164 152 162 Z', '#606060', 0.2, false);
+    fo(g, 'M 152 168 C 156 174 160 176 164 174 C 168 172 170 168 168 164 Z', '#808080', 0.15, false);
+
+    // === FACE SHADOWS ===
+    // Grandfather — under nose shadow
+    sh(g, 'M 148 138 C 152 142 158 144 164 142 C 168 140 172 138 174 134 C 170 136 164 138 158 138 C 152 138 148 138 148 138 Z', 0.15, false);
+    // Under brow shadow
+    sh(g, 'M 128 98 C 134 100 142 102 150 102 L 150 106 C 142 106 134 104 128 102 Z', 0.08, false);
+    sh(g, 'M 162 98 C 168 100 176 102 184 102 L 184 106 C 176 106 168 104 162 102 Z', 0.08, false);
+    // Under chin shadow
+    sh(g, 'M 138 184 C 142 180 148 178 155 178 C 162 178 168 180 172 184 L 172 190 C 168 186 162 184 155 184 C 148 184 142 186 138 190 Z', 0.12, false);
+
+    // Grandmother — under nose shadow
+    sh(g, 'M 272 138 C 276 142 280 144 284 142 C 288 140 290 137 292 134 C 288 136 282 138 278 138 Z', 0.12, false);
+    // Under brow shadow
+    sh(g, 'M 254 104 C 260 106 268 108 276 108 L 276 112 C 268 112 260 110 254 108 Z', 0.07, false);
+    sh(g, 'M 286 102 C 292 104 300 106 308 106 L 308 110 C 300 110 292 108 286 106 Z', 0.07, false);
 
     // === GLASSES REFLECTIONS ===
-    // Grandfather — small white rectangles on lenses
-    fe(g, 'rect', { x: 138, y: 106, width: 8, height: 4, rx: 1, fill: 'white', opacity: '0.25' }, false);
-    fe(g, 'rect', { x: 168, y: 106, width: 8, height: 4, rx: 1, fill: 'white', opacity: '0.25' }, false);
+    // Grandfather
+    hi(g, 'M 130 104 C 136 102 142 102 148 104 L 148 108 C 142 106 136 106 130 108 Z', 0.2, false);
+    hi(g, 'M 162 104 C 168 102 174 102 180 104 L 180 108 C 174 106 168 106 162 108 Z', 0.2, false);
     // Grandmother
-    fe(g, 'rect', { x: 258, y: 112, width: 7, height: 3, rx: 1, fill: 'white', opacity: '0.25' }, false);
-    fe(g, 'rect', { x: 286, y: 112, width: 7, height: 3, rx: 1, fill: 'white', opacity: '0.25' }, false);
+    hi(g, 'M 256 108 C 262 106 268 106 274 108 L 274 112 C 268 110 262 110 256 112 Z', 0.18, false);
+    hi(g, 'M 290 106 C 296 104 302 104 308 106 L 308 110 C 302 108 296 108 290 110 Z', 0.18, false);
+
+    // === BALD HEAD HIGHLIGHT ===
+    const headShine = gd(defs, 'r', [
+      ['0%', '#FFFFFF', 0.22], ['50%', '#FFFFFF', 0.08], ['100%', '#FFFFFF', 0]
+    ], { cx: 155, cy: 62, r: 30 });
+    fe(g, 'ellipse', { cx: 155, cy: 62, rx: 24, ry: 10, fill: headShine }, false);
+    // Secondary bald highlight
+    hi(g, 'M 138 56 C 146 50 162 48 174 52 C 182 56 188 62 190 70 C 180 64 168 58 155 56 C 146 56 140 56 138 58 Z', 0.1, false);
 
     // === WATCH FILL ===
-    fe(g, 'circle', { cx: 92, cy: 283, r: 3.5, fill: '#78909C' }, false);
-    // Watch face detail
-    fe(g, 'circle', { cx: 92, cy: 283, r: 1.5, fill: '#B0BEC5' }, false);
-    // Watch band fill
-    fe(g, 'rect', { x: 87, y: 278, width: 3, height: 6, rx: 1, fill: '#90A4AE' }, false);
-    fe(g, 'rect', { x: 92, y: 288, width: 3, height: 6, rx: 1, fill: '#90A4AE' }, false);
+    const watchFace = gd(defs, 'r', [
+      ['0%', '#B0BEC5', 1], ['100%', '#78909C', 1]
+    ], { cx: 69, cy: 288, r: 6 });
+    fe(g, 'ellipse', { cx: 69, cy: 288, rx: 5.5, ry: 5, fill: watchFace }, false);
+    fe(g, 'circle', { cx: 69, cy: 288, r: 2, fill: '#CFD8DC' }, false);
+    // Watch band
+    fe(g, 'rect', { x: 61, y: 280, width: 4, height: 6, rx: 1, fill: '#90A4AE' }, false);
+    fe(g, 'rect', { x: 72, y: 292, width: 4, height: 6, rx: 1, fill: '#90A4AE' }, false);
 
-    // === BABY MOUTH COLOR — huge open smile ===
-    fl(g, 'M 146 276 C 150 288 156 294 160 294 C 164 294 170 288 176 276 Z', '#E57373', false);
-    // Inside mouth — darker
-    fl(g, 'M 150 280 C 154 290 158 292 160 292 C 162 292 166 290 170 280 Z', '#C62828', false);
-    // Teeth fill — white
-    fl(g, 'M 152 278 L 168 278 L 168 282 L 152 282 Z', '#FAFAFA', false);
-
-    // === GRANDFATHER GOATEE SHADOW FILL ===
-    fl(g, 'M 148 152 C 146 158 148 166 154 172 C 160 176 168 174 172 168 C 178 160 180 152 178 148 C 172 152 164 156 158 154 Z', '#9E9E9E', false);
-    // Goatee texture overlay — slightly darker patches
-    fl(g, 'M 152 156 C 150 162 152 168 158 172 C 162 174 166 172 168 168 C 172 162 174 156 172 152 Z', '#757575', false);
-
-    // === GRANDMOTHER SMILE ===
-    fl(g, 'M 266 150 C 272 156 280 156 288 150 Z', '#E57373', false);
-
-    // === GRANDMOTHER BLOUSE NECKLINE SHEER EFFECT ===
-    fe(g, 'ellipse', { cx: 276, cy: 196, rx: 20, ry: 8, fill: '#283593', opacity: '0.3' }, false);
-
-    // === PEARL HIGHLIGHTS ===
-    for (let i = 0; i < 11; i += 3) {
-      const angle = Math.PI * 0.12 + (Math.PI * 0.76 / 10) * i;
-      const cx = 276 + Math.cos(angle) * 24;
-      const cy = 182 + Math.sin(angle) * 16;
-      fe(g, 'circle', { cx: cx.toFixed(1), cy: cy.toFixed(1), r: 0.8, fill: 'white', opacity: '0.7' }, false);
+    // === PEARL NECKLACE HIGHLIGHTS ===
+    for (let i = 0; i < 13; i += 2) {
+      const angle = Math.PI * 0.1 + (Math.PI * 0.8 / 12) * i;
+      const cx = 280 + Math.cos(angle) * 26 - 0.6;
+      const cy = 184 + Math.sin(angle) * 18 - 0.6;
+      fe(g, 'circle', { cx: cx.toFixed(1), cy: cy.toFixed(1), r: 0.8, fill: 'white', opacity: '0.8' }, false);
     }
 
-    // === BALD HEAD SHINE ===
-    fe(g, 'ellipse', { cx: 160, cy: 72, rx: 18, ry: 6, fill: 'white', opacity: '0.08' }, false);
+    // === CLOTHING SHADOWS ===
+    // Grandfather shirt shadow under arms
+    sh(g, 'M 90 230 C 86 250 84 270 84 290 L 92 290 C 92 270 94 250 98 230 Z', 0.1, false);
+    sh(g, 'M 220 230 C 224 250 226 270 226 290 L 218 290 C 218 270 216 250 212 230 Z', 0.1, false);
+    // Shirt collar shadow
+    sh(g, 'M 128 206 C 136 202 146 198 155 196 C 164 198 174 202 182 206 L 182 212 C 174 208 164 204 155 202 C 146 204 136 208 128 212 Z', 0.08, false);
 
-    // === WARM EXPRESSION LINES ===
-    // Grandfather smile lines (gentle)
-    pp(g, ['M 142 146 C 140 142 140 138 142 134', 'M 178 146 C 180 142 180 138 178 134'], a, lt);
-    // Grandmother crow's feet (gentle, elegant)
-    pp(g, ['M 254 120 C 252 118 250 116 250 114', 'M 308 120 C 310 118 312 116 312 114'], a, lt);
+    // Grandmother blouse highlight
+    hi(g, 'M 254 220 C 266 216 278 214 290 216 C 302 218 314 222 322 228 L 322 234 C 314 228 302 224 290 222 C 278 220 266 222 254 226 Z', 0.06, false);
+    // Grandmother blouse neckline sheer overlay
+    const sheerGrad = gd(defs, 'r', [
+      ['0%', '#283593', 0.3], ['100%', '#1A237E', 0.1]
+    ], { cx: 280, cy: 200, r: 22 });
+    fe(g, 'ellipse', { cx: 280, cy: 200, rx: 22, ry: 10, fill: sheerGrad }, false);
+
+    // === WARM AMBIENT LIGHT — golden overlay on upper area ===
+    const ambientLight = gd(defs, 'l', [
+      ['0%', '#FFF8E1', 0.06], ['100%', '#FFF8E1', 0]
+    ], { x1: 0, y1: 0, x2: 360, y2: 300 });
+    fe(g, 'rect', { x: 0, y: 0, width: 360, height: 300, fill: ambientLight }, false);
+
+    // === SKIN HIGHLIGHTS — nose bridges, cheekbones ===
+    // Grandfather nose bridge highlight
+    hi(g, 'M 156 106 C 158 104 160 104 162 106 L 162 126 C 160 128 158 128 156 126 Z', 0.12, false);
+    // Grandmother nose bridge highlight
+    hi(g, 'M 280 110 C 282 108 284 108 286 110 L 286 128 C 284 130 282 130 280 128 Z', 0.1, false);
+    // Baby nose bridge
+    hi(g, 'M 164 252 C 166 250 168 250 170 252 L 170 268 C 168 270 166 270 164 268 Z', 0.08, false);
+
+    // Grandfather cheekbone highlights
+    hi(g, 'M 122 116 C 126 112 132 110 136 112 L 136 118 C 132 120 126 120 122 118 Z', 0.08, false);
+    hi(g, 'M 180 116 C 184 112 190 110 194 112 L 194 118 C 190 120 184 120 180 118 Z', 0.08, false);
+    // Grandmother cheekbone highlights
+    hi(g, 'M 250 122 C 254 118 260 116 264 118 L 264 124 C 260 126 254 126 250 124 Z', 0.07, false);
+    hi(g, 'M 306 120 C 310 116 314 114 318 116 L 318 122 C 314 124 310 124 306 122 Z', 0.07, false);
+
+    // Baby forehead highlight
+    hi(g, 'M 148 234 C 156 230 168 230 176 234 C 182 238 186 244 186 250 C 178 244 168 240 158 240 C 150 240 144 242 140 246 C 140 240 144 236 148 234 Z', 0.1, false);
+
+    // === EXPRESSION WARMTH — subtle blush on grandfather ===
+    feo(g, 'ellipse', { cx: 132, cy: 136, rx: 10, ry: 6, fill: '#E8A080' }, 0.1, false);
+    feo(g, 'ellipse', { cx: 180, cy: 136, rx: 10, ry: 6, fill: '#E8A080' }, 0.1, false);
+
+    // === FINE DETAIL LINES — wrinkle emphasis ===
+    // Grandfather temple veins
+    pps(g, [
+      'M 118 90 C 114 94 112 100 112 106',
+      'M 196 90 C 200 94 202 100 202 106'
+    ], a, 0.4, '#C8A888');
+    // Grandmother forehead detail
+    pps(g, [
+      'M 260 88 C 268 84 280 83 292 86',
+      'M 262 94 C 270 90 282 89 294 92'
+    ], a, 0.4, '#D8B8A0');
+
+    // === FLOOR SHADOW beneath bench ===
+    sh(g, 'M 76 400 C 100 404 160 408 220 406 C 244 404 260 402 260 400 L 240 400 L 80 400 Z', 0.15, false);
+
+    // === GRANDMOTHER HAIR HIGHLIGHTS ===
+    hi(g, 'M 256 76 C 264 70 276 66 288 68 C 298 72 306 80 310 92 L 306 90 C 302 80 296 74 288 72 C 278 70 268 74 260 80 Z', 0.12, false);
+    // Hair strand highlights
+    pps(g, [
+      'M 242 130 C 240 146 238 162 236 178',
+      'M 320 128 C 322 144 324 160 326 176'
+    ], a, 0.5, '#D0C0B0');
   }
 ];
