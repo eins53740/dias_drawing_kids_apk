@@ -1,0 +1,27 @@
+Create an Android APK for kids.
+
+Build an app that helps children learn to draw, step by step. The app will include a set of drawings. Each drawing represents a member of the “Família Dias”.
+
+Main flow
+
+In the main menu, the child selects which family member they want to draw.
+
+The child draws on paper using pencils. The app does not provide an on-screen canvas; it only guides the child through the drawing process.
+
+Drawing guidance
+
+Start with the basic outline: main lines, shapes, and borders.
+
+Then move to colouring/shading, step by step (one area at a time, in a clear order).
+
+Planning
+
+During planning, ask me questions whenever something is unclear and suggest improvements to the experience.
+
+Important constraint
+
+I’m using a non-admin laptop. If any step requires admin rights, we either need to do it elsewhere or use a method that doesn’t require admin permissions.
+
+Name: "Desenha os Dias"
+
+Note: The people images are stored in /img and the filename correspond to their name. We have 3 samples. Then i will insert new images.

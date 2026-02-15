@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Desenha os Dias</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#FF6F00">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- MAIN MENU SCREEN -->
+  <div id="screen-menu" class="screen active">
+    <div class="menu-header">
+      <h1 class="app-title">Desenha os Dias</h1>
+      <p class="app-subtitle">Escolhe quem queres desenhar!</p>
+    </div>
+    <div class="family-grid" id="family-grid">
+      <!-- Populated by JS -->
+    </div>
+    <div class="menu-footer">
+      <div class="pencil-decoration">
+        <span class="pencil">&#9998;</span>
+        <span class="pencil">&#9998;</span>
+        <span class="pencil">&#9998;</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- DRAWING GUIDE SCREEN -->
+  <div id="screen-guide" class="screen">
+    <div class="guide-header">
+      <button class="btn-back" id="btn-back" aria-label="Voltar">&#8592;</button>
+      <h2 class="guide-title" id="guide-title"></h2>
+      <div class="step-counter" id="step-counter"></div>
+    </div>
+
+    <div class="guide-body">
+      <!-- DRAWING EVOLUTION: main visual area -->
+      <div class="drawing-area">
+        <div class="drawing-canvas" id="drawing-canvas">
+          <!-- SVG inserted here by JS -->
+        </div>
+        <div class="drawing-badge" id="drawing-badge"></div>
+      </div>
+
+      <!-- Reference photo (small, corner) -->
+      <div class="reference-float" id="reference-float">
+        <img id="reference-photo" class="reference-photo" src="" alt="Foto de referência">
+        <span class="reference-label">Referência</span>
+      </div>
+
+      <!-- Step instructions (below drawing) -->
+      <div class="step-content">
+        <h3 class="step-title" id="step-title"></h3>
+        <p class="step-description" id="step-description"></p>
+        <div class="step-tip" id="step-tip"></div>
+      </div>
+
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+    </div>
+
+    <div class="guide-footer">
+      <button class="btn-nav btn-prev" id="btn-prev">&#8592; Anterior</button>
+      <button class="btn-nav btn-next" id="btn-next">Seguinte &#8594;</button>
+    </div>
+  </div>
+
+  <!-- COMPLETION SCREEN -->
+  <div id="screen-done" class="screen">
+    <div class="done-content">
+      <div class="done-stars">&#11088;&#11088;&#11088;</div>
+      <h2 class="done-title">Muito bem!</h2>
+      <p class="done-text" id="done-text"></p>
+      <div class="done-drawing" id="done-drawing">
+        <!-- Final SVG drawing shown here -->
+      </div>
+      <img id="done-photo" class="done-photo" src="" alt="">
+      <button class="btn-action" id="btn-menu">Desenhar outro!</button>
+    </div>
+  </div>
+
+  <script src="js/drawings.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

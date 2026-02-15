@@ -1,0 +1,11 @@
+{
+  "appId": "com.dias.desenha",
+  "appName": "Desenha os Dias",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "backgroundColor": "#FFF8E1"
+  }
+}
