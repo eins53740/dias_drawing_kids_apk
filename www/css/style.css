@@ -62,30 +62,38 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 16px;
-  padding: 16px;
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 10px 16px 16px;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .family-card {
   width: 100%;
   max-width: 340px;
   background: white;
-  border-radius: 20px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  border-radius: 16px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 12px;
+  gap: 12px;
+  padding: 10px;
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
-  border: 3px solid transparent;
+  border: 2.5px solid transparent;
 }
 
-.family-card:nth-child(1) { border-color: #FF7043; }
-.family-card:nth-child(2) { border-color: #AB47BC; }
-.family-card:nth-child(3) { border-color: #42A5F5; }
+.category-header {
+  width: 100%;
+  max-width: 340px;
+  font-size: 0.75em;
+  font-weight: 700;
+  color: #8D6E63;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding: 8px 4px 0;
+}
 
 .family-card:active {
   transform: scale(0.96);
@@ -93,11 +101,11 @@ html, body {
 }
 
 .family-card-photo {
-  width: 80px;
-  height: 80px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid #FFE082;
+  border: 2px solid #FFE082;
   flex-shrink: 0;
 }
 
@@ -106,7 +114,7 @@ html, body {
 }
 
 .family-card-name {
-  font-size: 1.4em;
+  font-size: 1.1em;
   font-weight: 700;
   color: #4E342E;
 }
