@@ -1,15 +1,34 @@
 {
   "name": "desenha-os-dias",
   "version": "1.0.0",
-  "description": "Desenha os Dias - Kids drawing guide app for Família Dias",
-  "main": "index.js",
+  "description": "Desenha os Dias - Kids drawing guide app for Familia Dias",
+  "main": "electron/main.js",
   "scripts": {
     "start": "npx serve www",
+    "electron": "electron .",
+    "build:win": "electron-builder --win portable",
     "cap:init": "npx cap init \"Desenha os Dias\" com.dias.desenha --web-dir www",
     "cap:add:android": "npx cap add android",
     "cap:copy": "npx cap copy",
     "cap:sync": "npx cap sync",
     "cap:open:android": "npx cap open android"
+  },
+  "build": {
+    "appId": "com.dias.desenha",
+    "productName": "Desenha os Dias",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "electron/**/*",
+      "www/**/*"
+    ],
+    "win": {
+      "target": "portable"
+    },
+    "portable": {
+      "artifactName": "DesenhaOsDias.exe"
+    }
   },
   "dependencies": {
     "@capacitor/android": "^6.0.0",
@@ -17,6 +36,9 @@
   },
   "devDependencies": {
     "@capacitor/cli": "^6.0.0",
+    "@electron/packager": "^19.0.5",
+    "electron": "^40.4.1",
+    "electron-builder": "^26.7.0",
     "serve": "^14.0.0"
   }
 }

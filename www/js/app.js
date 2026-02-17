@@ -7,64 +7,53 @@ const familyMembers = [
     id: 'miguelbebe', name: 'Miguel Bebé', photo: 'img/miguel-bebe.jpeg',
     description: 'O Miguel quando era bebé!', color: '#FF7043', category: 'O Miguel',
     steps: [
-      { title: 'Composição', description: 'Vista de cima (bird\'s eye view). Desenha linhas-guia: retângulo vertical para o bebé no centro, linhas horizontais finas para as riscas do lençol de fundo.', tip: 'A cabeça fica no topo, os pés em baixo. A letra M fica ao nível da barriga.' },
-      { title: 'Corpo do bebé', description: 'Cabeça redonda e grande (1/4 do corpo — proporção de recém-nascido). Tronco curto e rechonchudo. Braços curtos abertos para os lados. Pernas dobradas para fora.', tip: 'Num bebé, a cabeça é proporcionalmente muito maior que num adulto.' },
-      { title: 'Rosto', description: 'Olhos grandes e redondos bem separados, a olhar para cima. Nariz minúsculo — um ponto. Boca pequena entreaberta. Bochechas gordas e redondas. Testa ampla.', tip: 'Os olhos ficam no terço inferior da cabeça (bebés têm testas grandes).' },
-      { title: 'Casaco de tricot', description: 'Casaco de malha bege aberto à frente, mostrando a barriga. Textura de tricot com "V" repetidos. Calções de malha iguais. Botinhas de tricot nos pés.', tip: 'Pequenos V invertidos em linhas criam a textura de malha.' },
-      { title: 'Mãos e letra M', description: 'Mão esquerda segura uma letra "M" grande de madeira branca sobre a barriga. Mão direita levantada com um terço de contas (azuis e vermelhas).', tip: 'Dedos de bebé: pequenos cilindros gordinhos, quase sem articulação visível.' },
-      { title: 'Elementos decorativos', description: 'Pompons coloridos espalhados no lençol (vermelho, azul, amarelo, verde, lima). Canto de moldura de madeira visível no canto superior. Lençol às riscas finas.', tip: 'Os pompons criam pontos de cor que equilibram a composição neutra.' },
-      { title: 'Texturas e fundo', description: 'Riscas horizontais finas no lençol (cinza sobre branco). Textura de malha mais definida no casaco. Sombra suave sob o corpo do bebé.', tip: 'As riscas do lençol seguem a perspetiva — convergem ligeiramente.' },
-      { title: 'Cor — bebé', description: 'Pele rosada clara. Casaco e calções bege/taupe. Letra M branco-creme. Meias bege. Cabelo muito fino, quase invisível.', tip: 'A pele de bebé tem tons rosados nas bochechas, mãos e joelhos.' },
-      { title: 'Cor — cenário', description: 'Lençol branco com riscas cinza-claro. Pompons em cores vivas. Moldura castanho-mel. Terço com contas azuis e vermelhas.', tip: 'O contraste entre o bege neutro e os pompons vivos é a chave da cena.' },
-      { title: 'Retoques finais', description: 'Brilho nos olhos (pontos brancos). Rosado nas bochechas e cotovelos. Sombra suave sob o corpo. Reflexo subtil na letra M.', tip: 'Os pontos de luz nos olhos dão vida ao retrato.' }
+      { title: 'Composição', description: 'Vista de cima (bird\'s eye view). Desenha linhas-guia leves: oval grande para a cabeça no topo, retângulo para o tronco, direções dos braços e pernas.', tip: 'A cabeça fica no topo. O braço direito sobe ao lado da cabeça, o esquerdo desce segurando a letra M.' },
+      { title: 'Cabeça e rosto', description: 'Contorno da cabeça grande e redonda. Olhos, nariz, boca, orelhas. A testa é ampla (proporção de recém-nascido). Olhos a olhar para cima.', tip: 'Os olhos ficam no terço inferior da cabeça — bebés têm testas enormes.' },
+      { title: 'Corpo e braços', description: 'Tronco curto. Braço direito levantado ao lado da cabeça. Braço esquerdo a descer sobre a barriga segurando a letra M. Casaco aberto mostrando o peito.', tip: 'Segue os contornos da foto — as linhas seguem as formas reais do corpo.' },
+      { title: 'Textura da roupa', description: 'Detalhe da malha do casaco de tricot bege. Textura visível nas mangas, tronco e calções. Costuras e pregas do tecido.', tip: 'A malha cria um padrão de pequenos V — observa as sombras entre os pontos.' },
+      { title: 'Pernas e botinhas', description: 'Pernas ligeiramente abertas e dobradas (pose natural de recém-nascido). Calções de malha. Botinhas de tricot nos pés com punho canelado.', tip: 'As pernas de bebé são curtas e rechonchudas, com pregas de gordura.' },
+      { title: 'Fundo e decoração', description: 'Lençol com riscas verticais finas. Pompons coloridos espalhados. Canto de moldura de madeira. Pregas do tecido à volta do corpo.', tip: 'O fundo emoldura o bebé — as riscas e pompons criam equilíbrio visual.' },
+      { title: 'Referência de cor', description: 'Observa as cores da foto original como referência: pele rosada, casaco bege, letra M branca, pompons coloridos, lençol branco-cinza.', tip: 'Usa lápis de cor suaves — as cores da cena são neutras com acentos vivos.' },
+      { title: 'Assinatura', description: 'Assina o desenho com o nome "Miguel" em itálico elegante no fundo da composição.', tip: 'Uma assinatura discreta completa o retrato.' }
     ]
   },
   {
     id: 'batizado', name: 'Batizado', photo: 'img/batizado-miguel.jpg',
     description: 'O batizado do Miguel!', color: '#7E57C2', category: 'O Miguel',
     steps: [
-      { title: 'Composição', description: 'Close-up intenso. O bebé Miguel à esquerda, a vela do batizado grande ao centro, mão adulta com vela menor à direita. Azulejos azuis em fundo.', tip: 'A vela é o ponto focal — fica exatamente ao centro.' },
-      { title: 'O bebé Miguel', description: 'Rosto redondo de bebé (~10 meses), virado para a vela. Olhos grandes e escuros, expressão séria e fascinada. Cabelo fino castanho-claro, ligeiramente húmido.', tip: 'A expressão é solene — olhar fixo na chama, boca em repouso.' },
-      { title: 'Rosto — detalhes', description: 'Pálpebras pesadas com pestanas curtas. Sobrancelhas finas quase invisíveis. Nariz pequeno e botão. Lábios cheios e suaves. Orelha esquerda visível.', tip: 'A luz quente da vela ilumina o lado direito do rosto.' },
-      { title: 'Roupa de batizado', description: 'Camisa branca formal com gola alta e botões. Tecido com bordados discretos. A manga é visível no braço esquerdo.', tip: 'A roupa branca é simples — não sobrecarregues com detalhe.' },
-      { title: 'A vela principal', description: 'Vela cilíndrica grossa e branca. Letra "A" vermelha no centro. Medalhão dourado abaixo. Chama viva: amarelo-branco no centro, laranja à volta, ponta vermelha.', tip: 'A chama tem gradiente: branco → amarelo → laranja → vermelho.' },
-      { title: 'Mão e vela menor', description: 'Mão feminina à direita segura uma vela fina com fita de cetim branco e laço. Dedos elegantes, unhas cuidadas. A vela menor inclina-se para a grande.', tip: 'Desenha a fita a enrolar na vela com dobras e laço.' },
-      { title: 'Azulejos de fundo', description: 'Azulejos portugueses clássicos: pinceladas azul-cobalto sobre fundo branco mostrando vegetação/canas. Grelha visível entre peças.', tip: 'Linhas verticais e horizontais dividem os azulejos. O desenho é orgânico dentro da grelha.' },
-      { title: 'Cor — figuras', description: 'Pele rosada do bebé com tom quente do lado da vela. Cabelo castanho-claro. Roupa branca. Mão adulta em tom natural.', tip: 'O lado iluminado pela vela tem tons mais quentes (amarelados).' },
-      { title: 'Cor — cenário', description: 'Azulejos azul-cobalto sobre branco. Chama amarelo/laranja vivo. Letra A vermelho. Medalhão dourado. Fitas branco-acetinado.', tip: 'O contraste azul (frio) / amarelo (quente) cria drama visual.' },
-      { title: 'Retoques finais', description: 'Reflexo da chama nos olhos do bebé. Halo luminoso à volta da chama. Sombras nos azulejos. Brilho no cetim da fita.', tip: 'O reflexo da chama no olho é um ponto minúsculo de laranja — mas faz toda a diferença.' }
+      { title: 'Composicao', description: 'Linhas-guia de composicao: centro vertical, tercos horizontais e moldura.', tip: 'Desenha com linhas muito leves - sao apenas referencias.' },
+      { title: 'Parte superior', description: 'Contornos tracados da zona superior da imagem: cabeca(s), rosto(s), cabelo.', tip: 'Segue os contornos da foto - as linhas seguem as formas reais.' },
+      { title: 'Parte central', description: 'Contornos tracados da zona central: tronco, bracos, objectos.', tip: 'Mantem a pressao do lapis constante para linhas uniformes.' },
+      { title: 'Parte inferior', description: 'Contornos tracados da zona inferior: pernas, mesa, chao, fundo.', tip: 'As linhas mais distantes podem ser mais leves.' },
+      { title: 'Detalhes finos', description: 'Textura e detalhes adicionais: roupa, sombras, padroes.', tip: 'Usa linhas finas e leves para os detalhes de textura.' },
+      { title: 'Referencia de cor', description: 'A foto original como referencia de cores e tons.', tip: 'Observa as cores e sombras da foto para colorir o desenho.' },
+      { title: 'Assinatura', description: 'Assina o desenho com o nome no fundo da composicao.', tip: 'Uma assinatura discreta completa o retrato.' }
     ]
   },
   {
     id: 'miguel', name: 'Miguel a Comer', photo: 'img/Miguel.jpg',
     description: 'O Miguel à mesa!', color: '#FF9800', category: 'O Miguel',
     steps: [
-      { title: 'Composição', description: 'Mesa com toalha vermelha na metade inferior. Miguel sentado atrás, ligeiramente à direita. Garrafas ao centro da mesa. Frigorífico ao fundo à esquerda.', tip: 'A linha da mesa fica ligeiramente abaixo do meio da folha.' },
-      { title: 'O Miguel — corpo', description: 'Sentado numa cadeira escura, inclinado para a frente sobre a mesa. Ombros relaxados. Braço direito a levar comida à boca. Mão esquerda segura um copo.', tip: 'O Miguel ocupa o lado direito da composição.' },
-      { title: 'Rosto', description: 'Cara de rapaz (~6 anos). Olhos vivos e escuros. Sorriso aberto com dentes visíveis — está a comer e a sorrir. Orelhas ligeiramente salientes. Nariz pequeno.', tip: 'A boca aberta mostra os dentes de cima — desenha retângulos pequenos.' },
-      { title: 'Cabelo e camisola', description: 'Cabelo curto castanho-claro, penteado para o lado. Camisola amarela viva com capuz. Cordões do capuz pendurados. Costura central visível.', tip: 'O amarelo da camisola é o detalhe mais forte do Miguel.' },
-      { title: 'Mãos e ação', description: 'Mão direita com comida a caminho da boca. Mão esquerda segura um copo pequeno transparente com líquido. Braços sobre a mesa.', tip: 'O copo é transparente — desenha o contorno e o nível do líquido.' },
-      { title: 'Mesa — toalha e tigela', description: 'Toalha vermelha cobre toda a mesa com dobras visíveis. Tigela cinzenta com lua desenhada, cheia de comida. Saco de amendoins à esquerda.', tip: 'As dobras da toalha vermelha criam ritmo horizontal.' },
-      { title: 'Garrafas e latas', description: 'Garrafa de vinho escura "Quinta do Cardo" com rolha de vidro esférica. Garrafa de "Tinto de Verão Lemon" com tampa amarela. Lata vermelha. Copo Super Bock à direita.', tip: 'A rolha de vidro é como uma bolha transparente no topo da garrafa.' },
-      { title: 'Cor — Miguel', description: 'Pele clara. Cabelo castanho-loiro. Camisola amarelo-vivo. Capuz amarelo mais escuro. Cadeira cinza-escura atrás.', tip: 'Usa amarelo forte e saturado para a camisola — é a cor dominante.' },
-      { title: 'Cor — mesa e objetos', description: 'Toalha vermelha forte. Garrafa de vinho verde-escuro. Garrafa Lemon castanho. Lata vermelha. Tigela cinza. Fundo: parede bege, frigorífico cinza.', tip: 'O vermelho da toalha e o amarelo da camisola dominam a cena.' },
-      { title: 'Retoques finais', description: 'Rótulos das garrafas (texto simplificado). Rolha de vidro com reflexo. Brilho no copo. Fotos na parede ao fundo. Letras "FAMILY" na prateleira.', tip: 'Os rótulos são sugestões de texto — não precisam ser legíveis.' }
+      { title: 'Composicao', description: 'Linhas-guia de composicao: centro vertical, tercos horizontais e moldura.', tip: 'Desenha com linhas muito leves - sao apenas referencias.' },
+      { title: 'Parte superior', description: 'Contornos tracados da zona superior da imagem: cabeca(s), rosto(s), cabelo.', tip: 'Segue os contornos da foto - as linhas seguem as formas reais.' },
+      { title: 'Parte central', description: 'Contornos tracados da zona central: tronco, bracos, objectos.', tip: 'Mantem a pressao do lapis constante para linhas uniformes.' },
+      { title: 'Parte inferior', description: 'Contornos tracados da zona inferior: pernas, mesa, chao, fundo.', tip: 'As linhas mais distantes podem ser mais leves.' },
+      { title: 'Detalhes finos', description: 'Textura e detalhes adicionais: roupa, sombras, padroes.', tip: 'Usa linhas finas e leves para os detalhes de textura.' },
+      { title: 'Referencia de cor', description: 'A foto original como referencia de cores e tons.', tip: 'Observa as cores e sombras da foto para colorir o desenho.' },
+      { title: 'Assinatura', description: 'Assina o desenho com o nome no fundo da composicao.', tip: 'Uma assinatura discreta completa o retrato.' }
     ]
   },
   {
     id: 'matilde', name: 'Matilde', photo: 'img/matilde.jpg',
     description: 'A Matilde!', color: '#F48FB1', category: 'O Miguel',
     steps: [
-      { title: 'Composição', description: 'Retrato em close-up. Rosto da menina centrado, emoldurado pelas barras verticais de uma cadeira de madeira. Mão adulta no topo da cabeça.', tip: 'A cadeira cria uma moldura natural — usa as barras verticais para enquadrar.' },
-      { title: 'Rosto', description: 'Cara oval de menina (~3-4 anos). Queixo pequeno e arredondado. Bochechas cheias. Testa ampla. Proporções infantis: olhos grandes, face curta.', tip: 'Numa criança, os olhos ficam abaixo do centro da cabeça.' },
-      { title: 'Olhos e expressão', description: 'Olhos muito grandes e castanhos escuros, bem abertos. Pestanas longas. Sobrancelhas finas e naturais. Sorriso tímido mostrando dentes de leite.', tip: 'Os olhos são o foco total deste retrato — investe o máximo de detalhe aqui.' },
-      { title: 'Cabelo', description: 'Cabelo castanho médio com caracóis soltos e despenteados. Volume nos lados da cabeça. Madeixas caem sobre a testa e lados. Textura ondulada e selvagem.', tip: 'Caracóis: usa curvas em espiral, não linhas lisas. Cada madeixa tem direção própria.' },
-      { title: 'Roupa', description: 'Top cor-de-rosa salmão com gola de folhos/renda visível na parte inferior da imagem. Simples e feminino.', tip: 'Apenas o colarinho é visível — é um retrato de rosto, não de corpo inteiro.' },
-      { title: 'Cadeira e mão', description: 'Duas barras verticais de cadeira de madeira cor de mel emolduram o rosto. No topo, uma mão adulta masculina pousa suavemente na cabeça da menina — só os dedos são visíveis.', tip: 'A mão no topo transmite ternura — desenha os dedos relaxados.' },
-      { title: 'Textura e profundidade', description: 'Veio da madeira na cadeira. Sombras suaves nos lados do rosto. Profundidade de campo: fundo desfocado escuro atrás da cadeira.', tip: 'O fundo escuro faz o rosto claro saltar para a frente.' },
-      { title: 'Cor — rosto', description: 'Pele clara com rosado nas bochechas. Cabelo castanho médio com reflexos dourados. Olhos castanho-escuro. Lábios rosados.', tip: 'O tom de pele é quente e luminoso — iluminação interior suave.' },
-      { title: 'Cor — cenário', description: 'Cadeira em madeira mel/dourada. Top salmão. Mão em tom de pele natural. Fundo escuro e desfocado (castanho/preto).', tip: 'O fundo escuro contrasta com a pele clara — é o que cria o foco no rosto.' },
-      { title: 'Retoques finais', description: 'Brilho intenso nos olhos (pontos brancos grandes). Pestanas definidas. Textura dos caracóis com linhas finas. Rosado sutil nas bochechas e nariz. Veio da madeira.', tip: 'Os olhos devem brilhar — são a alma do retrato.' }
+      { title: 'Composicao', description: 'Linhas-guia de composicao: centro vertical, tercos horizontais e moldura.', tip: 'Desenha com linhas muito leves - sao apenas referencias.' },
+      { title: 'Parte superior', description: 'Contornos tracados da zona superior da imagem: cabeca(s), rosto(s), cabelo.', tip: 'Segue os contornos da foto - as linhas seguem as formas reais.' },
+      { title: 'Parte central', description: 'Contornos tracados da zona central: tronco, bracos, objectos.', tip: 'Mantem a pressao do lapis constante para linhas uniformes.' },
+      { title: 'Parte inferior', description: 'Contornos tracados da zona inferior: pernas, mesa, chao, fundo.', tip: 'As linhas mais distantes podem ser mais leves.' },
+      { title: 'Detalhes finos', description: 'Textura e detalhes adicionais: roupa, sombras, padroes.', tip: 'Usa linhas finas e leves para os detalhes de textura.' },
+      { title: 'Referencia de cor', description: 'A foto original como referencia de cores e tons.', tip: 'Observa as cores e sombras da foto para colorir o desenho.' },
+      { title: 'Assinatura', description: 'Assina o desenho com o nome no fundo da composicao.', tip: 'Uma assinatura discreta completa o retrato.' }
     ]
   },
   {
@@ -271,6 +260,20 @@ const familyMembers = [
 let currentMember = null;
 let currentStep = 0;
 
+// ===== COMPLETION TRACKING =====
+function getCompletedScenes() {
+  try { return JSON.parse(localStorage.getItem('completedScenes') || '[]'); }
+  catch { return []; }
+}
+function markSceneCompleted(id) {
+  const completed = getCompletedScenes();
+  if (!completed.includes(id)) { completed.push(id); localStorage.setItem('completedScenes', JSON.stringify(completed)); }
+}
+function unmarkSceneCompleted(id) {
+  const completed = getCompletedScenes().filter(s => s !== id);
+  localStorage.setItem('completedScenes', JSON.stringify(completed));
+}
+
 // ===== DOM =====
 const screenMenu = document.getElementById('screen-menu');
 const screenGuide = document.getElementById('screen-guide');
@@ -296,6 +299,7 @@ const doneDrawing = document.getElementById('done-drawing');
 
 function buildMenu() {
   familyGrid.innerHTML = '';
+  const completed = getCompletedScenes();
   let lastCat = '';
   familyMembers.forEach(member => {
     if (member.category !== lastCat) {
@@ -305,8 +309,9 @@ function buildMenu() {
       hdr.textContent = member.category;
       familyGrid.appendChild(hdr);
     }
+    const isDone = completed.includes(member.id);
     const card = document.createElement('div');
-    card.className = 'family-card';
+    card.className = 'family-card' + (isDone ? ' completed' : '');
     card.style.borderColor = member.color;
     card.innerHTML = `
       <img class="family-card-photo" src="${member.photo}" alt="${member.name}">
@@ -314,8 +319,16 @@ function buildMenu() {
         <div class="family-card-name">${member.name}</div>
         <div class="family-card-desc">${member.description}</div>
       </div>
+      ${isDone ? '<div class="family-card-check" title="Desmarcar"></div>' : ''}
       <div class="family-card-arrow">\u25B6</div>
     `;
+    if (isDone) {
+      card.querySelector('.family-card-check').addEventListener('click', (e) => {
+        e.stopPropagation();
+        unmarkSceneCompleted(member.id);
+        buildMenu();
+      });
+    }
     card.addEventListener('click', () => startDrawing(member));
     familyGrid.appendChild(card);
   });
@@ -373,6 +386,8 @@ function prevStep() {
 }
 
 function showCompletion() {
+  markSceneCompleted(currentMember.id);
+  buildMenu();
   doneText.textContent = `Acabaste o desenho "${currentMember.name}"! Ficou espetacular!`;
   donePhoto.src = currentMember.photo;
   donePhoto.alt = currentMember.name;

@@ -32,522 +32,132 @@ function feo(g, t, a2, o, a) { const e = ce(t, { ...a2, 'fill-opacity': o, strok
 function ssk(e, a, w, c) { e.setAttribute('stroke', a ? HL : (c || P)); e.setAttribute('stroke-width', a ? HW : (w || PW)); e.setAttribute('stroke-linecap', 'round'); e.setAttribute('stroke-linejoin', 'round'); e.setAttribute('fill', 'none'); if (a) e.classList.add('active-element'); }
 function pps(g, ds, a, w, c) { ds.forEach(d => { const p = ce('path', { d, fill: 'none' }); ssk(p, a, w, c); g.appendChild(p); }); }
 
+// Filter helpers — drop shadow, glow, filtered fills
+let _fid = 0;
+function sf(defs, blur, dx, dy, color, opacity) {
+  const id = '_sf' + (++_fid);
+  const f = ce('filter', { id, x: '-20%', y: '-20%', width: '140%', height: '140%' });
+  const ds = ce('feDropShadow', { dx: dx||0, dy: dy||1, stdDeviation: blur||1.5, 'flood-color': color||'#000', 'flood-opacity': opacity||0.3 });
+  f.appendChild(ds); defs.appendChild(f);
+  return 'url(#' + id + ')';
+}
+function gf(defs, blur) {
+  const id = '_gf' + (++_fid);
+  const f = ce('filter', { id, x: '-40%', y: '-40%', width: '180%', height: '180%' });
+  f.appendChild(ce('feGaussianBlur', { in: 'SourceGraphic', stdDeviation: blur||2 }));
+  defs.appendChild(f);
+  return 'url(#' + id + ')';
+}
+function ff(g, d, c, o, filter) {
+  const e = ce('path', { d, fill: c, 'fill-opacity': o||1, stroke: 'none', filter: filter });
+  g.appendChild(e);
+}
+function fef(g, t, attrs, filter) {
+  const e = ce(t, { ...attrs, stroke: 'none', filter: filter });
+  g.appendChild(e);
+}
+// Hatching style — thin parallel lines for form shading
+function ht(e, a) { e.setAttribute('stroke', a ? HL : '#aaa'); e.setAttribute('stroke-width', a ? 0.8 : 0.35); e.setAttribute('stroke-linecap', 'round'); e.setAttribute('fill', 'none'); if (a) e.classList.add('active-element'); }
+// Medium weight — secondary contours and form lines
+function md(e, a) { e.setAttribute('stroke', a ? HL : '#777'); e.setAttribute('stroke-width', a ? 1.2 : 0.7); e.setAttribute('stroke-linecap', 'round'); e.setAttribute('stroke-linejoin', 'round'); e.setAttribute('fill', 'none'); if (a) e.classList.add('active-element'); }
 
 const miguelbebeLayers = [
   // ================================================================
-  // Layer 0: Composition guides — center cross, head/body ovals,
-  // arm/leg direction, blanket rectangle
+  // TRACED APPROACH: Layers use PNG images auto-traced from the photo.
+  // Each step reveals a spatial region of the traced drawing.
+  // Layers 0-5: progressive outline regions (PNG overlays)
+  // Layer 6: color reference
+  // Layer 7: final polish (name text, eye highlights)
   // ================================================================
+
+  // Layer 0: Construction guides — light proportional reference lines
   (g, a) => {
-    // Vertical center guide
+    // Vertical center
     pp(g, ['M 180 0 L 180 450'], a, lt);
-    // Horizontal center guide
-    pp(g, ['M 0 225 L 360 225'], a, lt);
-    // Head circle guide — large newborn head, center ~(180,105)
-    pp(g, [
-      'M 180 48 C 215 48 240 72 240 105 C 240 138 215 162 180 162 C 145 162 120 138 120 105 C 120 72 145 48 180 48 Z'
-    ], a, lt);
-    // Body oval guide — chubby short torso
-    pp(g, [
-      'M 180 158 C 218 158 245 182 245 215 C 245 248 218 272 180 272 C 142 272 115 248 115 215 C 115 182 142 158 180 158 Z'
-    ], a, lt);
-    // Left arm direction guide
-    pp(g, ['M 120 180 L 55 200'], a, lt);
-    // Right arm direction guide
-    pp(g, ['M 240 180 L 305 200'], a, lt);
-    // Left leg direction guide (frog position — out and down)
-    pp(g, ['M 148 272 L 105 350'], a, lt);
-    // Right leg direction guide
-    pp(g, ['M 212 272 L 255 350'], a, lt);
-    // Blanket rectangle guide
-    pp(g, ['M 15 15 L 345 15 L 345 435 L 15 435 Z'], a, lt);
-    // Letter M placement guide (belly area)
-    pp(g, ['M 160 218 L 200 218 L 200 258 L 160 258 Z'], a, lt);
+    // Horizontal thirds
+    pp(g, ['M 0 150 L 360 150'], a, lt);
+    pp(g, ['M 0 300 L 360 300'], a, lt);
+    // Head oval guide
+    pp(g, ['M 180 28 C 220 28 252 55 252 90 C 252 125 220 152 180 152 C 140 152 108 125 108 90 C 108 55 140 28 180 28 Z'], a, lt);
+    // Eye line
+    pp(g, ['M 120 93 L 240 93'], a, lt);
+    // Torso guide
+    pp(g, ['M 140 155 L 220 155 L 235 290 L 125 290 Z'], a, lt);
+    // Right arm direction (UP toward head)
+    pp(g, ['M 142 168 L 112 120 L 128 78'], a, lt);
+    // Left arm direction (DOWN toward M)
+    pp(g, ['M 218 168 L 240 218 L 208 258'], a, lt);
+    // Leg directions
+    pp(g, ['M 160 280 L 130 335 L 118 382'], a, lt);
+    pp(g, ['M 200 280 L 232 335 L 248 382'], a, lt);
+    // Blanket frame
+    pp(g, ['M 20 10 L 340 10 L 340 440 L 20 440 Z'], a, lt);
   },
 
-  // ================================================================
-  // Layer 1: Main figure outlines — large head, chubby torso,
-  // short arms spread, legs in frog position, bootied feet
-  // ================================================================
+  // Layer 1: Head and face — traced from photo
   (g, a) => {
-    // Head — very large round newborn head (1/4 of body)
-    pp(g, [
-      'M 180 50 C 212 50 236 70 236 105 C 236 140 212 160 180 160 C 148 160 124 140 124 105 C 124 70 148 50 180 50 Z'
-    ], a);
-    // Body torso — short, chubby, pear-shaped
-    pp(g, [
-      'M 148 158 C 152 153 165 148 180 148 C 195 148 208 153 212 158',
-      'M 148 158 C 140 168 132 185 130 200 C 127 220 130 242 138 258 C 146 272 162 280 180 282 C 198 280 214 272 222 258 C 230 242 233 220 230 200 C 228 185 220 168 212 158'
-    ], a);
-    // Left arm — short, chubby, spread outward
-    pp(g, [
-      'M 132 175 C 118 178 98 184 80 193 C 70 198 62 206 62 214 C 62 222 68 226 76 224'
-    ], a);
-    // Left arm underside
-    pp(g, [
-      'M 136 188 C 122 192 104 200 88 208 C 78 213 72 218 76 224'
-    ], a);
-    // Right arm — short, chubby, spread outward
-    pp(g, [
-      'M 228 175 C 242 178 262 184 280 193 C 290 198 298 206 298 214 C 298 222 292 226 284 224'
-    ], a);
-    // Right arm underside
-    pp(g, [
-      'M 224 188 C 238 192 256 200 272 208 C 282 213 288 218 284 224'
-    ], a);
-    // Left leg — bent outward, frog position
-    pp(g, [
-      'M 152 270 C 146 285 132 306 120 322 C 114 332 110 342 112 350 C 114 356 120 360 128 358'
-    ], a);
-    // Left leg inner edge
-    pp(g, [
-      'M 164 274 C 160 288 150 308 140 322 C 134 332 132 340 136 348 C 138 352 128 358 128 358'
-    ], a);
-    // Right leg — bent outward, frog position
-    pp(g, [
-      'M 208 270 C 214 285 228 306 240 322 C 246 332 250 342 248 350 C 246 356 240 360 232 358'
-    ], a);
-    // Right leg inner edge
-    pp(g, [
-      'M 196 274 C 200 288 210 308 220 322 C 226 332 228 340 224 348 C 222 352 232 358 232 358'
-    ], a);
-    // Left bootie
-    pp(g, [
-      'M 112 350 C 106 354 100 352 98 346 C 96 340 98 334 104 330 C 108 328 114 330 118 334'
-    ], a);
-    // Right bootie
-    pp(g, [
-      'M 248 350 C 254 354 260 352 262 346 C 264 340 262 334 256 330 C 252 328 246 330 242 334'
-    ], a);
+    const src = a ? 'img/miguelbebe/step1_hl.png' : 'img/miguelbebe/step1.png';
+    const img = ce('image', { x: '0', y: '0', width: '360', height: '450' });
+    img.setAttribute('href', src);
+    if (a) img.classList.add('active-element');
+    g.appendChild(img);
   },
 
-  // ================================================================
-  // Layer 2: Face details — big round eyes, tiny button nose,
-  // small mouth, small ears close to head
-  // ================================================================
+  // Layer 2: Body, arms, and objects — traced from photo
   (g, a) => {
-    // Left eye — big, nearly round (babies have huge eyes)
-    pp(g, [
-      'M 155 100 C 155 92 161 86 169 86 C 177 86 183 92 183 100 C 183 108 177 114 169 114 C 161 114 155 108 155 100 Z'
-    ], a);
-    // Right eye — big, nearly round
-    pp(g, [
-      'M 177 100 C 177 92 183 86 191 86 C 199 86 205 92 205 100 C 205 108 199 114 191 114 C 183 114 177 108 177 100 Z'
-    ], a);
-    // Left iris outline
-    pp(g, [
-      'M 161 100 C 161 94 165 90 170 90 C 175 90 179 94 179 100 C 179 106 175 110 170 110 C 165 110 161 106 161 100 Z'
-    ], a);
-    // Right iris outline
-    pp(g, [
-      'M 183 100 C 183 94 187 90 192 90 C 197 90 201 94 201 100 C 201 106 197 110 192 110 C 187 110 183 106 183 100 Z'
-    ], a);
-    // Left pupil
-    fe(g, 'circle', {cx: 170, cy: 100, r: 5, fill: '#1A1A1A'}, a);
-    // Right pupil
-    fe(g, 'circle', {cx: 192, cy: 100, r: 5, fill: '#1A1A1A'}, a);
-    // Left upper eyelid crease
-    pp(g, ['M 157 88 C 162 84 172 82 181 86'], a, lt);
-    // Right upper eyelid crease
-    pp(g, ['M 179 86 C 188 82 198 84 203 88'], a, lt);
-    // Tiny button nose — just a small bump
-    pp(g, [
-      'M 177 116 C 176 119 175 123 177 125 C 179 127 181 127 183 125 C 185 123 184 119 183 116'
-    ], a);
-    // Nose nostrils hint
-    pp(g, [
-      'M 175 124 C 176 126 178 127 180 127',
-      'M 180 127 C 182 127 184 126 185 124'
-    ], a, lt);
-    // Small mouth — slightly open
-    pp(g, [
-      'M 172 132 C 175 135 178 136 180 136 C 182 136 185 135 188 132'
-    ], a);
-    // Lower lip
-    pp(g, [
-      'M 173 133 C 176 137 179 138 180 138 C 181 138 184 137 187 133'
-    ], a);
-    // Left ear — small, close to head
-    pp(g, [
-      'M 126 98 C 121 92 118 96 118 102 C 118 108 121 113 126 112'
-    ], a);
-    // Left ear inner fold
-    pp(g, ['M 122 97 C 120 101 120 106 122 110'], a, lt);
-    // Right ear — small, close to head
-    pp(g, [
-      'M 234 98 C 239 92 242 96 242 102 C 242 108 239 113 234 112'
-    ], a);
-    // Right ear inner fold
-    pp(g, ['M 238 97 C 240 101 240 106 238 110'], a, lt);
+    const src = a ? 'img/miguelbebe/step2_hl.png' : 'img/miguelbebe/step2.png';
+    const img = ce('image', { x: '0', y: '0', width: '360', height: '450' });
+    img.setAttribute('href', src);
+    if (a) img.classList.add('active-element');
+    g.appendChild(img);
   },
 
-  // ================================================================
-  // Layer 3: Hair — very wispy, barely visible fine baby hair
-  // Just a few thin delicate lines on top of the head
-  // ================================================================
+  // Layer 3: Clothing texture detail — traced from photo
   (g, a) => {
-    // Central wisp — very light, almost invisible
-    pp(g, ['M 170 56 C 173 48 178 45 180 46 C 182 45 187 48 190 56'], a);
-    // Left wisp cluster
-    pp(g, ['M 155 62 C 160 52 168 48 174 52'], a);
-    pp(g, ['M 150 68 C 155 58 163 54 170 56'], a);
-    // Right wisp cluster
-    pp(g, ['M 205 62 C 200 52 192 48 186 52'], a);
-    pp(g, ['M 210 68 C 205 58 197 54 190 56'], a);
-    // Top fine strands — light pencil for barely-there effect
-    pp(g, [
-      'M 165 54 C 170 46 176 44 180 45',
-      'M 180 45 C 184 44 190 46 195 54'
-    ], a, lt);
-    // Forehead hairline hint
-    pp(g, [
-      'M 148 72 C 155 65 165 60 175 58',
-      'M 185 58 C 195 60 205 65 212 72'
-    ], a, lt);
+    const src = a ? 'img/miguelbebe/step3_hl.png' : 'img/miguelbebe/step3.png';
+    const img = ce('image', { x: '0', y: '0', width: '360', height: '450' });
+    img.setAttribute('href', src);
+    if (a) img.classList.add('active-element');
+    g.appendChild(img);
   },
 
-  // ================================================================
-  // Layer 4: Clothing — knit cardigan (open at front), V-pattern
-  // texture rows, knit pattern on bloomers/shorts, bootie texture
-  // ================================================================
+  // Layer 4: Legs and booties — traced from photo
   (g, a) => {
-    // Cardigan neckline — wide, round
-    pp(g, [
-      'M 155 158 C 160 166 170 170 180 170 C 190 170 200 166 205 158'
-    ], a);
-    // Cardigan left lapel (open front, showing belly)
-    pp(g, [
-      'M 155 158 C 152 168 150 180 150 195 C 150 210 152 228 156 245 C 158 255 162 265 168 272'
-    ], a);
-    // Cardigan right lapel
-    pp(g, [
-      'M 205 158 C 208 168 210 180 210 195 C 210 210 208 228 204 245 C 202 255 198 265 192 272'
-    ], a);
-    // V-pattern knit rows on left side
-    pp(g, ['M 132 175 L 150 185 L 155 175'], a);
-    pp(g, ['M 130 192 L 150 202 L 156 192'], a);
-    pp(g, ['M 128 209 L 150 219 L 158 209'], a);
-    pp(g, ['M 130 226 L 152 236 L 160 226'], a);
-    pp(g, ['M 132 243 L 155 253 L 163 243'], a);
-    // V-pattern knit rows on right side
-    pp(g, ['M 228 175 L 210 185 L 205 175'], a);
-    pp(g, ['M 230 192 L 210 202 L 204 192'], a);
-    pp(g, ['M 232 209 L 210 219 L 202 209'], a);
-    pp(g, ['M 230 226 L 208 236 L 200 226'], a);
-    pp(g, ['M 228 243 L 205 253 L 197 243'], a);
-    // Belly area between open cardigan (bare skin, no pattern)
-    pp(g, [
-      'M 155 185 C 160 182 170 180 180 180 C 190 180 200 182 205 185'
-    ], a, lt);
-    // Knit bloomer/shorts left leg — chevron lines
-    pp(g, [
-      'M 150 278 L 155 288 L 142 288',
-      'M 146 298 L 150 308 L 136 308',
-      'M 138 318 L 142 328 L 128 328'
-    ], a);
-    // Knit bloomer/shorts right leg — chevron lines
-    pp(g, [
-      'M 210 278 L 205 288 L 218 288',
-      'M 214 298 L 210 308 L 224 308',
-      'M 222 318 L 218 328 L 232 328'
-    ], a);
-    // Left bootie knit detail
-    pp(g, [
-      'M 100 342 C 104 338 110 336 116 338',
-      'M 102 348 C 106 344 112 342 118 344'
-    ], a, lt);
-    // Right bootie knit detail
-    pp(g, [
-      'M 260 342 C 256 338 250 336 244 338',
-      'M 258 348 C 254 344 248 342 242 344'
-    ], a, lt);
-    // Cardigan sleeve cuffs
-    pp(g, [
-      'M 128 172 C 124 176 120 180 118 184',
-      'M 136 178 C 132 182 128 186 126 190'
-    ], a, lt);
-    pp(g, [
-      'M 232 172 C 236 176 240 180 242 184',
-      'M 224 178 C 228 182 232 186 234 190'
-    ], a, lt);
+    const src = a ? 'img/miguelbebe/step4_hl.png' : 'img/miguelbebe/step4.png';
+    const img = ce('image', { x: '0', y: '0', width: '360', height: '450' });
+    img.setAttribute('href', src);
+    if (a) img.classList.add('active-element');
+    g.appendChild(img);
   },
 
-  // ================================================================
-  // Layer 5: Hands + Letter M + Rosary
-  // Left hand open with chubby fingers, right hand holds rosary,
-  // wooden block M on belly, rosary beads + cross
-  // ================================================================
+  // Layer 5: Background (blanket, stripes, pompoms, frame) — traced from photo
   (g, a) => {
-    // === LETTER M BLOCK on belly ===
-    // Block outline (3D wooden letter)
-    pp(g, ['M 162 220 L 198 220 L 198 256 L 162 256 Z'], a);
-    // 3D side shadow of block
-    pp(g, ['M 198 220 L 202 216 L 202 252 L 198 256'], a);
-    // 3D top shadow of block
-    pp(g, ['M 162 220 L 166 216 L 202 216 L 198 220'], a);
-    // Letter M inside the block — serif style
-    pp(g, [
-      'M 168 250 L 168 228 L 175 240 L 180 234 L 185 240 L 192 228 L 192 250'
-    ], a);
-    // M serif bases
-    pp(g, ['M 166 250 L 170 250', 'M 190 250 L 194 250'], a);
-
-    // === LEFT HAND — open, chubby baby fingers ===
-    // Palm base
-    pp(g, [
-      'M 76 224 C 72 220 66 216 62 214 C 56 210 50 212 48 218 C 46 224 50 228 56 228'
-    ], a);
-    // Thumb — short and pudgy
-    pp(g, [
-      'M 76 218 C 80 212 82 206 80 202 C 78 198 74 198 72 202 C 70 206 72 212 74 218'
-    ], a);
-    // Index finger
-    pp(g, [
-      'M 66 214 C 62 208 58 202 56 198 C 54 194 56 192 60 194 C 62 196 64 202 66 208'
-    ], a);
-    // Middle finger
-    pp(g, [
-      'M 60 216 C 55 210 50 204 48 200 C 46 196 48 194 52 196 C 54 198 56 206 58 212'
-    ], a);
-    // Ring finger
-    pp(g, [
-      'M 54 220 C 50 214 46 210 44 206 C 42 202 44 200 48 202 C 50 204 52 212 54 218'
-    ], a);
-    // Pinky finger
-    pp(g, [
-      'M 50 224 C 46 220 42 216 40 214 C 38 210 40 208 44 210 C 46 212 48 218 50 222'
-    ], a);
-
-    // === RIGHT HAND — curled, holding rosary ===
-    // Palm
-    pp(g, [
-      'M 284 224 C 288 220 294 216 298 214 C 302 212 306 214 306 220 C 306 226 302 228 298 226'
-    ], a);
-    // Curled fingers around rosary
-    pp(g, [
-      'M 298 214 C 302 208 306 204 308 200 C 310 196 308 194 304 196 C 302 198 300 204 298 210'
-    ], a);
-    pp(g, [
-      'M 302 218 C 306 212 310 208 312 204 C 314 200 312 198 308 200 C 306 202 304 210 302 216'
-    ], a);
-
-    // === ROSARY ===
-    // Rosary string curving from right hand down
-    pp(g, [
-      'M 304 218 C 308 228 314 242 316 256 C 318 270 314 284 306 294 C 298 304 286 308 276 306'
-    ], a);
-    // Rosary beads — alternating blue and red
-    fe(g, 'circle', {cx: 308, cy: 232, r: 4.5, fill: '#1976D2'}, a);
-    fe(g, 'circle', {cx: 312, cy: 244, r: 4.5, fill: '#D32F2F'}, a);
-    fe(g, 'circle', {cx: 316, cy: 256, r: 4.5, fill: '#1976D2'}, a);
-    fe(g, 'circle', {cx: 316, cy: 268, r: 4.5, fill: '#D32F2F'}, a);
-    fe(g, 'circle', {cx: 312, cy: 280, r: 4.5, fill: '#1976D2'}, a);
-    fe(g, 'circle', {cx: 306, cy: 290, r: 4.5, fill: '#D32F2F'}, a);
-    fe(g, 'circle', {cx: 296, cy: 298, r: 4.5, fill: '#1976D2'}, a);
-    fe(g, 'circle', {cx: 284, cy: 304, r: 4.5, fill: '#D32F2F'}, a);
-    // Rosary cross — at the end of the chain
-    pp(g, ['M 276 306 L 276 324'], a);
-    pp(g, ['M 269 314 L 283 314'], a);
-    // Cross base detail
-    pp(g, ['M 274 322 L 278 322'], a, lt);
-    // Cross top detail
-    pp(g, ['M 274 308 L 278 308'], a, lt);
+    const src = a ? 'img/miguelbebe/step5_hl.png' : 'img/miguelbebe/step5.png';
+    const img = ce('image', { x: '0', y: '0', width: '360', height: '450' });
+    img.setAttribute('href', src);
+    if (a) img.classList.add('active-element');
+    g.appendChild(img);
   },
 
-  // ================================================================
-  // Layer 6: Background — blanket outline, horizontal stripe pairs,
-  // 6 pompons scattered, picture frame corner hint
-  // ================================================================
+  // Layer 6: Color reference — photo at reduced opacity
   (g, a) => {
-    // Blanket outline
-    pp(g, ['M 20 20 L 340 20 L 340 430 L 20 430 Z'], a);
-    // Blanket edge fold/texture
-    pp(g, [
-      'M 22 22 L 338 22 L 338 428 L 22 428 Z'
-    ], a, lt);
-
-    // Horizontal stripe pairs (evenly spaced across blanket)
-    // Pair 1
-    pp(g, ['M 20 55 L 340 55', 'M 20 63 L 340 63'], a);
-    // Pair 2
-    pp(g, ['M 20 120 L 340 120', 'M 20 128 L 340 128'], a);
-    // Pair 3
-    pp(g, ['M 20 185 L 340 185', 'M 20 193 L 340 193'], a);
-    // Pair 4
-    pp(g, ['M 20 255 L 340 255', 'M 20 263 L 340 263'], a);
-    // Pair 5
-    pp(g, ['M 20 325 L 340 325', 'M 20 333 L 340 333'], a);
-    // Pair 6
-    pp(g, ['M 20 395 L 340 395', 'M 20 403 L 340 403'], a);
-
-    // === 6 POMPONS scattered around baby ===
-    // Red pompon — top left
-    pp(g, [
-      'M 58 80 C 63 74 72 74 77 80 C 82 86 82 94 77 99 C 72 104 63 104 58 99 C 53 94 53 86 58 80 Z'
-    ], a);
-    // Blue pompon — top right
-    pp(g, [
-      'M 295 70 C 300 64 309 64 314 70 C 319 76 319 84 314 89 C 309 94 300 94 295 89 C 290 84 290 76 295 70 Z'
-    ], a);
-    // Yellow pompon — mid left
-    pp(g, [
-      'M 40 270 C 45 264 54 264 59 270 C 64 276 64 284 59 289 C 54 294 45 294 40 289 C 35 284 35 276 40 270 Z'
-    ], a);
-    // Green pompon — mid right
-    pp(g, [
-      'M 305 290 C 310 284 319 284 324 290 C 329 296 329 304 324 309 C 319 314 310 314 305 309 C 300 304 300 296 305 290 Z'
-    ], a);
-    // Lime pompon — bottom left
-    pp(g, [
-      'M 75 375 C 80 369 89 369 94 375 C 99 381 99 389 94 394 C 89 399 80 399 75 394 C 70 389 70 381 75 375 Z'
-    ], a);
-    // Orange pompon — bottom right
-    pp(g, [
-      'M 275 365 C 280 359 289 359 294 365 C 299 371 299 379 294 384 C 289 389 280 389 275 384 C 270 379 270 371 275 365 Z'
-    ], a);
-
-    // Picture frame corner hint — top left
-    pp(g, [
-      'M 20 20 L 20 50 M 20 20 L 50 20',
-      'M 24 24 L 24 46 M 24 24 L 46 24'
-    ], a);
-    // Frame inner corner line
-    pp(g, ['M 26 26 L 44 44'], a, lt);
+    const img = ce('image', { x: '0', y: '0', width: '360', height: '450', opacity: a ? '0.6' : '0.25' });
+    img.setAttribute('href', 'img/miguel-bebe.jpeg');
+    if (a) img.classList.add('active-element');
+    g.appendChild(img);
   },
 
-  // ================================================================
-  // Layer 7: Color fills — FIGURES
-  // Skin (pinkish baby tone), knit outfit (beige/taupe),
-  // letter M (white), ears, eye whites, wispy hair
-  // ================================================================
+  // Layer 7: Final polish — name text
   (g, a) => {
-    // Skin fill — head
-    fl(g, 'M 180 50 C 212 50 236 70 236 105 C 236 140 212 160 180 160 C 148 160 124 140 124 105 C 124 70 148 50 180 50 Z', '#F8D5B8', a);
-    // Skin fill — left ear
-    fl(g, 'M 126 98 C 121 92 118 96 118 102 C 118 108 121 113 126 112 Z', '#F8D5B8', a);
-    // Skin fill — right ear
-    fl(g, 'M 234 98 C 239 92 242 96 242 102 C 242 108 239 113 234 112 Z', '#F8D5B8', a);
-    // Skin fill — left arm
-    fl(g, 'M 132 175 C 118 178 98 184 80 193 C 70 198 62 206 62 214 C 62 222 68 226 76 224 C 88 220 104 200 136 188 Z', '#F8D5B8', a);
-    // Skin fill — right arm
-    fl(g, 'M 228 175 C 242 178 262 184 280 193 C 290 198 298 206 298 214 C 298 222 292 226 284 224 C 272 220 256 200 224 188 Z', '#F8D5B8', a);
-    // Skin fill — left hand area
-    fl(g, 'M 76 224 C 72 220 62 214 48 218 C 46 224 50 228 56 228 C 65 228 72 226 76 224 Z', '#F8D5B8', a);
-    // Skin fill — left fingers
-    fl(g, 'M 80 202 C 82 206 76 218 72 218 C 62 208 42 206 40 214 C 38 222 46 228 56 228 C 68 228 80 220 80 210 Z', '#F8D5B8', a);
-    // Skin fill — right hand area
-    fl(g, 'M 284 224 C 288 220 298 214 306 220 C 306 226 302 228 298 226 C 292 224 286 224 284 224 Z', '#F8D5B8', a);
-    // Skin fill — belly (visible between open cardigan)
-    fl(g, 'M 155 180 C 160 178 170 176 180 176 C 190 176 200 178 205 180 L 208 220 C 204 222 195 224 180 224 C 165 224 156 222 152 220 Z', '#F8D5B8', a);
-
-    // Knit outfit fill — left torso (cardigan)
-    fl(g, 'M 148 158 C 140 168 132 185 130 200 C 127 220 130 242 138 258 C 146 272 162 280 168 272 C 162 265 158 255 156 245 C 152 228 150 210 150 195 C 150 180 152 168 155 158 Z', '#C4A882', a);
-    // Knit outfit fill — right torso (cardigan)
-    fl(g, 'M 212 158 C 220 168 228 185 230 200 C 233 220 230 242 222 258 C 214 272 198 280 192 272 C 198 265 202 255 204 245 C 208 228 210 210 210 195 C 210 180 208 168 205 158 Z', '#C4A882', a);
-    // Knit outfit fill — left leg bloomer
-    fl(g, 'M 152 270 C 146 285 132 306 120 322 C 114 332 110 342 112 350 C 114 356 120 360 128 358 C 136 348 134 332 140 322 C 150 308 160 288 164 274 Z', '#C4A882', a);
-    // Knit outfit fill — right leg bloomer
-    fl(g, 'M 208 270 C 214 285 228 306 240 322 C 246 332 250 342 248 350 C 246 356 240 360 232 358 C 224 348 226 332 220 322 C 210 308 200 288 196 274 Z', '#C4A882', a);
-    // Bootie fill — left
-    fl(g, 'M 112 350 C 106 354 100 352 98 346 C 96 340 98 334 104 330 C 108 328 114 330 118 334 C 116 340 114 346 112 350 Z', '#C4A882', a);
-    // Bootie fill — right
-    fl(g, 'M 248 350 C 254 354 260 352 262 346 C 264 340 262 334 256 330 C 252 328 246 330 242 334 C 244 340 246 346 248 350 Z', '#C4A882', a);
-
-    // Letter M block fill — white/cream
-    fl(g, 'M 162 220 L 198 220 L 198 256 L 162 256 Z', '#FAFAFA', a);
-    // Letter M block 3D side shadow
-    fl(g, 'M 198 220 L 202 216 L 202 252 L 198 256 Z', '#E0E0E0', a);
-    // Letter M block 3D top shadow
-    fl(g, 'M 162 220 L 166 216 L 202 216 L 198 220 Z', '#EEEEEE', a);
-
-    // Eye whites — left
-    fl(g, 'M 155 100 C 155 92 161 86 169 86 C 177 86 183 92 183 100 C 183 108 177 114 169 114 C 161 114 155 108 155 100 Z', '#FFFFFF', a);
-    // Eye whites — right
-    fl(g, 'M 177 100 C 177 92 183 86 191 86 C 199 86 205 92 205 100 C 205 108 199 114 191 114 C 183 114 177 108 177 100 Z', '#FFFFFF', a);
-    // Iris fill — left (dark brown)
-    fl(g, 'M 161 100 C 161 94 165 90 170 90 C 175 90 179 94 179 100 C 179 106 175 110 170 110 C 165 110 161 106 161 100 Z', '#3E2723', a);
-    // Iris fill — right (dark brown)
-    fl(g, 'M 183 100 C 183 94 187 90 192 90 C 197 90 201 94 201 100 C 201 106 197 110 192 110 C 187 110 183 106 183 100 Z', '#3E2723', a);
-
-    // Wispy hair fill — very subtle
-    fl(g, 'M 150 68 C 155 52 168 45 180 46 C 192 45 205 52 210 68 C 205 60 195 54 180 55 C 165 54 155 60 150 68 Z', '#B8956A', a);
-  },
-
-  // ================================================================
-  // Layer 8: Color fills — SCENE
-  // Blanket base, stripe fills, pompon fills (6 bright colors)
-  // ================================================================
-  (g, a) => {
-    // Blanket base fill — off-white/cream
-    fl(g, 'M 20 20 L 340 20 L 340 430 L 20 430 Z', '#FEFDF5', a);
-
-    // Stripe pair fills (light gray bands)
-    fl(g, 'M 20 53 L 340 53 L 340 65 L 20 65 Z', '#D8D3CE', a);
-    fl(g, 'M 20 118 L 340 118 L 340 130 L 20 130 Z', '#D8D3CE', a);
-    fl(g, 'M 20 183 L 340 183 L 340 195 L 20 195 Z', '#D8D3CE', a);
-    fl(g, 'M 20 253 L 340 253 L 340 265 L 20 265 Z', '#D8D3CE', a);
-    fl(g, 'M 20 323 L 340 323 L 340 335 L 20 335 Z', '#D8D3CE', a);
-    fl(g, 'M 20 393 L 340 393 L 340 405 L 20 405 Z', '#D8D3CE', a);
-
-    // Pompon fills — 6 colorful circles, r=12
-    // Red — top left
-    fe(g, 'circle', {cx: 68, cy: 89, r: 13, fill: '#F44336'}, a);
-    // Blue — top right
-    fe(g, 'circle', {cx: 305, cy: 79, r: 13, fill: '#2196F3'}, a);
-    // Yellow — mid left
-    fe(g, 'circle', {cx: 50, cy: 279, r: 13, fill: '#FFC107'}, a);
-    // Green — mid right
-    fe(g, 'circle', {cx: 315, cy: 299, r: 13, fill: '#4CAF50'}, a);
-    // Lime — bottom left
-    fe(g, 'circle', {cx: 85, cy: 384, r: 13, fill: '#8BC34A'}, a);
-    // Orange — bottom right
-    fe(g, 'circle', {cx: 285, cy: 374, r: 13, fill: '#FF9800'}, a);
-
-    // Picture frame corner fill hint
-    fl(g, 'M 20 20 L 50 20 L 44 26 L 26 26 L 26 44 L 20 50 Z', '#C8B080', a);
-  },
-
-  // ================================================================
-  // Layer 9: Polish — eye shines, cheek blush, pompon shines,
-  // rosary cross shine, navel hint, name text
-  // ================================================================
-  (g, a) => {
-    // Eye shine — left (2 white dots for sparkle)
-    fe(g, 'circle', {cx: 167, cy: 96, r: 2, fill: '#FFFFFF'}, a);
-    fe(g, 'circle', {cx: 173, cy: 103, r: 1, fill: '#FFFFFF'}, a);
-    // Eye shine — right
-    fe(g, 'circle', {cx: 189, cy: 96, r: 2, fill: '#FFFFFF'}, a);
-    fe(g, 'circle', {cx: 195, cy: 103, r: 1, fill: '#FFFFFF'}, a);
-
-    // Cheek blush — left (warm pink ellipse)
-    fe(g, 'ellipse', {cx: 152, cy: 125, rx: 12, ry: 7, fill: '#F8C0B0', opacity: '0.6'}, a);
-    // Cheek blush — right
-    fe(g, 'ellipse', {cx: 208, cy: 125, rx: 12, ry: 7, fill: '#F8C0B0', opacity: '0.6'}, a);
-
-    // Pompon shine dots (one per pompon, offset upper-left)
-    fe(g, 'circle', {cx: 64, cy: 85, r: 3.5, fill: '#FFFFFF', opacity: '0.7'}, a);
-    fe(g, 'circle', {cx: 301, cy: 75, r: 3.5, fill: '#FFFFFF', opacity: '0.7'}, a);
-    fe(g, 'circle', {cx: 46, cy: 275, r: 3.5, fill: '#FFFFFF', opacity: '0.7'}, a);
-    fe(g, 'circle', {cx: 311, cy: 295, r: 3.5, fill: '#FFFFFF', opacity: '0.7'}, a);
-    fe(g, 'circle', {cx: 81, cy: 380, r: 3.5, fill: '#FFFFFF', opacity: '0.7'}, a);
-    fe(g, 'circle', {cx: 281, cy: 370, r: 3.5, fill: '#FFFFFF', opacity: '0.7'}, a);
-
-    // Rosary cross shine
-    fe(g, 'circle', {cx: 276, cy: 312, r: 2, fill: '#FFFFFF', opacity: '0.8'}, a);
-
-    // Navel hint — tiny circle on belly
-    fe(g, 'circle', {cx: 180, cy: 210, r: 2, fill: '#E8BFA0'}, a);
-
-    // Letter M shadow detail — subtle depth
-    fe(g, 'ellipse', {cx: 180, cy: 258, rx: 16, ry: 3, fill: '#D5D0CB', opacity: '0.4'}, a);
-
     // Baby name text
     const t = ce('text', {
-      x: 180, y: 422,
-      fill: '#C4A882',
-      'font-size': '14',
+      x: 180, y: 435,
+      fill: a ? HL : '#A08060',
+      'font-size': '15',
       'text-anchor': 'middle',
-      'font-family': 'serif'
+      'font-family': 'Georgia, serif',
+      'letter-spacing': '3',
+      'font-style': 'italic'
     });
     t.textContent = 'Miguel';
     if (a) t.classList.add('active-element');
@@ -557,1201 +167,157 @@ const miguelbebeLayers = [
 
 const batizadoLayers = [
   // ================================================================
-  // Layer 0: Composition guides — baby head circle left, candle
-  // rectangle center-right, flame guide, adult hand zone, azulejo grid
+  // PNG TRACED APPROACH: Layers use edge-detected PNG images.
+  // Layer 0: construction guides | Layers 1-4: traced outlines
+  // Layer 5: color reference | Layer 6: signature
   // ================================================================
+
+  // Layer 0: Construction guides
   (g, a) => {
-    // Baby head oval guide (3/4 view, left side)
-    pp(g, [
-      'M 120 155 C 152 155 165 180 165 220 C 165 260 152 285 120 285 C 88 285 75 260 75 220 C 75 180 88 155 120 155 Z'
-    ], a, lt);
-    // Baby body/shoulders zone guide
-    pp(g, ['M 60 285 L 60 440 L 195 440 L 195 285'], a, lt);
-    // Large candle rectangle guide
-    pp(g, ['M 218 75 L 262 75 L 262 390 L 218 390 Z'], a, lt);
-    // Candle vertical center
-    pp(g, ['M 240 30 L 240 400'], a, lt);
-    // Flame teardrop guide
-    pp(g, ['M 240 28 L 256 60 L 240 78 L 224 60 Z'], a, lt);
-    // Adult hand zone guide (right side)
-    pp(g, ['M 280 165 L 340 165 L 340 270 L 280 270 Z'], a, lt);
-    // Small candle guide
-    pp(g, ['M 310 105 L 324 105 L 324 235 L 310 235 Z'], a, lt);
-    // Azulejo grid vertical guides
-    pp(g, ['M 0 0 L 0 450', 'M 60 0 L 60 450', 'M 180 0 L 180 450', 'M 300 0 L 300 450', 'M 360 0 L 360 450'], a, lt);
-    // Azulejo grid horizontal guides
-    pp(g, ['M 0 0 L 360 0', 'M 0 60 L 360 60', 'M 0 120 L 360 120', 'M 0 300 L 360 300', 'M 0 360 L 360 360', 'M 0 420 L 360 420'], a, lt);
+    // Grid lines
+    pp(g, ['M 180 0 L 180 450'], a, lt);
+    pp(g, ['M 0 150 L 360 150'], a, lt);
+    pp(g, ['M 0 300 L 360 300'], a, lt);
+    // Frame
+    pp(g, ['M 10 5 L 350 5 L 350 445 L 10 445 Z'], a, lt);
   },
 
-  // ================================================================
-  // Layer 1: Main outlines — baby head 3/4 view, neck, shoulders
-  // and baptism shirt, large candle cylinder with rim
-  // ================================================================
+  // Layer 1: Top region — traced from photo
   (g, a) => {
-    // Baby head — 3/4 view, turned slightly right, large oval
-    pp(g, [
-      'M 120 158 C 150 158 164 178 164 218 C 164 254 150 280 120 282 C 94 280 78 258 78 218 C 78 178 94 158 120 158 Z'
-    ], a);
-    // Neck — short baby neck
-    pp(g, [
-      'M 108 280 C 107 290 106 298 105 305',
-      'M 134 280 C 135 290 136 298 137 305'
-    ], a);
-    // Shoulders and baptism shirt
-    pp(g, [
-      'M 105 305 C 88 310 62 322 48 338 L 48 440 L 192 440 L 192 338 C 178 322 152 310 137 305'
-    ], a);
-    // Large candle cylinder body
-    pp(g, [
-      'M 220 78 L 220 372 C 220 380 228 388 240 388 C 252 388 260 380 260 372 L 260 78'
-    ], a);
-    // Candle top ellipse — rim
-    pp(g, [
-      'M 220 78 C 220 68 228 62 240 62 C 252 62 260 68 260 78 C 260 88 252 92 240 92 C 228 92 220 88 220 78 Z'
-    ], a);
-    // Candle bottom ellipse
-    pp(g, [
-      'M 220 372 C 220 380 228 388 240 388 C 252 388 260 380 260 372'
-    ], a);
+    const src = a ? 'img/batizado/step1_hl.png' : 'img/batizado/step1.png';
+    const img = ce('image', { x: '0', y: '0', width: '360', height: '450' });
+    img.setAttribute('href', src);
+    if (a) img.classList.add('active-element');
+    g.appendChild(img);
   },
 
-  // ================================================================
-  // Layer 2: Face details — 3/4 perspective eyes (left smaller,
-  // right larger), pupils looking right at candle, eyebrows,
-  // small nose, slightly open mouth, left ear, upper eyelashes
-  // ================================================================
+  // Layer 2: Middle region — traced from photo
   (g, a) => {
-    // Left eye — farther from viewer, slightly smaller (3/4)
-    pp(g, [
-      'M 94 210 C 94 202 100 196 108 196 C 116 196 122 202 122 210 C 122 218 116 224 108 224 C 100 224 94 218 94 210 Z'
-    ], a);
-    // Right eye — closer to viewer, slightly larger (3/4)
-    pp(g, [
-      'M 124 208 C 124 199 131 192 140 192 C 149 192 156 199 156 208 C 156 217 149 224 140 224 C 131 224 124 217 124 208 Z'
-    ], a);
-    // Left iris outline
-    pp(g, [
-      'M 100 211 C 100 206 104 202 109 202 C 114 202 118 206 118 211 C 118 216 114 220 109 220 C 104 220 100 216 100 211 Z'
-    ], a);
-    // Right iris outline
-    pp(g, [
-      'M 130 209 C 130 204 134 199 140 199 C 146 199 150 204 150 209 C 150 214 146 219 140 219 C 134 219 130 214 130 209 Z'
-    ], a);
-    // Left pupil — looking right toward candle
-    fe(g, 'circle', {cx: 112, cy: 211, r: 4.5, fill: '#2D1B0E'}, a);
-    // Right pupil — looking right toward candle
-    fe(g, 'circle', {cx: 144, cy: 209, r: 5.5, fill: '#2D1B0E'}, a);
-    // Left eyebrow — gentle arch
-    pp(g, ['M 94 194 C 100 188 110 186 122 190'], a);
-    // Right eyebrow — gentle arch
-    pp(g, ['M 124 190 C 134 184 146 183 156 188'], a);
-    // Nose — small baby nose, 3/4 profile
-    pp(g, [
-      'M 138 228 C 140 234 143 240 146 243 C 143 245 139 244 137 241 C 135 238 136 234 138 228'
-    ], a);
-    // Nose bridge hint
-    pp(g, ['M 136 220 C 137 224 138 228 138 228'], a, lt);
-    // Nostril hint
-    pp(g, ['M 136 242 C 138 244 142 245 144 244'], a, lt);
-    // Mouth — slightly open in wonder
-    pp(g, [
-      'M 120 256 C 126 260 133 262 140 261 C 146 260 150 256 148 254'
-    ], a);
-    // Lower lip
-    pp(g, [
-      'M 122 257 C 128 263 135 265 141 264 C 146 262 150 258 148 254'
-    ], a);
-    // Left ear (visible in 3/4)
-    pp(g, [
-      'M 80 216 C 74 210 72 216 72 222 C 72 228 74 234 80 232'
-    ], a);
-    // Left ear inner fold
-    pp(g, ['M 75 214 C 73 219 73 225 75 230'], a, lt);
-    // Upper eyelashes — left eye
-    pp(g, ['M 95 206 C 93 202 95 198 97 196'], a);
-    pp(g, ['M 106 197 C 106 193 108 191 110 190'], a);
-    // Upper eyelashes — right eye
-    pp(g, ['M 126 202 C 124 198 126 194 128 192'], a);
-    pp(g, ['M 140 193 C 140 189 142 187 144 186'], a);
-    pp(g, ['M 153 200 C 156 196 158 194 158 192'], a);
+    const src = a ? 'img/batizado/step2_hl.png' : 'img/batizado/step2.png';
+    const img = ce('image', { x: '0', y: '0', width: '360', height: '450' });
+    img.setAttribute('href', src);
+    if (a) img.classList.add('active-element');
+    g.appendChild(img);
   },
 
-  // ================================================================
-  // Layer 3: Hair and flames — wispy baby hair on top with side
-  // wisps, large candle flame (teardrop + inner + core), small
-  // candle flame
-  // ================================================================
+  // Layer 3: Bottom region — traced from photo
   (g, a) => {
-    // Central wispy hair — top of head
-    pp(g, ['M 108 164 C 112 154 120 148 128 150 C 136 148 144 154 148 164'], a);
-    // Left wisp cluster
-    pp(g, ['M 98 172 C 100 160 108 152 115 155'], a);
-    pp(g, ['M 92 178 C 95 166 104 158 112 160'], a);
-    // Right wisp cluster
-    pp(g, ['M 152 172 C 148 160 140 152 133 155'], a);
-    pp(g, ['M 158 178 C 155 166 146 158 138 160'], a);
-    // Top fine strands — light pencil for wispy baby hair
-    pp(g, [
-      'M 104 162 C 110 150 118 146 125 148',
-      'M 125 148 C 132 146 140 150 146 162'
-    ], a, lt);
-    // Side wisp — left temple
-    pp(g, ['M 86 178 C 83 172 85 165 90 162'], a);
-    // Side wisp — right temple
-    pp(g, ['M 160 180 C 163 174 161 167 156 164'], a);
-    // Forehead hairline hint
-    pp(g, [
-      'M 90 182 C 98 174 108 168 118 166',
-      'M 130 166 C 140 168 148 174 155 182'
-    ], a, lt);
-
-    // === Large candle flame — teardrop shape ===
-    pp(g, [
-      'M 240 32 C 249 44 257 54 257 64 C 257 72 250 78 240 78 C 230 78 223 72 223 64 C 223 54 231 44 240 32 Z'
-    ], a);
-    // Inner flame
-    pp(g, [
-      'M 240 40 C 246 48 251 56 251 64 C 251 70 246 74 240 74 C 234 74 229 70 229 64 C 229 56 234 48 240 40 Z'
-    ], a);
-    // Flame core
-    pp(g, [
-      'M 240 50 C 244 55 246 60 246 65 C 246 70 244 72 240 72 C 236 72 234 70 234 65 C 234 60 236 55 240 50 Z'
-    ], a);
-
-    // === Small candle flame ===
-    pp(g, [
-      'M 317 112 C 320 117 323 122 323 126 C 323 130 320 132 317 132 C 314 132 311 130 311 126 C 311 122 314 117 317 112 Z'
-    ], a);
+    const src = a ? 'img/batizado/step3_hl.png' : 'img/batizado/step3.png';
+    const img = ce('image', { x: '0', y: '0', width: '360', height: '450' });
+    img.setAttribute('href', src);
+    if (a) img.classList.add('active-element');
+    g.appendChild(img);
   },
 
-  // ================================================================
-  // Layer 4: Clothing details — high collar, collar band, pintuck
-  // lines, candle decorative bands, red letter A, gold medallion
-  // with cross
-  // ================================================================
+  // Layer 4: Fine detail — traced from photo
   (g, a) => {
-    // High collar — left side
-    pp(g, [
-      'M 108 282 C 104 288 100 294 100 300 C 100 306 104 310 108 310'
-    ], a);
-    // High collar — right side
-    pp(g, [
-      'M 134 282 C 138 288 142 294 142 300 C 142 306 138 310 134 310'
-    ], a);
-    // Collar band connecting both sides
-    pp(g, [
-      'M 100 300 C 108 304 120 306 132 304 C 138 302 142 300 142 300'
-    ], a);
-    // Collar top edge detail
-    pp(g, [
-      'M 100 294 C 108 298 120 300 132 298 C 138 296 142 294 142 294'
-    ], a, lt);
-
-    // Shirt front pintuck lines (vertical)
-    pp(g, ['M 112 310 L 112 400'], a);
-    pp(g, ['M 118 310 L 118 400'], a);
-    pp(g, ['M 124 310 L 124 400'], a);
-    pp(g, ['M 130 310 L 130 400'], a);
-
-    // Shirt shoulder seams hint
-    pp(g, ['M 88 315 C 95 310 105 308 108 310'], a, lt);
-    pp(g, ['M 155 315 C 148 310 138 308 134 310'], a, lt);
-
-    // === Candle decorative bands ===
-    // Upper band pair
-    pp(g, ['M 220 105 L 260 105'], a);
-    pp(g, ['M 220 115 L 260 115'], a);
-    // Lower band pair
-    pp(g, ['M 220 328 L 260 328'], a);
-    pp(g, ['M 220 340 L 260 340'], a);
-
-    // Band inner texture (subtle horizontal hatching)
-    pp(g, ['M 222 108 L 258 108', 'M 222 112 L 258 112'], a, lt);
-    pp(g, ['M 222 332 L 258 332', 'M 222 336 L 258 336'], a, lt);
-
-    // === Red letter A on candle ===
-    pp(g, ['M 232 250 L 240 222 L 248 250'], a);
-    pp(g, ['M 234 242 L 246 242'], a);
-    // A serifs
-    pp(g, ['M 230 250 L 234 250', 'M 246 250 L 250 250'], a);
-
-    // === Gold medallion circle ===
-    pp(g, [
-      'M 240 268 C 249 268 256 275 256 284 C 256 293 249 300 240 300 C 231 300 224 293 224 284 C 224 275 231 268 240 268 Z'
-    ], a);
-    // Cross inside medallion — vertical
-    pp(g, ['M 240 272 L 240 296'], a);
-    // Cross inside medallion — horizontal
-    pp(g, ['M 230 284 L 250 284'], a);
-    // Cross decorative ends
-    pp(g, [
-      'M 238 272 L 242 272',
-      'M 238 296 L 242 296',
-      'M 230 282 L 230 286',
-      'M 250 282 L 250 286'
-    ], a, lt);
-
-    // Medallion inner ring
-    pp(g, [
-      'M 240 271 C 247 271 253 277 253 284 C 253 291 247 297 240 297 C 233 297 227 291 227 284 C 227 277 233 271 240 271 Z'
-    ], a, lt);
+    const src = a ? 'img/batizado/step4_hl.png' : 'img/batizado/step4.png';
+    const img = ce('image', { x: '0', y: '0', width: '360', height: '450' });
+    img.setAttribute('href', src);
+    if (a) img.classList.add('active-element');
+    g.appendChild(img);
   },
 
-  // ================================================================
-  // Layer 5: Adult hand with small candle — hand from right side
-  // with fingers, thin candle shaft, small flame, ribbon/bow
-  // ================================================================
+  // Layer 5: Color reference — photo at reduced opacity
   (g, a) => {
-    // Adult hand — palm approaching from right
-    pp(g, [
-      'M 310 192 C 318 188 326 190 328 196 C 330 202 328 212 322 218'
-    ], a);
-    // Thumb — curving around candle
-    pp(g, [
-      'M 310 192 C 306 196 302 204 300 212'
-    ], a);
-    // Index finger
-    pp(g, [
-      'M 308 198 C 312 194 316 193 318 196 C 320 200 318 210 314 216'
-    ], a);
-    // Middle finger
-    pp(g, [
-      'M 304 204 C 308 200 312 198 314 201 C 316 204 314 214 310 220'
-    ], a);
-    // Ring finger
-    pp(g, [
-      'M 300 210 C 304 206 308 204 310 207 C 312 210 310 220 306 226'
-    ], a);
-    // Pinky finger
-    pp(g, [
-      'M 296 216 C 300 212 304 210 306 213 C 308 216 306 226 302 230'
-    ], a);
-    // Finger creases
-    pp(g, ['M 316 200 C 315 204 314 208 314 210'], a, lt);
-    pp(g, ['M 312 206 C 311 210 310 214 310 216'], a, lt);
-    pp(g, ['M 308 212 C 307 216 306 220 306 222'], a, lt);
-
-    // === Small thin candle shaft ===
-    pp(g, ['M 314 132 L 314 230 L 320 230 L 320 132 Z'], a);
-
-    // === Small flame on thin candle ===
-    pp(g, [
-      'M 317 112 C 320 117 323 122 323 126 C 323 130 320 132 317 132 C 314 132 311 130 311 126 C 311 122 314 117 317 112 Z'
-    ], a);
-
-    // === Ribbon/bow on small candle ===
-    // Left bow loop
-    pp(g, [
-      'M 306 188 C 300 182 296 176 300 173 C 304 170 310 176 314 182'
-    ], a);
-    // Right bow loop
-    pp(g, [
-      'M 320 182 C 324 176 330 170 334 173 C 338 176 334 182 328 188'
-    ], a);
-    // Left ribbon tail
-    pp(g, [
-      'M 306 188 C 302 196 298 206 296 212'
-    ], a);
-    // Right ribbon tail
-    pp(g, [
-      'M 328 188 C 332 196 336 206 338 212'
-    ], a);
-    // Left tail end flair
-    pp(g, ['M 296 212 C 293 214 292 210 294 208'], a);
-    // Right tail end flair
-    pp(g, ['M 338 212 C 341 214 342 210 340 208'], a);
-    // Ribbon center knot
-    fe(g, 'circle', {cx: 317, cy: 185, r: 3.5, fill: 'none', stroke: a ? HL : P, 'stroke-width': a ? HW : PW}, a);
-    // Knot detail
-    pp(g, ['M 315 183 L 319 187', 'M 319 183 L 315 187'], a, lt);
+    const img = ce('image', { x: '0', y: '0', width: '360', height: '450', opacity: a ? '0.6' : '0.25' });
+    img.setAttribute('href', 'img/batizado-miguel.jpg');
+    if (a) img.classList.add('active-element');
+    g.appendChild(img);
   },
 
-  // ================================================================
-  // Layer 6: Background azulejo tiles — tile grid lines, botanical
-  // motifs in blue (at least 8 patterns) in corners and visible
-  // background areas
-  // ================================================================
+  // Layer 6: Signature
   (g, a) => {
-    // Tile grid vertical lines
-    pp(g, ['M 0 0 L 0 450'], a);
-    pp(g, ['M 60 0 L 60 450'], a);
-    pp(g, ['M 120 0 L 120 450'], a);
-    pp(g, ['M 180 0 L 180 450'], a);
-    pp(g, ['M 240 0 L 240 450'], a);
-    pp(g, ['M 300 0 L 300 450'], a);
-    pp(g, ['M 360 0 L 360 450'], a);
-    // Tile grid horizontal lines
-    pp(g, ['M 0 0 L 360 0'], a);
-    pp(g, ['M 0 60 L 360 60'], a);
-    pp(g, ['M 0 120 L 360 120'], a);
-    pp(g, ['M 0 180 L 360 180'], a);
-    pp(g, ['M 0 240 L 360 240'], a);
-    pp(g, ['M 0 300 L 360 300'], a);
-    pp(g, ['M 0 360 L 360 360'], a);
-    pp(g, ['M 0 420 L 360 420'], a);
-
-    // === Botanical motifs (Portuguese azulejo style) ===
-    // Motif 1 — top-left tile: leaf/scroll
-    pp(g, [
-      'M 15 15 C 22 8 30 8 36 15 C 42 22 44 34 36 40 C 30 44 22 40 15 34 C 8 28 8 22 15 15',
-      'M 20 20 C 25 15 32 18 30 24 C 28 30 22 28 20 20'
-    ], a);
-    // Motif 2 — top-left second row: flower
-    pp(g, [
-      'M 25 78 C 30 72 38 72 42 78 C 46 84 46 92 42 98 C 38 104 30 104 25 98 C 20 92 20 84 25 78',
-      'M 30 85 C 33 82 37 85 34 88 C 31 91 27 88 30 85'
-    ], a);
-    // Motif 3 — top-right tile: scroll with curl
-    pp(g, [
-      'M 315 15 C 322 8 330 8 336 15 C 342 22 344 34 336 40 C 330 44 322 40 315 34 C 308 28 308 22 315 15',
-      'M 320 24 C 324 18 332 20 330 26 C 328 32 322 30 320 24'
-    ], a);
-    // Motif 4 — top-right second row: quatrefoil
-    pp(g, [
-      'M 330 75 C 335 70 340 74 338 80 C 342 76 348 78 346 84 C 350 88 346 94 340 92 C 344 96 340 102 334 98 C 330 102 324 98 328 92 C 322 94 320 88 326 84 C 322 80 326 74 330 75'
-    ], a);
-    // Motif 5 — bottom-left tile: fern leaf
-    pp(g, [
-      'M 18 370 C 25 364 35 366 40 374 C 45 382 44 394 36 400 C 28 404 20 398 16 390 C 12 382 12 374 18 370',
-      'M 22 378 C 26 374 32 376 30 382 C 28 388 22 386 22 378'
-    ], a);
-    // Motif 6 — bottom-left second row: vine spiral
-    pp(g, [
-      'M 20 430 C 26 424 34 424 40 430 C 46 436 46 444 40 448 C 34 450 26 448 20 444 C 14 440 14 434 20 430',
-      'M 28 434 C 32 430 36 434 34 438 C 32 442 28 440 28 434'
-    ], a);
-    // Motif 7 — bottom-right tile: sunburst
-    pp(g, [
-      'M 316 374 C 322 368 332 368 338 374 C 344 380 344 392 338 398 C 332 404 322 404 316 398 C 310 392 310 380 316 374',
-      'M 327 380 L 327 392 M 321 386 L 333 386',
-      'M 322 381 L 332 391 M 332 381 L 322 391'
-    ], a);
-    // Motif 8 — bottom-right second row: tulip
-    pp(g, [
-      'M 322 432 C 326 424 334 424 338 432 C 342 440 340 448 332 450 C 328 450 324 448 320 446 C 316 442 318 436 322 432',
-      'M 330 432 L 330 446'
-    ], a);
-    // Motif 9 — mid-left visible area: rosette
-    pp(g, [
-      'M 20 190 C 28 184 38 186 40 194 C 42 202 36 210 28 210 C 20 210 14 202 16 194 C 16 188 18 186 20 190',
-      'M 25 195 C 28 192 34 194 32 198 C 30 202 24 200 25 195'
-    ], a);
-    // Motif 10 — mid-right visible area: acanthus leaf hint
-    pp(g, [
-      'M 318 246 C 324 240 332 240 336 246 C 340 252 338 260 332 264 C 326 268 318 266 314 260 C 310 254 312 248 318 246'
-    ], a);
-  },
-
-  // ================================================================
-  // Layer 7: Color fills FIGURES — baby skin, ear, white shirt,
-  // collar, eye whites, hair, adult hand, candle body, small candle,
-  // ribbon
-  // ================================================================
-  (g, a) => {
-    // Baby head skin fill
-    fl(g, 'M 120 158 C 150 158 164 178 164 218 C 164 254 150 280 120 282 C 94 280 78 258 78 218 C 78 178 94 158 120 158 Z', '#F5D0A9', a);
-    // Baby neck skin
-    fl(g, 'M 108 280 C 107 290 106 298 105 305 L 137 305 C 136 298 135 290 134 280 Z', '#F5D0A9', a);
-    // Ear skin
-    fl(g, 'M 80 216 C 74 210 72 216 72 222 C 72 228 74 234 80 232 Z', '#F5D0A9', a);
-    // White baptism shirt fill
-    fl(g, 'M 105 305 C 88 310 62 322 48 338 L 48 440 L 192 440 L 192 338 C 178 322 152 310 137 305 Z', '#FEFEFA', a);
-    // White collar fill
-    fl(g, 'M 108 282 C 104 288 100 294 100 300 C 100 306 108 310 121 312 C 134 310 142 306 142 300 C 142 294 138 288 134 282 Z', '#FFFFFF', a);
-    // Eye whites — left
-    fl(g, 'M 94 210 C 94 202 100 196 108 196 C 116 196 122 202 122 210 C 122 218 116 224 108 224 C 100 224 94 218 94 210 Z', '#FFFFFF', a);
-    // Eye whites — right
-    fl(g, 'M 124 208 C 124 199 131 192 140 192 C 149 192 156 199 156 208 C 156 217 149 224 140 224 C 131 224 124 217 124 208 Z', '#FFFFFF', a);
-    // Iris fill — left (dark brown)
-    fl(g, 'M 100 211 C 100 206 104 202 109 202 C 114 202 118 206 118 211 C 118 216 114 220 109 220 C 104 220 100 216 100 211 Z', '#3E2723', a);
-    // Iris fill — right (dark brown)
-    fl(g, 'M 130 209 C 130 204 134 199 140 199 C 146 199 150 204 150 209 C 150 214 146 219 140 219 C 134 219 130 214 130 209 Z', '#3E2723', a);
-    // Baby hair fill — light brown wisps
-    fl(g, 'M 92 178 C 95 162 108 150 125 150 C 142 148 155 162 158 178 C 155 172 145 164 125 165 C 105 164 95 172 92 178 Z', '#A0845C', a);
-    // Adult hand skin fill
-    fl(g, 'M 296 216 C 300 210 306 200 312 194 C 318 188 328 188 330 196 C 332 204 326 218 318 226 C 312 232 304 232 300 228 Z', '#F0C8A0', a);
-    // Large candle — white body fill
-    fl(g, 'M 220 78 L 220 372 C 220 380 228 388 240 388 C 252 388 260 380 260 372 L 260 78 C 260 88 252 92 240 92 C 228 92 220 88 220 78 Z', '#FAFAFA', a);
-    // Candle top fill
-    fl(g, 'M 220 78 C 220 88 228 92 240 92 C 252 92 260 88 260 78 C 260 68 252 62 240 62 C 228 62 220 68 220 78 Z', '#F0F0F0', a);
-    // Small candle fill
-    fl(g, 'M 314 132 L 314 230 L 320 230 L 320 132 Z', '#FAFAFA', a);
-    // Ribbon bow fill
-    fl(g, 'M 306 188 C 300 182 296 176 300 173 C 304 170 310 176 314 182 L 320 182 C 324 176 330 170 334 173 C 338 176 334 182 328 188 Z', '#F5F5F5', a);
-  },
-
-  // ================================================================
-  // Layer 8: Color fills SCENE — background tile white, azulejo blue
-  // motifs, large flame (outer/inner/core), small flame, red A,
-  // gold medallion, decorative bands
-  // ================================================================
-  (g, a) => {
-    // Full background tile white
-    fl(g, 'M 0 0 L 360 0 L 360 450 L 0 450 Z', '#F8F8FF', a);
-
-    // === Azulejo blue motif fills ===
-    // Motif 1
-    fl(g, 'M 15 15 C 22 8 30 8 36 15 C 42 22 44 34 36 40 C 30 44 22 40 15 34 C 8 28 8 22 15 15 Z', '#1565C0', a);
-    // Motif 2
-    fl(g, 'M 25 78 C 30 72 38 72 42 78 C 46 84 46 92 42 98 C 38 104 30 104 25 98 C 20 92 20 84 25 78 Z', '#1565C0', a);
-    // Motif 3
-    fl(g, 'M 315 15 C 322 8 330 8 336 15 C 342 22 344 34 336 40 C 330 44 322 40 315 34 C 308 28 308 22 315 15 Z', '#1565C0', a);
-    // Motif 4
-    fl(g, 'M 330 75 C 335 70 340 74 338 80 C 342 76 348 78 346 84 C 350 88 346 94 340 92 C 344 96 340 102 334 98 C 330 102 324 98 328 92 C 322 94 320 88 326 84 C 322 80 326 74 330 75 Z', '#1565C0', a);
-    // Motif 5
-    fl(g, 'M 18 370 C 25 364 35 366 40 374 C 45 382 44 394 36 400 C 28 404 20 398 16 390 C 12 382 12 374 18 370 Z', '#1565C0', a);
-    // Motif 6
-    fl(g, 'M 20 430 C 26 424 34 424 40 430 C 46 436 46 444 40 448 C 34 450 26 448 20 444 C 14 440 14 434 20 430 Z', '#1565C0', a);
-    // Motif 7
-    fl(g, 'M 316 374 C 322 368 332 368 338 374 C 344 380 344 392 338 398 C 332 404 322 404 316 398 C 310 392 310 380 316 374 Z', '#1565C0', a);
-    // Motif 8
-    fl(g, 'M 322 432 C 326 424 334 424 338 432 C 342 440 340 448 332 450 C 328 450 324 448 320 446 C 316 442 318 436 322 432 Z', '#1565C0', a);
-    // Motif 9
-    fl(g, 'M 20 190 C 28 184 38 186 40 194 C 42 202 36 210 28 210 C 20 210 14 202 16 194 C 16 188 18 186 20 190 Z', '#1565C0', a);
-    // Motif 10
-    fl(g, 'M 318 246 C 324 240 332 240 336 246 C 340 252 338 260 332 264 C 326 268 318 266 314 260 C 310 254 312 248 318 246 Z', '#1565C0', a);
-
-    // === Large candle flame fills ===
-    // Outer flame — orange
-    fl(g, 'M 240 32 C 249 44 257 54 257 64 C 257 72 250 78 240 78 C 230 78 223 72 223 64 C 223 54 231 44 240 32 Z', '#FF9800', a);
-    // Inner flame — yellow
-    fl(g, 'M 240 40 C 246 48 251 56 251 64 C 251 70 246 74 240 74 C 234 74 229 70 229 64 C 229 56 234 48 240 40 Z', '#FFC107', a);
-    // Flame core — white-yellow
-    fl(g, 'M 240 50 C 244 55 246 60 246 65 C 246 70 244 72 240 72 C 236 72 234 70 234 65 C 234 60 236 55 240 50 Z', '#FFF9C4', a);
-    // Small candle flame — warm yellow
-    fl(g, 'M 317 112 C 320 117 323 122 323 126 C 323 130 320 132 317 132 C 314 132 311 130 311 126 C 311 122 314 117 317 112 Z', '#FFC107', a);
-
-    // === Red letter A fill ===
-    fl(g, 'M 232 250 L 240 222 L 248 250 L 244 250 L 240 232 L 236 250 Z', '#C62828', a);
-
-    // === Gold medallion fill ===
-    fl(g, 'M 240 268 C 249 268 256 275 256 284 C 256 293 249 300 240 300 C 231 300 224 293 224 284 C 224 275 231 268 240 268 Z', '#FFD700', a);
-
-    // === Decorative bands fill ===
-    fl(g, 'M 220 105 L 260 105 L 260 115 L 220 115 Z', '#E8D5B0', a);
-    fl(g, 'M 220 328 L 260 328 L 260 340 L 220 340 Z', '#E8D5B0', a);
-  },
-
-  // ================================================================
-  // Layer 9: Polish — warm candlelight eye reflections, cheek blush,
-  // flame glow halos, wax drip details, cross highlight, ribbon
-  // highlight
-  // ================================================================
-  (g, a) => {
-    // === Eye reflections — warm candlelight ===
-    // Left eye — warm yellow reflection (from large candle)
-    fe(g, 'circle', {cx: 113, cy: 207, r: 2.5, fill: '#FFF9C4'}, a);
-    // Left eye — white sparkle
-    fe(g, 'circle', {cx: 110, cy: 210, r: 1, fill: '#FFFFFF'}, a);
-    // Right eye — warm yellow reflection (larger, candle is closer)
-    fe(g, 'circle', {cx: 146, cy: 205, r: 3, fill: '#FFF9C4'}, a);
-    // Right eye — white sparkle
-    fe(g, 'circle', {cx: 143, cy: 208, r: 1.2, fill: '#FFFFFF'}, a);
-    // Second warm reflection in right eye (small candle)
-    fe(g, 'circle', {cx: 148, cy: 212, r: 1, fill: '#FFF9C4', opacity: '0.7'}, a);
-
-    // === Cheek blush — warm from candlelight ===
-    // Left cheek
-    fe(g, 'ellipse', {cx: 98, cy: 248, rx: 10, ry: 6, fill: '#F8C0B0', opacity: '0.55'}, a);
-    // Right cheek (slightly warmer — closer to candle)
-    fe(g, 'ellipse', {cx: 150, cy: 246, rx: 11, ry: 7, fill: '#F8C0B0', opacity: '0.6'}, a);
-
-    // === Flame glow halos ===
-    // Large flame glow — outer warm halo
-    fe(g, 'circle', {cx: 240, cy: 58, r: 35, fill: '#FFF9C4', opacity: '0.2'}, a);
-    // Large flame glow — inner halo
-    fe(g, 'circle', {cx: 240, cy: 58, r: 22, fill: '#FFF9C4', opacity: '0.25'}, a);
-    // Small flame glow halo
-    fe(g, 'circle', {cx: 317, cy: 124, r: 12, fill: '#FFF9C4', opacity: '0.25'}, a);
-
-    // === Warm light on baby's face (side glow) ===
-    fe(g, 'ellipse', {cx: 155, cy: 220, rx: 6, ry: 20, fill: '#FFF9C4', opacity: '0.12'}, a);
-
-    // === Wax drip details on large candle ===
-    pp(g, ['M 224 135 C 222 144 223 152 224 148'], a);
-    pp(g, ['M 257 155 C 259 164 258 172 257 168'], a);
-    pp(g, ['M 225 200 C 223 208 224 214 225 210'], a);
-
-    // === Cross highlight in medallion ===
-    fe(g, 'circle', {cx: 237, cy: 281, r: 1.5, fill: '#FFFFFF', opacity: '0.8'}, a);
-    // Medallion rim shine
-    fe(g, 'ellipse', {cx: 234, cy: 274, rx: 3, ry: 1.5, fill: '#FFFFFF', opacity: '0.4'}, a);
-
-    // === Ribbon bow highlights ===
-    fe(g, 'circle', {cx: 300, cy: 176, r: 1, fill: '#FFFFFF', opacity: '0.8'}, a);
-    fe(g, 'circle', {cx: 334, cy: 176, r: 1, fill: '#FFFFFF', opacity: '0.8'}, a);
-
-    // === Candle surface highlight (vertical shine) ===
-    fl(g, 'M 228 92 L 228 370 L 230 370 L 230 92 Z', '#FFFFFF', a);
-
-    // === Lip color subtle fill ===
-    fl(g, 'M 122 256 C 128 261 135 263 141 262 C 147 260 150 256 148 254 C 144 258 136 260 128 258 Z', '#E8A0A0', a);
-
-    // === Candle wick ===
-    pp(g, ['M 240 62 L 240 38'], a);
-
-    // === Nose tip highlight ===
-    fe(g, 'circle', {cx: 143, cy: 240, r: 1.5, fill: '#FDECD0', opacity: '0.6'}, a);
+    const t = ce('text', {
+      x: 180, y: 435,
+      fill: a ? HL : '#A08060',
+      'font-size': '15',
+      'text-anchor': 'middle',
+      'font-family': 'Georgia, serif',
+      'letter-spacing': '3',
+      'font-style': 'italic'
+    });
+    t.textContent = 'Batizado';
+    if (a) t.classList.add('active-element');
+    g.appendChild(t);
   }
 ];
 
 const matildeLayers = [
-  // =====================================================================
-  // Layer 0: Composition guides — face oval, chair bar positions,
-  // eye/nose/mouth lines, hair mass circle, hand placement
-  // =====================================================================
+  // ================================================================
+  // PNG TRACED APPROACH: Layers use edge-detected PNG images.
+  // Layer 0: construction guides | Layers 1-4: traced outlines
+  // Layer 5: color reference | Layer 6: signature
+  // ================================================================
+
+  // Layer 0: Construction guides
   (g, a) => {
-    // Vertical center guide
+    // Grid lines
     pp(g, ['M 180 0 L 180 450'], a, lt);
-    // Face oval guide — child proportions (big forehead)
-    pp(g, [
-      'M 180 120 C 215 120 240 150 240 190 C 240 230 215 260 180 260 C 145 260 120 230 120 190 C 120 150 145 120 180 120 Z'
-    ], a, lt);
-    // Eye line guide
-    pp(g, ['M 120 210 L 240 210'], a, lt);
-    // Nose line guide
-    pp(g, ['M 160 240 L 200 240'], a, lt);
-    // Mouth line guide
-    pp(g, ['M 155 265 L 205 265'], a, lt);
-    // Hair mass circle guide — wild voluminous curls
-    pp(g, [
-      'M 180 80 C 240 80 280 120 280 170 C 280 220 260 250 230 270 L 130 270 C 100 250 80 220 80 170 C 80 120 120 80 180 80 Z'
-    ], a, lt);
-    // Left chair bar guide
-    pp(g, ['M 55 30 L 55 420'], a, lt);
-    // Right chair bar guide
-    pp(g, ['M 305 30 L 305 420'], a, lt);
-    // Shoulder line guide
-    pp(g, ['M 110 310 L 250 310'], a, lt);
-    // Adult hand placement guide at top
-    pp(g, ['M 130 90 L 230 90 L 230 130 L 130 130 Z'], a, lt);
-    // Chair crossbar guide
-    pp(g, ['M 40 380 L 320 380'], a, lt);
+    pp(g, ['M 0 150 L 360 150'], a, lt);
+    pp(g, ['M 0 300 L 360 300'], a, lt);
+    // Frame
+    pp(g, ['M 10 5 L 350 5 L 350 445 L 10 445 Z'], a, lt);
   },
 
-  // =====================================================================
-  // Layer 1: Main outlines — face oval with child proportions,
-  // chair bars, neck, shoulders/top of shirt
-  // =====================================================================
+  // Layer 1: Top region — traced from photo
   (g, a) => {
-    // Face — child proportions: big forehead, rounded cheeks, small chin
-    pp(g, [
-      'M 180 128 C 148 128 126 155 124 185 C 122 205 126 225 134 240 C 142 252 156 262 172 266 C 178 267 182 267 188 266 C 204 262 218 252 226 240 C 234 225 238 205 236 185 C 234 155 212 128 180 128 Z'
-    ], a);
-    // Neck — short, child-like
-    pp(g, [
-      'M 166 264 C 164 272 162 280 162 288',
-      'M 194 264 C 196 272 198 280 198 288'
-    ], a);
-    // Shoulders — small, with ruffled shirt top
-    pp(g, [
-      'M 162 288 C 150 290 130 296 116 306 C 108 312 104 320 102 332 L 98 390',
-      'M 198 288 C 210 290 230 296 244 306 C 252 312 256 320 258 332 L 262 390'
-    ], a);
-    // Left chair bar — wooden vertical post
-    pp(g, [
-      'M 48 24 C 50 22 58 22 60 24 L 60 430 C 58 432 50 432 48 430 Z'
-    ], a);
-    // Right chair bar — wooden vertical post
-    pp(g, [
-      'M 300 24 C 302 22 310 22 312 24 L 312 430 C 310 432 302 432 300 430 Z'
-    ], a);
-    // Left ear — partially visible
-    pp(g, [
-      'M 126 196 C 120 190 116 194 116 202 C 116 210 120 216 126 214'
-    ], a);
-    // Right ear — partially visible
-    pp(g, [
-      'M 234 196 C 240 190 244 194 244 202 C 244 210 240 216 234 214'
-    ], a);
+    const src = a ? 'img/matilde/step1_hl.png' : 'img/matilde/step1.png';
+    const img = ce('image', { x: '0', y: '0', width: '360', height: '450' });
+    img.setAttribute('href', src);
+    if (a) img.classList.add('active-element');
+    g.appendChild(img);
   },
 
-  // =====================================================================
-  // Layer 2: Face details — very large eyes with iris/pupil, long
-  // eyelashes, eyebrows, small nose, shy smile with baby teeth
-  // =====================================================================
+  // Layer 2: Middle region — traced from photo
   (g, a) => {
-    // Left eye — very large, nearly round (child proportions)
-    pp(g, [
-      'M 148 204 C 148 194 156 186 166 186 C 176 186 184 194 184 204 C 184 214 176 222 166 222 C 156 222 148 214 148 204 Z'
-    ], a);
-    // Right eye — very large, nearly round
-    pp(g, [
-      'M 176 204 C 176 194 184 186 194 186 C 204 186 212 194 212 204 C 212 214 204 222 194 222 C 184 222 176 214 176 204 Z'
-    ], a);
-    // Left iris
-    pp(g, [
-      'M 155 206 C 155 198 160 192 167 192 C 174 192 179 198 179 206 C 179 214 174 220 167 220 C 160 220 155 214 155 206 Z'
-    ], a);
-    // Right iris
-    pp(g, [
-      'M 183 206 C 183 198 188 192 195 192 C 202 192 207 198 207 206 C 207 214 202 220 195 220 C 188 220 183 214 183 206 Z'
-    ], a);
-    // Left pupil — large dark center
-    fe(g, 'circle', { cx: 167, cy: 208, r: 5.5, fill: a ? HL : '#1A1A1A' }, a);
-    // Right pupil — large dark center
-    fe(g, 'circle', { cx: 195, cy: 208, r: 5.5, fill: a ? HL : '#1A1A1A' }, a);
-    // Left upper eyelashes — long, visible
-    pp(g, [
-      'M 148 200 C 146 196 144 192 143 188',
-      'M 152 196 C 150 192 149 188 149 184',
-      'M 157 193 C 156 189 156 185 157 182',
-      'M 163 190 C 163 186 164 183 166 180',
-      'M 170 188 C 172 184 174 182 177 180'
-    ], a);
-    // Right upper eyelashes — long, visible
-    pp(g, [
-      'M 212 200 C 214 196 216 192 217 188',
-      'M 208 196 C 210 192 211 188 211 184',
-      'M 203 193 C 204 189 204 185 203 182',
-      'M 197 190 C 197 186 196 183 194 180',
-      'M 190 188 C 188 184 186 182 183 180'
-    ], a);
-    // Left lower eyelashes — subtle
-    pp(g, [
-      'M 152 214 C 150 216 148 218 146 219',
-      'M 158 218 C 156 220 154 222 152 222'
-    ], a, lt);
-    // Right lower eyelashes — subtle
-    pp(g, [
-      'M 208 214 C 210 216 212 218 214 219',
-      'M 202 218 C 204 220 206 222 208 222'
-    ], a, lt);
-    // Left eyebrow — soft arch
-    pp(g, [
-      'M 144 180 C 150 172 160 168 172 170 C 176 171 180 174 182 178'
-    ], a);
-    // Right eyebrow — soft arch
-    pp(g, [
-      'M 180 178 C 182 174 186 171 190 170 C 200 168 210 172 216 180'
-    ], a);
-    // Nose bridge — delicate
-    pp(g, [
-      'M 180 196 C 179 206 178 218 176 228'
-    ], a, lt);
-    // Nose tip and nostrils — small, cute
-    pp(g, [
-      'M 172 234 C 174 238 177 240 180 240 C 183 240 186 238 188 234',
-      'M 174 236 C 175 234 177 234 179 236',
-      'M 181 236 C 183 234 185 234 186 236'
-    ], a);
-    // Upper lip — cupid's bow
-    pp(g, [
-      'M 162 260 C 166 256 172 254 177 256 C 179 258 181 258 183 256 C 188 254 194 256 198 260'
-    ], a);
-    // Lower lip — shy smile
-    pp(g, [
-      'M 162 260 C 166 270 174 274 180 274 C 186 274 194 270 198 260'
-    ], a);
-    // Tooth line — baby teeth showing
-    pp(g, ['M 164 260 L 196 260'], a);
-    // Individual teeth separators
-    pp(g, [
-      'M 170 260 L 170 265',
-      'M 176 260 L 176 266',
-      'M 182 260 L 182 266',
-      'M 188 260 L 188 265'
-    ], a, lt);
-    // Left ear inner detail
-    pp(g, ['M 120 196 C 118 200 118 206 120 210'], a, lt);
-    // Right ear inner detail
-    pp(g, ['M 240 196 C 242 200 242 206 240 210'], a, lt);
+    const src = a ? 'img/matilde/step2_hl.png' : 'img/matilde/step2.png';
+    const img = ce('image', { x: '0', y: '0', width: '360', height: '450' });
+    img.setAttribute('href', src);
+    if (a) img.classList.add('active-element');
+    g.appendChild(img);
   },
 
-  // =====================================================================
-  // Layer 3: Wild curly hair — voluminous mass outline both sides,
-  // individual curls at top/sides/forehead (15+ curl spirals)
-  // =====================================================================
+  // Layer 3: Bottom region — traced from photo
   (g, a) => {
-    // Main hair mass outline — left side volume
-    pp(g, [
-      'M 134 186 C 128 170 118 148 112 134 C 104 116 96 104 94 100 C 88 90 84 96 86 110 C 88 124 92 140 94 156 C 96 172 96 188 98 204 C 100 220 100 236 106 252'
-    ], a);
-    // Main hair mass outline — top
-    pp(g, [
-      'M 134 186 C 130 160 128 140 132 120 C 136 100 144 86 158 78 C 170 72 186 70 200 74 C 214 78 224 88 230 102 C 234 114 236 130 236 150 C 236 166 234 180 230 192'
-    ], a);
-    // Main hair mass outline — right side volume
-    pp(g, [
-      'M 230 192 C 236 174 248 150 256 134 C 262 122 268 110 272 104 C 278 96 280 100 278 114 C 276 128 272 144 268 160 C 266 176 264 192 262 208 C 260 224 258 240 254 252'
-    ], a);
-    // Hair bottom edge — left to chin
-    pp(g, [
-      'M 106 252 C 112 260 120 264 130 266'
-    ], a);
-    // Hair bottom edge — right to chin
-    pp(g, [
-      'M 254 252 C 248 260 240 264 230 266'
-    ], a);
-    // Curl 1 — top center crown
-    pp(g, [
-      'M 170 80 C 168 74 172 68 178 66 C 184 64 190 68 190 74 C 190 80 186 84 180 84'
-    ], a);
-    // Curl 2 — top left
-    pp(g, [
-      'M 148 86 C 144 80 146 72 152 70 C 158 68 162 72 162 78 C 162 84 158 88 152 88'
-    ], a);
-    // Curl 3 — top right
-    pp(g, [
-      'M 212 86 C 216 80 214 72 208 70 C 202 68 198 72 198 78 C 198 84 202 88 208 88'
-    ], a);
-    // Curl 4 — left forehead
-    pp(g, [
-      'M 136 130 C 130 124 128 116 132 110 C 136 106 142 108 144 114 C 146 120 142 128 138 132'
-    ], a);
-    // Curl 5 — right forehead
-    pp(g, [
-      'M 224 130 C 230 124 232 116 228 110 C 224 106 218 108 216 114 C 214 120 218 128 222 132'
-    ], a);
-    // Curl 6 — left side upper
-    pp(g, [
-      'M 100 128 C 94 122 90 130 92 138 C 94 146 100 148 104 142 C 108 136 106 128 100 128'
-    ], a);
-    // Curl 7 — left side middle
-    pp(g, [
-      'M 96 164 C 90 158 86 164 88 172 C 90 180 96 184 100 178 C 104 172 100 164 96 164'
-    ], a);
-    // Curl 8 — left side lower
-    pp(g, [
-      'M 98 210 C 92 204 88 210 90 218 C 92 226 98 228 102 222 C 106 216 104 210 98 210'
-    ], a);
-    // Curl 9 — right side upper
-    pp(g, [
-      'M 260 128 C 266 122 270 130 268 138 C 266 146 260 148 256 142 C 252 136 254 128 260 128'
-    ], a);
-    // Curl 10 — right side middle
-    pp(g, [
-      'M 264 164 C 270 158 274 164 272 172 C 270 180 264 184 260 178 C 256 172 260 164 264 164'
-    ], a);
-    // Curl 11 — right side lower
-    pp(g, [
-      'M 262 210 C 268 204 272 210 270 218 C 268 226 262 228 258 222 C 254 216 256 210 262 210'
-    ], a);
-    // Curl 12 — top left crown
-    pp(g, [
-      'M 156 94 C 152 88 156 82 162 82 C 168 82 170 88 168 94 C 166 98 160 98 156 94'
-    ], a);
-    // Curl 13 — top right crown
-    pp(g, [
-      'M 204 94 C 208 88 204 82 198 82 C 192 82 190 88 192 94 C 194 98 200 98 204 94'
-    ], a);
-    // Curl 14 — forehead center drape
-    pp(g, [
-      'M 160 140 C 164 134 172 130 180 130 C 188 130 196 134 200 140'
-    ], a);
-    // Curl 15 — left temple
-    pp(g, [
-      'M 118 152 C 112 146 110 154 112 162 C 114 168 120 170 122 164 C 124 158 120 152 118 152'
-    ], a);
-    // Curl 16 — right temple
-    pp(g, [
-      'M 242 152 C 248 146 250 154 248 162 C 246 168 240 170 238 164 C 236 158 240 152 242 152'
-    ], a);
-    // Hair texture strands — flowing lines within mass
-    pp(g, [
-      'M 140 100 C 150 90 166 82 180 80',
-      'M 180 80 C 194 82 210 90 220 100',
-      'M 110 144 C 118 132 130 122 140 118',
-      'M 250 144 C 242 132 230 122 220 118',
-      'M 104 192 C 108 178 114 166 124 158',
-      'M 256 192 C 252 178 246 166 236 158'
-    ], a, lt);
+    const src = a ? 'img/matilde/step3_hl.png' : 'img/matilde/step3.png';
+    const img = ce('image', { x: '0', y: '0', width: '360', height: '450' });
+    img.setAttribute('href', src);
+    if (a) img.classList.add('active-element');
+    g.appendChild(img);
   },
 
-  // =====================================================================
-  // Layer 4: Clothing details — round collar, shirt wrinkle lines,
-  // chair bar wood grain, chair bar knot details
-  // =====================================================================
+  // Layer 4: Fine detail — traced from photo
   (g, a) => {
-    // Ruffled collar — peach/salmon top with frills
-    pp(g, [
-      'M 148 290 C 152 284 162 280 172 280 C 178 280 182 280 188 280 C 198 280 208 284 212 290'
-    ], a);
-    // Collar ruffle left
-    pp(g, [
-      'M 148 290 C 146 286 142 284 140 288 C 138 292 142 296 148 296 C 152 296 154 294 154 290'
-    ], a);
-    // Collar ruffle right
-    pp(g, [
-      'M 212 290 C 214 286 218 284 220 288 C 222 292 218 296 212 296 C 208 296 206 294 206 290'
-    ], a);
-    // Collar ruffle center
-    pp(g, [
-      'M 170 282 C 168 278 172 276 176 278 C 180 280 184 278 188 276 C 192 278 194 282 190 284'
-    ], a);
-    // Shirt wrinkle lines — left shoulder
-    pp(g, [
-      'M 130 300 C 126 310 122 322 120 334',
-      'M 142 296 C 138 306 134 318 132 330'
-    ], a, lt);
-    // Shirt wrinkle lines — right shoulder
-    pp(g, [
-      'M 230 300 C 234 310 238 322 240 334',
-      'M 218 296 C 222 306 226 318 228 330'
-    ], a, lt);
-    // Shirt wrinkle lines — center
-    pp(g, [
-      'M 170 296 C 172 310 174 326 176 340',
-      'M 190 296 C 188 310 186 326 184 340'
-    ], a, lt);
-    // Sleeve ruffle hint — left
-    pp(g, [
-      'M 112 310 C 108 306 104 308 106 314 C 108 318 114 318 116 314'
-    ], a);
-    // Sleeve ruffle hint — right
-    pp(g, [
-      'M 248 310 C 252 306 256 308 254 314 C 252 318 246 318 244 314'
-    ], a);
-
-    // Left chair bar — wood grain lines
-    pp(g, [
-      'M 52 60 C 53 80 52 100 53 120',
-      'M 56 140 C 55 170 56 200 55 230',
-      'M 53 260 C 54 290 53 320 54 350',
-      'M 50 370 C 51 390 50 410 51 425'
-    ], a, lt);
-    // Left chair bar — knot detail upper
-    pp(g, [
-      'M 52 180 C 50 176 48 178 48 182 C 48 186 50 188 54 186 C 56 184 56 180 54 178'
-    ], a);
-    // Left chair bar — knot detail lower
-    pp(g, [
-      'M 56 320 C 58 316 56 314 52 314 C 48 314 48 318 50 322 C 52 324 56 324 58 320'
-    ], a);
-    // Right chair bar — wood grain lines
-    pp(g, [
-      'M 304 60 C 305 80 304 100 305 120',
-      'M 308 140 C 307 170 308 200 307 230',
-      'M 305 260 C 306 290 305 320 306 350',
-      'M 302 370 C 303 390 302 410 303 425'
-    ], a, lt);
-    // Right chair bar — knot detail upper
-    pp(g, [
-      'M 308 200 C 310 196 312 198 312 202 C 312 206 310 208 306 206 C 304 204 304 200 306 198'
-    ], a);
-    // Right chair bar — knot detail lower
-    pp(g, [
-      'M 304 340 C 302 336 304 334 308 334 C 312 334 312 338 310 342 C 308 344 304 344 302 340'
-    ], a);
+    const src = a ? 'img/matilde/step4_hl.png' : 'img/matilde/step4.png';
+    const img = ce('image', { x: '0', y: '0', width: '360', height: '450' });
+    img.setAttribute('href', src);
+    if (a) img.classList.add('active-element');
+    g.appendChild(img);
   },
 
-  // =====================================================================
-  // Layer 5: Adult hand on head — 4 distinct fingers with fingertips,
-  // fingernails, partial palm/wrist at top edge
-  // =====================================================================
+  // Layer 5: Color reference — photo at reduced opacity
   (g, a) => {
-    // Palm base — coming from above, resting on top of head
-    pp(g, [
-      'M 140 94 C 138 86 136 78 136 70 C 136 60 140 50 148 44 C 156 38 168 36 180 36 C 192 36 204 38 212 44 C 220 50 224 60 224 70 C 224 78 222 86 220 94'
-    ], a);
-    // Wrist — at top edge of frame
-    pp(g, [
-      'M 148 44 C 144 36 142 26 142 16 L 142 0',
-      'M 212 44 C 216 36 218 26 218 16 L 218 0'
-    ], a);
-    // Index finger — leftmost visible
-    pp(g, [
-      'M 140 94 C 136 100 130 108 128 116 C 126 122 128 126 132 126 C 136 126 138 122 140 116 C 142 110 142 102 142 96'
-    ], a);
-    // Index fingernail
-    pp(g, [
-      'M 128 118 C 126 120 126 124 128 126 C 130 128 134 128 136 124'
-    ], a, lt);
-    // Middle finger — next to index
-    pp(g, [
-      'M 155 92 C 152 98 148 108 146 118 C 144 126 146 130 150 130 C 154 130 156 126 158 118 C 160 110 160 100 158 94'
-    ], a);
-    // Middle fingernail
-    pp(g, [
-      'M 146 120 C 144 122 144 128 148 130 C 150 132 154 130 156 126'
-    ], a, lt);
-    // Ring finger
-    pp(g, [
-      'M 178 90 C 176 96 174 106 174 116 C 174 124 176 128 180 128 C 184 128 186 124 186 116 C 186 106 184 96 182 90'
-    ], a);
-    // Ring fingernail
-    pp(g, [
-      'M 174 118 C 172 120 172 126 176 128 C 178 130 182 130 184 126'
-    ], a, lt);
-    // Pinky finger — rightmost visible, shorter
-    pp(g, [
-      'M 200 92 C 198 98 196 106 196 114 C 196 120 198 124 202 124 C 206 124 208 120 208 114 C 208 106 206 98 204 92'
-    ], a);
-    // Pinky fingernail
-    pp(g, [
-      'M 196 116 C 194 118 194 122 198 124 C 200 126 204 124 206 120'
-    ], a, lt);
-    // Thumb hint — wrapping around right side of head (partially hidden)
-    pp(g, [
-      'M 220 94 C 224 100 228 108 228 116 C 228 122 226 126 222 124 C 218 122 218 116 218 110 C 218 104 218 98 220 94'
-    ], a);
-    // Knuckle creases
-    pp(g, [
-      'M 138 98 C 140 96 142 96 144 98',
-      'M 154 96 C 156 94 158 94 160 96',
-      'M 176 94 C 178 92 180 92 182 94',
-      'M 198 96 C 200 94 204 94 206 96'
-    ], a, lt);
+    const img = ce('image', { x: '0', y: '0', width: '360', height: '450', opacity: a ? '0.6' : '0.25' });
+    img.setAttribute('href', 'img/matilde.jpg');
+    if (a) img.classList.add('active-element');
+    g.appendChild(img);
   },
 
-  // =====================================================================
-  // Layer 6: Background — dark panels through chair bars, top area,
-  // chair crossbar
-  // =====================================================================
+  // Layer 6: Signature
   (g, a) => {
-    // Dark background — left panel (behind left chair bar)
-    pp(g, [
-      'M 0 0 L 48 0 L 48 450 L 0 450 Z'
-    ], a);
-    // Dark background — right panel (behind right chair bar)
-    pp(g, [
-      'M 312 0 L 360 0 L 360 450 L 312 450 Z'
-    ], a);
-    // Dark background — top panel (above hand)
-    pp(g, [
-      'M 60 0 L 300 0 L 300 30 L 60 30 Z'
-    ], a);
-    // Dark background — left of face through bars
-    pp(g, [
-      'M 60 30 L 94 30 L 94 420 L 60 420 Z'
-    ], a, lt);
-    // Dark background — right of face through bars
-    pp(g, [
-      'M 266 30 L 300 30 L 300 420 L 266 420 Z'
-    ], a, lt);
-    // Chair crossbar — horizontal connecting bar at bottom
-    pp(g, [
-      'M 42 380 C 44 376 52 374 58 376 L 302 376 C 308 374 316 376 318 380 L 318 392 C 316 396 308 398 302 396 L 58 396 C 52 398 44 396 42 392 Z'
-    ], a);
-    // Crossbar wood grain
-    pp(g, [
-      'M 60 382 C 100 384 160 382 200 384 C 240 382 280 384 310 382',
-      'M 60 390 C 110 388 170 390 220 388 C 260 390 290 388 310 390'
-    ], a, lt);
-    // Chair back hint — top horizontal piece
-    pp(g, [
-      'M 48 24 L 312 24',
-      'M 48 34 L 312 34'
-    ], a, lt);
-  },
-
-  // =====================================================================
-  // Layer 7: Color fills FIGURES — hair, skin, eyes, shirt, lip,
-  // teeth, adult hand, curl highlights
-  // =====================================================================
-  (g, a) => {
-    // Hair fill — main mass brown
-    fl(g,
-      'M 134 186 C 128 170 118 148 112 134 C 104 116 96 104 94 100 C 88 90 84 96 86 110 C 88 124 92 140 94 156 C 96 172 96 188 98 204 C 100 220 100 236 106 252 C 112 260 120 264 130 266 L 134 240 C 130 225 126 205 124 185 C 126 155 140 132 158 120 C 148 124 138 138 134 156 Z',
-      '#8B6538', a);
-    fl(g,
-      'M 230 192 C 236 174 248 150 256 134 C 262 122 268 110 272 104 C 278 96 280 100 278 114 C 276 128 272 144 268 160 C 266 176 264 192 262 208 C 260 224 258 240 254 252 C 248 260 240 264 230 266 L 226 240 C 234 225 238 205 236 185 C 234 155 220 132 202 120 C 212 124 222 138 226 156 Z',
-      '#8B6538', false);
-    fl(g,
-      'M 134 186 C 130 160 128 140 132 120 C 136 100 144 86 158 78 C 170 72 186 70 200 74 C 214 78 224 88 230 102 C 234 114 236 130 236 150 C 236 166 234 180 230 192 L 220 180 C 224 160 224 140 218 122 C 212 106 200 92 180 88 C 160 92 148 106 142 122 C 136 140 136 160 140 180 Z',
-      '#8B6538', false);
-    // Curl highlight fills — lighter tone on select curls
-    fl(g,
-      'M 170 80 C 168 74 172 68 178 66 C 184 64 190 68 190 74 C 190 80 186 84 180 84 C 176 84 172 82 170 80 Z',
-      '#C4A265', false);
-    fl(g,
-      'M 100 128 C 94 122 90 130 92 138 C 94 146 100 148 104 142 C 108 136 106 128 100 128 Z',
-      '#C4A265', false);
-    fl(g,
-      'M 260 128 C 266 122 270 130 268 138 C 266 146 260 148 256 142 C 252 136 254 128 260 128 Z',
-      '#C4A265', false);
-
-    // Skin fill — face
-    fl(g,
-      'M 180 130 C 150 130 128 157 126 187 C 124 207 128 227 136 242 C 144 254 158 264 174 268 C 180 269 184 269 190 268 C 206 264 220 254 228 242 C 236 227 240 207 238 187 C 236 157 214 130 180 130 Z',
-      '#FADCC2', a);
-    // Neck skin
-    fl(g,
-      'M 166 264 C 164 272 162 280 162 288 L 198 288 C 198 280 196 272 194 264 Z',
-      '#F0C8A8', false);
-    // Ear fills
-    fe(g, 'ellipse', { cx: 120, cy: 204, rx: 6, ry: 10, fill: '#F0C8A8' }, false);
-    fe(g, 'ellipse', { cx: 240, cy: 204, rx: 6, ry: 10, fill: '#F0C8A8' }, false);
-
-    // Eye whites — left
-    fl(g,
-      'M 150 204 C 150 196 158 188 168 188 C 178 188 186 196 186 204 C 186 212 178 220 168 220 C 158 220 150 212 150 204 Z',
-      '#FFFFFF', a);
-    // Eye whites — right
-    fl(g,
-      'M 178 204 C 178 196 186 188 196 188 C 206 188 214 196 214 204 C 214 212 206 220 196 220 C 186 220 178 212 178 204 Z',
-      '#FFFFFF', false);
-    // Iris fill — left (dark brown)
-    fl(g,
-      'M 157 208 C 157 200 162 194 169 194 C 176 194 181 200 181 208 C 181 216 176 222 169 222 C 162 222 157 216 157 208 Z',
-      '#5E4023', a);
-    // Iris fill — right (dark brown)
-    fl(g,
-      'M 185 208 C 185 200 190 194 197 194 C 204 194 209 200 209 208 C 209 216 204 222 197 222 C 190 222 185 216 185 208 Z',
-      '#5E4023', false);
-    // Pupil fills
-    fe(g, 'circle', { cx: 169, cy: 210, r: 5.5, fill: '#1A1A1A' }, false);
-    fe(g, 'circle', { cx: 197, cy: 210, r: 5.5, fill: '#1A1A1A' }, false);
-
-    // Shirt fill — peach/salmon pink
-    fl(g,
-      'M 148 290 C 152 284 162 280 172 280 C 178 280 182 280 188 280 C 198 280 208 284 212 290 L 244 306 C 252 312 256 320 258 332 L 262 390 L 98 390 L 102 332 C 104 320 108 312 116 306 Z',
-      '#F48FB1', a);
-
-    // Lip fill
-    fl(g,
-      'M 162 260 C 166 256 172 254 177 256 C 179 258 181 258 183 256 C 188 254 194 256 198 260 C 194 270 186 274 180 274 C 174 274 166 270 162 260 Z',
-      '#E8999A', false);
-    // Teeth fill — white area
-    fl(g,
-      'M 164 260 L 196 260 L 196 266 C 192 268 186 270 180 270 C 174 270 168 268 164 266 Z',
-      '#FFFFFF', false);
-
-    // Adult hand skin fill
-    fl(g,
-      'M 140 94 C 138 86 136 78 136 70 C 136 60 140 50 148 44 C 156 38 168 36 180 36 C 192 36 204 38 212 44 C 220 50 224 60 224 70 C 224 78 222 86 220 94 L 218 100 C 210 94 196 90 180 90 C 164 90 150 94 142 100 Z',
-      '#F0C8A0', a);
-    // Finger fills
-    fl(g,
-      'M 140 94 C 136 100 130 108 128 116 C 126 122 128 126 132 126 C 136 126 138 122 140 116 C 142 110 142 102 142 96 Z',
-      '#F0C8A0', false);
-    fl(g,
-      'M 155 92 C 152 98 148 108 146 118 C 144 126 146 130 150 130 C 154 130 156 126 158 118 C 160 110 160 100 158 94 Z',
-      '#F0C8A0', false);
-    fl(g,
-      'M 178 90 C 176 96 174 106 174 116 C 174 124 176 128 180 128 C 184 128 186 124 186 116 C 186 106 184 96 182 90 Z',
-      '#F0C8A0', false);
-    fl(g,
-      'M 200 92 C 198 98 196 106 196 114 C 196 120 198 124 202 124 C 206 124 208 120 208 114 C 208 106 206 98 204 92 Z',
-      '#F0C8A0', false);
-  },
-
-  // =====================================================================
-  // Layer 8: Color fills SCENE — dark background, chair bars wood,
-  // wood grain overlay, crossbar
-  // =====================================================================
-  (g, a) => {
-    // Dark background fill — left outer panel
-    fe(g, 'rect', { x: 0, y: 0, width: 48, height: 450, fill: '#3E2723' }, a);
-    // Dark background fill — right outer panel
-    fe(g, 'rect', { x: 312, y: 0, width: 48, height: 450, fill: '#3E2723' }, false);
-    // Dark background fill — top panel
-    fe(g, 'rect', { x: 60, y: 0, width: 240, height: 30, fill: '#3E2723' }, false);
-    // Dark background — left gap between bar and face
-    fe(g, 'rect', { x: 60, y: 30, width: 34, height: 390, fill: '#3E2723', opacity: '0.85' }, false);
-    // Dark background — right gap between bar and face
-    fe(g, 'rect', { x: 266, y: 30, width: 34, height: 390, fill: '#3E2723', opacity: '0.85' }, false);
-
-    // Left chair bar fill — wood color
-    fl(g,
-      'M 48 24 C 50 22 58 22 60 24 L 60 430 C 58 432 50 432 48 430 Z',
-      '#C49A6C', a);
-    // Right chair bar fill — wood color
-    fl(g,
-      'M 300 24 C 302 22 310 22 312 24 L 312 430 C 310 432 302 432 300 430 Z',
-      '#C49A6C', false);
-
-    // Left bar wood grain overlay
-    fl(g,
-      'M 50 60 C 52 56 56 56 58 60 L 58 120 C 56 124 52 124 50 120 Z',
-      '#A1887F', false);
-    fl(g,
-      'M 50 200 C 52 196 56 196 58 200 L 58 260 C 56 264 52 264 50 260 Z',
-      '#A1887F', false);
-    fl(g,
-      'M 50 340 C 52 336 56 336 58 340 L 58 400 C 56 404 52 404 50 400 Z',
-      '#A1887F', false);
-    // Right bar wood grain overlay
-    fl(g,
-      'M 302 80 C 304 76 308 76 310 80 L 310 140 C 308 144 304 144 302 140 Z',
-      '#A1887F', false);
-    fl(g,
-      'M 302 220 C 304 216 308 216 310 220 L 310 280 C 308 284 304 284 302 280 Z',
-      '#A1887F', false);
-    fl(g,
-      'M 302 360 C 304 356 308 356 310 360 L 310 420 C 308 424 304 424 302 420 Z',
-      '#A1887F', false);
-
-    // Chair crossbar fill
-    fl(g,
-      'M 42 380 C 44 376 52 374 58 376 L 302 376 C 308 374 316 376 318 380 L 318 392 C 316 396 308 398 302 396 L 58 396 C 52 398 44 396 42 392 Z',
-      '#C49A6C', a);
-    // Crossbar grain overlay
-    fl(g,
-      'M 60 380 L 300 380 L 300 386 L 60 386 Z',
-      '#A1887F', false);
-
-    // Chair top bar fill
-    fl(g,
-      'M 48 24 L 312 24 L 312 34 L 48 34 Z',
-      '#C49A6C', false);
-  },
-
-  // =====================================================================
-  // Layer 9: Polish — eye shine white dots, cheek blush, nose highlight,
-  // hair shine, fingernail highlights, lip shine, chair bar shine
-  // =====================================================================
-  (g, a) => {
-    // Eye shine — left (main sparkle)
-    fe(g, 'circle', { cx: 165, cy: 204, r: 2.2, fill: 'white' }, a);
-    // Eye shine — left (secondary)
-    fe(g, 'circle', { cx: 172, cy: 212, r: 1.1, fill: 'white', opacity: '0.7' }, false);
-    // Eye shine — right (main sparkle)
-    fe(g, 'circle', { cx: 193, cy: 204, r: 2.2, fill: 'white' }, a);
-    // Eye shine — right (secondary)
-    fe(g, 'circle', { cx: 200, cy: 212, r: 1.1, fill: 'white', opacity: '0.7' }, false);
-
-    // Cheek blush — left (warm peachy pink)
-    fe(g, 'ellipse', { cx: 148, cy: 238, rx: 14, ry: 7, fill: '#FBBCAE', opacity: '0.45' }, a);
-    // Cheek blush — right
-    fe(g, 'ellipse', { cx: 212, cy: 238, rx: 14, ry: 7, fill: '#FBBCAE', opacity: '0.45' }, a);
-
-    // Nose highlight — small shine on nose tip
-    fe(g, 'ellipse', { cx: 180, cy: 234, rx: 3, ry: 2, fill: 'white', opacity: '0.35' }, a);
-
-    // Hair shine — golden highlights on curls
-    pp(g, [
-      'M 148 86 C 152 82 158 82 162 86',
-      'M 208 86 C 204 82 198 82 196 86'
-    ], a, lt);
-    fl(g,
-      'M 156 96 C 158 90 166 86 172 90 C 178 94 176 102 170 104 C 164 106 158 102 156 96 Z',
-      '#D4A855', false);
-    fl(g,
-      'M 196 96 C 194 90 186 86 180 90 C 174 94 176 102 182 104 C 188 106 194 102 196 96 Z',
-      '#D4A855', false);
-    fl(g,
-      'M 102 152 C 106 146 112 146 114 152 C 116 158 112 164 106 164 C 100 164 98 158 102 152 Z',
-      '#D4A855', false);
-    fl(g,
-      'M 258 152 C 254 146 248 146 246 152 C 244 158 248 164 254 164 C 260 164 262 158 258 152 Z',
-      '#D4A855', false);
-
-    // Fingernail highlights — small white arcs on each nail
-    fe(g, 'ellipse', { cx: 131, cy: 122, rx: 2.5, ry: 1.5, fill: 'white', opacity: '0.5' }, a);
-    fe(g, 'ellipse', { cx: 149, cy: 126, rx: 2.5, ry: 1.5, fill: 'white', opacity: '0.5' }, false);
-    fe(g, 'ellipse', { cx: 179, cy: 124, rx: 2.5, ry: 1.5, fill: 'white', opacity: '0.5' }, false);
-    fe(g, 'ellipse', { cx: 201, cy: 120, rx: 2.5, ry: 1.5, fill: 'white', opacity: '0.5' }, false);
-
-    // Lip shine — subtle highlight
-    fe(g, 'ellipse', { cx: 176, cy: 262, rx: 4, ry: 1.5, fill: 'white', opacity: '0.3' }, a);
-
-    // Chair bar shine — left
-    fl(g,
-      'M 50 40 C 52 38 54 38 56 40 L 56 120 C 54 122 52 122 50 120 Z',
-      'white', false);
-    fe(g, 'rect', { x: 50, y: 40, width: 4, height: 80, rx: 2, fill: 'white', opacity: '0.12' }, false);
-    // Chair bar shine — right
-    fe(g, 'rect', { x: 302, y: 50, width: 4, height: 80, rx: 2, fill: 'white', opacity: '0.12' }, false);
-
-    // Crossbar shine
-    fe(g, 'rect', { x: 80, y: 380, width: 200, height: 3, rx: 1, fill: 'white', opacity: '0.1' }, false);
-
-    // Shirt collar shine — subtle fabric highlight
-    fe(g, 'ellipse', { cx: 180, cy: 284, rx: 12, ry: 3, fill: 'white', opacity: '0.15' }, false);
-
-    // Warm ambient lighting overlay
-    fe(g, 'rect', { x: 60, y: 30, width: 240, height: 350, fill: '#FFF8E1', opacity: '0.04' }, false);
+    const t = ce('text', {
+      x: 180, y: 435,
+      fill: a ? HL : '#A08060',
+      'font-size': '15',
+      'text-anchor': 'middle',
+      'font-family': 'Georgia, serif',
+      'letter-spacing': '3',
+      'font-style': 'italic'
+    });
+    t.textContent = 'Matilde';
+    if (a) t.classList.add('active-element');
+    g.appendChild(t);
   }
 ];
 
@@ -5316,51 +3882,90 @@ const sandraLayers = [
 
   // Layer 7: Color fills — Sandra (skin, hair, clothing, neck)
   (g, a) => {
-    // Skin — face
-    fl(g, 'M 180 44 C 157 44 142 60 140 80 C 138 100 142 116 150 128 C 158 140 168 148 180 150 C 192 148 202 140 210 128 C 218 116 222 100 220 80 C 218 60 203 44 180 44 Z', '#FADCC2', a);
-    // Neck skin
-    fe(g, 'rect', { x: 169, y: 144, width: 22, height: 20, rx: 5, fill: '#F0C8A8' }, false);
-    // Ears skin
-    fe(g, 'ellipse', { cx: 134, cy: 88, rx: 5, ry: 8, fill: '#F0C8A8' }, false);
-    fe(g, 'ellipse', { cx: 226, cy: 88, rx: 5, ry: 8, fill: '#F0C8A8' }, false);
+    const defs = ce('defs', {}); g.appendChild(defs);
 
-    // Hair fill — main mass
-    fl(g, 'M 150 84 C 146 64 154 44 170 34 C 178 30 188 28 198 30 C 212 34 224 46 228 64 C 230 74 230 84 228 92 L 224 90 C 226 82 226 72 224 62 C 220 48 210 38 198 34 C 190 32 180 34 172 38 C 160 46 152 60 154 80 Z', '#8B6538', a);
-    // Ponytail fill
-    fl(g, 'M 222 52 C 232 46 244 48 250 56 C 256 66 258 80 258 96 C 258 112 254 126 248 136 C 244 142 240 146 236 148 L 240 140 C 246 130 250 116 250 102 C 250 86 248 70 244 60 C 240 54 232 50 224 54 Z', '#8B6538', false);
+    // Skin — face (radial gradient: warm center, softer edges)
+    const skinFace = a ? HL : gd(defs, 'r', [['0%','#FCE4D0'],['100%','#E8B888']], { cx: 180, cy: 90, r: 55 });
+    fl(g, 'M 180 44 C 157 44 142 60 140 80 C 138 100 142 116 150 128 C 158 140 168 148 180 150 C 192 148 202 140 210 128 C 218 116 222 100 220 80 C 218 60 203 44 180 44 Z', skinFace, a);
+    // Forehead highlight
+    hi(g, 'M 168 50 C 176 46 186 46 194 50 C 190 48 178 48 172 52 Z', 0.15, false);
+    // Nose shadow
+    sh(g, 'M 178 96 C 180 102 182 108 184 112 L 180 114 C 178 108 176 102 176 96 Z', 0.08, false);
+    // Jawline shadow
+    sh(g, 'M 148 120 C 156 134 166 144 180 148 C 194 144 204 134 212 120 L 210 124 C 202 136 192 146 180 150 C 168 146 158 136 150 124 Z', 0.1, false);
+
+    // Neck skin (gradient)
+    const neckGrad = a ? HL : gd(defs, 'l', [['0%','#F0C8A8'],['100%','#DCAA88']], { x1: 180, y1: 144, x2: 180, y2: 164 });
+    fe(g, 'rect', { x: 169, y: 144, width: 22, height: 20, rx: 5, fill: neckGrad }, false);
+    // Ears skin (radial)
+    const earGradL = gd(defs, 'r', [['0%','#F5D0B0'],['100%','#E0B888']], { cx: 134, cy: 88, r: 10 });
+    fe(g, 'ellipse', { cx: 134, cy: 88, rx: 5, ry: 8, fill: earGradL }, false);
+    const earGradR = gd(defs, 'r', [['0%','#F5D0B0'],['100%','#E0B888']], { cx: 226, cy: 88, r: 10 });
+    fe(g, 'ellipse', { cx: 226, cy: 88, rx: 5, ry: 8, fill: earGradR }, false);
+
+    // Hair fill — main mass (gradient crown to tips)
+    const hairGrad = a ? HL : gd(defs, 'l', [['0%','#A07840'],['100%','#6D4C28']], { x1: 180, y1: 28, x2: 180, y2: 92 });
+    fl(g, 'M 150 84 C 146 64 154 44 170 34 C 178 30 188 28 198 30 C 212 34 224 46 228 64 C 230 74 230 84 228 92 L 224 90 C 226 82 226 72 224 62 C 220 48 210 38 198 34 C 190 32 180 34 172 38 C 160 46 152 60 154 80 Z', hairGrad, a);
+    // Hair volume highlight
+    hi(g, 'M 172 38 C 180 34 190 32 198 34 C 192 34 182 36 176 40 Z', 0.2, false);
+    // Part-line shadow
+    sh(g, 'M 186 30 C 188 40 190 52 192 66 L 188 66 C 186 52 184 40 184 30 Z', 0.1, false);
+
+    // Ponytail fill (gradient along length)
+    const ponyGrad = gd(defs, 'l', [['0%','#8B6538'],['100%','#6D4C28']], { x1: 230, y1: 48, x2: 248, y2: 148 });
+    fl(g, 'M 222 52 C 232 46 244 48 250 56 C 256 66 258 80 258 96 C 258 112 254 126 248 136 C 244 142 240 146 236 148 L 240 140 C 246 130 250 116 250 102 C 250 86 248 70 244 60 C 240 54 232 50 224 54 Z', ponyGrad, false);
     // Hair elastic fill
     fl(g, 'M 222 48 C 226 44 232 42 236 44 C 240 46 242 50 240 54 C 238 58 232 58 228 56 C 224 54 222 52 222 48 Z', '#6D4C41', false);
     // Loose strand fills (darker tint)
     fl(g, 'M 152 78 C 150 88 148 100 150 114 C 152 126 154 136 158 144 L 154 146 C 150 138 146 126 144 114 C 142 100 144 88 148 76 Z', '#7A5A30', false);
 
-    // Pink cardigan fill
-    fl(g, 'M 120 180 C 130 170 150 164 168 162 L 164 166 C 162 176 160 190 158 206 C 156 220 154 236 152 250 L 100 250 L 104 210 C 106 196 112 188 120 180 Z', '#F48FB1', a);
-    fl(g, 'M 240 180 C 230 170 210 164 192 162 L 196 166 C 198 176 200 190 202 206 C 204 220 206 236 208 250 L 260 250 L 256 210 C 254 196 248 188 240 180 Z', '#F48FB1', false);
+    // Pink cardigan fill (gradient shoulder to waist)
+    const cardiganGrad = a ? HL : gd(defs, 'l', [['0%','#F8A0C0'],['100%','#E07098']], { x1: 180, y1: 162, x2: 180, y2: 250 });
+    fl(g, 'M 120 180 C 130 170 150 164 168 162 L 164 166 C 162 176 160 190 158 206 C 156 220 154 236 152 250 L 100 250 L 104 210 C 106 196 112 188 120 180 Z', cardiganGrad, a);
+    fl(g, 'M 240 180 C 230 170 210 164 192 162 L 196 166 C 198 176 200 190 202 206 C 204 220 206 236 208 250 L 260 250 L 256 210 C 254 196 248 188 240 180 Z', cardiganGrad, false);
+    // Cardigan fold shadows
+    sh(g, 'M 130 186 C 134 200 132 220 130 240 L 126 240 C 128 220 130 200 126 186 Z', 0.1, false);
+    sh(g, 'M 230 186 C 226 200 228 220 230 240 L 234 240 C 232 220 230 200 234 186 Z', 0.1, false);
     // Cardigan collar fills
     fl(g, 'M 164 166 C 160 162 154 160 150 164 C 146 168 146 174 150 178 C 154 182 158 180 160 176 Z', '#E91E8E', false);
     fl(g, 'M 196 166 C 200 162 206 160 210 164 C 214 168 214 174 210 178 C 206 182 202 180 200 176 Z', '#E91E8E', false);
 
-    // Black t-shirt V fill (visible between cardigan lapels)
-    fl(g, 'M 162 170 C 168 178 174 196 180 220 C 186 196 192 178 198 170 C 192 168 186 166 180 166 C 174 166 168 168 162 170 Z', '#37474F', a);
+    // Black t-shirt V fill (gradient for depth)
+    const tshirtGrad = a ? HL : gd(defs, 'l', [['0%','#37474F'],['100%','#263238']], { x1: 180, y1: 170, x2: 180, y2: 220 });
+    fl(g, 'M 162 170 C 168 178 174 196 180 220 C 186 196 192 178 198 170 C 192 168 186 166 180 166 C 174 166 168 168 162 170 Z', tshirtGrad, a);
 
     // Arm skin (lower arms visible near table)
-    fe(g, 'ellipse', { cx: 98, cy: 246, rx: 8, ry: 6, fill: '#F0C8A8' }, false);
-    fe(g, 'ellipse', { cx: 262, cy: 246, rx: 8, ry: 6, fill: '#F0C8A8' }, false);
+    const armGrad = gd(defs, 'r', [['0%','#F5D0B0'],['100%','#E0B888']], { cx: 98, cy: 246, r: 10 });
+    fe(g, 'ellipse', { cx: 98, cy: 246, rx: 8, ry: 6, fill: armGrad }, false);
+    const armGradR = gd(defs, 'r', [['0%','#F5D0B0'],['100%','#E0B888']], { cx: 262, cy: 246, r: 10 });
+    fe(g, 'ellipse', { cx: 262, cy: 246, rx: 8, ry: 6, fill: armGradR }, false);
+
+    // Under-chin shadow
+    sh(g, 'M 168 148 C 174 152 186 152 192 148 L 190 154 C 184 156 176 156 170 154 Z', 0.12, false);
   },
 
   // Layer 8: Color fills — table (checkered), dominoes, phone, remote
   (g, a) => {
-    // Checkered tablecloth — alternating beige and brown squares
+    const defs = ce('defs', {}); g.appendChild(defs);
+
+    // Define 2 shared gradients for checkered tablecloth (avoids 56 gradient defs)
+    const darkSquareGrad = gd(defs, 'l', [['0%','#A1887F'],['100%','#8D6E63']], { x1: 0, y1: 250, x2: 0, y2: 481 });
+    const lightSquareGrad = gd(defs, 'l', [['0%','#EFEBE9'],['100%','#E0D8D0']], { x1: 0, y1: 250, x2: 0, y2: 481 });
+    // Checkered tablecloth — alternating squares with shared gradients
     for (let row = 0; row < 7; row++) {
       for (let col = 0; col < 8; col++) {
         const x = col * 45;
         const y = 250 + row * 33;
         const dark = (col + row) % 2 === 0;
-        fe(g, 'rect', { x, y, width: 45, height: 33, fill: dark ? '#A1887F' : '#EFEBE9' }, false);
+        fe(g, 'rect', { x, y, width: 45, height: 33, fill: dark ? darkSquareGrad : lightSquareGrad }, false);
       }
     }
+    // Table edge shadow
+    sh(g, 'M 0 250 L 360 250 L 360 256 L 0 256 Z', 0.1, false);
 
-    // Domino fills on table (white fills for played dominoes)
+    // Domino fills on table (subtle gradient + drop shadows)
+    const domShadow = sf(defs, 1, 0.5, 0.5, '#000', 0.15);
+    const dominoGrad = gd(defs, 'l', [['0%','#F5F5F5'],['100%','#E0E0E0']], { x1: 0, y1: 0, x2: 15, y2: 11 });
     const dPositions = [
       { x: 100, y: 268, r: -8 },
       { x: 120, y: 272, r: 3 },
@@ -5372,23 +3977,26 @@ const sandraLayers = [
     ];
     dPositions.forEach(({ x, y, r }) => {
       const dg = ce('g', { transform: `rotate(${r} ${x + 8} ${y + 6})` });
-      fe(dg, 'rect', { x: x + 0.5, y: y + 0.5, width: 15, height: 11, rx: 1.5, fill: '#ECEFF1' }, false);
+      fe(dg, 'rect', { x: x + 0.5, y: y + 0.5, width: 15, height: 11, rx: 1.5, fill: dominoGrad, filter: domShadow }, false);
       g.appendChild(dg);
     });
 
-    // Phone fill (gold/rose back)
-    fe(g, 'rect', { x: 279, y: 287, width: 32, height: 22, rx: 3, fill: '#C9A96E' }, a);
-    // Phone inner screen area (darker)
+    // Phone fill (metallic gradient + specular highlight)
+    const phoneGrad = a ? HL : gd(defs, 'l', [['0%','#D4B87A'],['50%','#C9A96E'],['100%','#B8956A']], { x1: 279, y1: 287, x2: 311, y2: 287 });
+    fe(g, 'rect', { x: 279, y: 287, width: 32, height: 22, rx: 3, fill: phoneGrad }, a);
     fe(g, 'rect', { x: 281, y: 289, width: 28, height: 18, rx: 2, fill: '#B8956A' }, false);
+    // Phone specular
+    hi(g, 'M 283 289 L 307 289 L 307 291 L 283 291 Z', 0.15, false);
 
-    // TV remote fill (dark)
-    fe(g, 'rect', { x: 323, y: 277, width: 16, height: 44, rx: 3, fill: '#263238' }, a);
+    // TV remote fill (gradient plastic)
+    const remoteGrad = a ? HL : gd(defs, 'l', [['0%','#37474F'],['50%','#263238'],['100%','#1A2228']], { x1: 323, y1: 299, x2: 339, y2: 299 });
+    fe(g, 'rect', { x: 323, y: 277, width: 16, height: 44, rx: 3, fill: remoteGrad }, a);
 
-    // Napkin fill (white, slightly off-white)
+    // Napkin fill
     fl(g, 'M 50 284 C 52 282 58 280 66 282 C 74 284 78 286 80 290 C 82 294 78 298 72 300 C 66 302 58 300 52 298 C 48 296 48 290 50 284 Z', '#FAFAFA', false);
 
-    // Held domino fills (white rectangles in hands)
-    // Left hand dominoes
+    // Held domino fills (gradient + shadow)
+    const heldDomGrad = gd(defs, 'l', [['0%','#FAFAFA'],['100%','#E8E8E8']], { x1: 0, y1: 0, x2: 15, y2: 27 });
     const ldPos = [
       { x: 64, y: 182, r: -25, cx: 72, cy: 196 },
       { x: 72, y: 180, r: -8, cx: 80, cy: 194 },
@@ -5396,10 +4004,9 @@ const sandraLayers = [
     ];
     ldPos.forEach(({ x, y, r, cx, cy }) => {
       const dg = ce('g', { transform: `rotate(${r} ${cx} ${cy})` });
-      fe(dg, 'rect', { x: x + 0.5, y: y + 0.5, width: 15, height: 27, rx: 2, fill: '#F5F5F5' }, false);
+      fe(dg, 'rect', { x: x + 0.5, y: y + 0.5, width: 15, height: 27, rx: 2, fill: heldDomGrad, filter: domShadow }, false);
       g.appendChild(dg);
     });
-    // Right hand dominoes
     const rdPos = [
       { x: 264, y: 180, r: -10, cx: 272, cy: 194 },
       { x: 272, y: 180, r: 8, cx: 280, cy: 194 },
@@ -5407,13 +4014,23 @@ const sandraLayers = [
     ];
     rdPos.forEach(({ x, y, r, cx, cy }) => {
       const dg = ce('g', { transform: `rotate(${r} ${cx} ${cy})` });
-      fe(dg, 'rect', { x: x + 0.5, y: y + 0.5, width: 15, height: 27, rx: 2, fill: '#F5F5F5' }, false);
+      fe(dg, 'rect', { x: x + 0.5, y: y + 0.5, width: 15, height: 27, rx: 2, fill: heldDomGrad, filter: domShadow }, false);
       g.appendChild(dg);
     });
+
+    // Light falloff overlay (subtle vignette on table)
+    const tableFalloff = gd(defs, 'r', [['0%','#000000',0],['100%','#000000',0.05]], { cx: 180, cy: 350, r: 200 });
+    fe(g, 'rect', { x: 0, y: 250, width: 360, height: 200, fill: tableFalloff }, false);
   },
 
   // Layer 9: Polish — eye shines, cheek blush, lip color, text, watch, highlights, background, domino dots
   (g, a) => {
+    const defs = ce('defs', {}); g.appendChild(defs);
+
+    // Eye shine glow (soft glow behind bright dots)
+    const eyeGlow = gf(defs, 2);
+    fef(g, 'circle', { cx: 170, cy: 89, r: 3, fill: 'white', opacity: '0.3', filter: eyeGlow }, false);
+    fef(g, 'circle', { cx: 198, cy: 89, r: 3, fill: 'white', opacity: '0.3', filter: eyeGlow }, false);
     // Eye shine (white sparkle)
     fe(g, 'circle', { cx: 170, cy: 89, r: 1.5, fill: 'white' }, a);
     fe(g, 'circle', { cx: 198, cy: 89, r: 1.5, fill: 'white' }, a);
@@ -5421,12 +4038,15 @@ const sandraLayers = [
     fe(g, 'circle', { cx: 174, cy: 93, r: 0.8, fill: 'white', opacity: '0.7' }, false);
     fe(g, 'circle', { cx: 202, cy: 93, r: 0.8, fill: 'white', opacity: '0.7' }, false);
 
-    // Cheek blush
-    fe(g, 'ellipse', { cx: 158, cy: 116, rx: 10, ry: 5, fill: '#F48FB1', opacity: '0.25' }, a);
-    fe(g, 'ellipse', { cx: 202, cy: 116, rx: 10, ry: 5, fill: '#F48FB1', opacity: '0.25' }, a);
+    // Cheek blush (radial gradient for natural falloff)
+    const blushL = gd(defs, 'r', [['0%','#F48FB1',0.3],['100%','#F48FB1',0]], { cx: 158, cy: 116, r: 14 });
+    fe(g, 'ellipse', { cx: 158, cy: 116, rx: 14, ry: 7, fill: blushL }, a);
+    const blushR = gd(defs, 'r', [['0%','#F48FB1',0.3],['100%','#F48FB1',0]], { cx: 202, cy: 116, r: 14 });
+    fe(g, 'ellipse', { cx: 202, cy: 116, rx: 14, ry: 7, fill: blushR }, a);
 
-    // Lip color — upper and lower lip fill
-    fl(g, 'M 166 128 C 170 126 174 124 177 126 C 179 128 181 128 183 126 C 186 124 190 126 194 128 C 190 134 184 137 180 137 C 176 137 170 134 166 128 Z', '#E57373', false);
+    // Lip color — gradient for depth
+    const lipGrad = gd(defs, 'r', [['0%','#EF5350'],['100%','#C62828']], { cx: 180, cy: 132, r: 16 });
+    fl(g, 'M 166 128 C 170 126 174 124 177 126 C 179 128 181 128 183 126 C 186 124 190 126 194 128 C 190 134 184 137 180 137 C 176 137 170 134 166 128 Z', lipGrad, false);
 
     // Cursive text "It's all good" on black t-shirt
     const ct = ce('text', {
@@ -5441,9 +4061,11 @@ const sandraLayers = [
     if (a) ct.classList.add('active-element');
     g.appendChild(ct);
 
-    // Watch on left wrist
-    fe(g, 'rect', { x: 92, y: 248, width: 10, height: 7, rx: 2.5, fill: '#78909C' }, a);
-    fe(g, 'rect', { x: 94, y: 249, width: 6, height: 5, rx: 1.5, fill: '#B0BEC5' }, false);
+    // Watch on left wrist (metallic gradient)
+    const watchGrad = a ? HL : gd(defs, 'l', [['0%','#607D8B'],['50%','#90A4AE'],['100%','#607D8B']], { x1: 92, y1: 251, x2: 102, y2: 251 });
+    fe(g, 'rect', { x: 92, y: 248, width: 10, height: 7, rx: 2.5, fill: watchGrad }, a);
+    const watchFaceGrad = gd(defs, 'r', [['0%','#CFD8DC'],['100%','#90A4AE']], { cx: 97, cy: 251, r: 5 });
+    fe(g, 'rect', { x: 94, y: 249, width: 6, height: 5, rx: 1.5, fill: watchFaceGrad }, false);
     // Watch band
     pp(g, [
       'M 92 251 C 90 251 88 250 86 250',
@@ -5458,6 +4080,13 @@ const sandraLayers = [
       'M 156 56 C 162 48 170 44 178 44'
     ], a, lt);
 
+    // Sandra's figure shadow on table
+    sh(g, 'M 120 248 C 140 252 220 252 240 248 L 242 256 C 220 260 140 260 118 256 Z', 0.08, false);
+
+    // Atmospheric face glow (warm light on face)
+    const faceGlow = gd(defs, 'r', [['0%','#FFF8E1',0.08],['100%','#FFF8E1',0]], { cx: 180, cy: 90, r: 60 });
+    fe(g, 'ellipse', { cx: 180, cy: 90, rx: 60, ry: 50, fill: faceGlow }, false);
+
     // Background — kitchen cabinets hint (top left)
     pp(g, ['M 0 0 L 0 28 L 80 28 L 80 0', 'M 0 14 L 80 14'], a, lt);
     fe(g, 'rect', { x: 2, y: 2, width: 76, height: 11, rx: 2, fill: '#ECEFF1', opacity: '0.15' }, false);
@@ -5471,19 +4100,12 @@ const sandraLayers = [
 
     // Domino dots on played pieces (various pip patterns)
     const dotSets = [
-      // Domino 1: 2|3
       { x: 100, y: 268, r: -8, left: [[3, 3], [3, 9]], right: [[11, 3], [11, 9], [11, 6]] },
-      // Domino 2: 4|1
       { x: 120, y: 272, r: 3, left: [[3, 3], [3, 9], [5, 3], [5, 9]], right: [[11, 6]] },
-      // Domino 3: 5|2 (rotated 85 deg)
       { x: 140, y: 269, r: 85, left: [[3, 3], [3, 9], [5, 6], [5, 3], [5, 9]], right: [[11, 3], [11, 9]] },
-      // Domino 4: 3|6
       { x: 156, y: 272, r: -4, left: [[3, 3], [3, 9], [3, 6]], right: [[11, 2], [11, 5], [11, 8], [13, 2], [13, 5], [13, 8]] },
-      // Domino 5: 1|4 (rotated 90 deg)
       { x: 176, y: 268, r: 90, left: [[3, 6]], right: [[11, 3], [11, 9], [13, 3], [13, 9]] },
-      // Domino 6: 6|5
       { x: 196, y: 270, r: 6, left: [[3, 2], [3, 6], [3, 10], [5, 2], [5, 6], [5, 10]], right: [[11, 2], [11, 6], [11, 10], [13, 2], [13, 10]] },
-      // Domino 7: 2|3
       { x: 216, y: 274, r: -3, left: [[3, 3], [3, 9]], right: [[11, 3], [11, 9], [11, 6]] }
     ];
     dotSets.forEach(({ x, y, r, left, right }) => {
@@ -5497,8 +4119,9 @@ const sandraLayers = [
       g.appendChild(dg);
     });
 
-    // Warm lighting overlay (subtle)
-    fe(g, 'rect', { x: 0, y: 0, width: 360, height: 250, fill: '#FFF8E1', opacity: '0.06' }, false);
+    // Warm lighting overlay (radial vignette instead of flat)
+    const warmVignette = gd(defs, 'r', [['0%','#FFF8E1',0.07],['100%','#FFF8E1',0]], { cx: 180, cy: 125, r: 180 });
+    fe(g, 'rect', { x: 0, y: 0, width: 360, height: 250, fill: warmVignette }, false);
   }
 ];
 
@@ -6706,34 +5329,55 @@ const brunomiguelLayers = [
   // Layer 7: Color fills — figures (skin, ears, clothing, third person)
   // =====================================================================
   (g, a) => {
+    const defs = ce('defs', {}); g.appendChild(defs);
+
     // ----- Bruno -----
-    // Bruno skin fill — face
+    // Bruno skin fill — face (radial gradient, light from left)
+    const brunoSkin = a ? HL : gd(defs, 'r', [['0%','#F5CCA0'],['100%','#D8A060']], { cx: 80, cy: 95, r: 50 });
     fl(g,
       'M 58 96 C 56 72 64 52 78 44 C 90 38 100 40 108 48 C 116 58 120 74 118 92 C 118 108 116 120 110 130 C 106 138 100 146 94 152 C 90 156 86 158 82 156 C 76 152 70 144 64 134 C 58 124 56 110 58 96 Z',
-      '#EDBE8C', a);
-    // Bruno left ear fill
-    fe(g, 'ellipse', { cx: 50, cy: 100, rx: 6, ry: 10, fill: '#E0B080' }, false);
+      brunoSkin, a);
+    // Bruno forehead highlight
+    hi(g, 'M 72 48 C 80 44 92 42 100 46 C 94 44 82 46 76 50 Z', 0.15, false);
+    // Bruno face shadow (right side)
+    sh(g, 'M 108 58 C 116 68 118 82 118 96 C 118 108 116 118 112 126 L 110 124 C 114 116 116 106 116 94 C 116 80 114 66 106 56 Z', 0.08, false);
+
+    // Bruno left ear fill (radial)
+    const brunoEarL = gd(defs, 'r', [['0%','#EDBE8C'],['100%','#D0A060']], { cx: 50, cy: 100, r: 12 });
+    fe(g, 'ellipse', { cx: 50, cy: 100, rx: 6, ry: 10, fill: brunoEarL }, false);
     // Bruno right ear fill
-    fe(g, 'ellipse', { cx: 124, cy: 98, rx: 6, ry: 10, fill: '#E0B080' }, false);
-    // Bruno neck skin
-    fe(g, 'rect', { x: 76, y: 154, width: 22, height: 18, rx: 4, fill: '#DEB07A' }, false);
+    const brunoEarR = gd(defs, 'r', [['0%','#EDBE8C'],['100%','#D0A060']], { cx: 124, cy: 98, r: 12 });
+    fe(g, 'ellipse', { cx: 124, cy: 98, rx: 6, ry: 10, fill: brunoEarR }, false);
+    // Bruno neck skin (gradient)
+    const brunoNeck = gd(defs, 'l', [['0%','#DEB07A'],['100%','#C89860']], { x1: 87, y1: 154, x2: 87, y2: 172 });
+    fe(g, 'rect', { x: 76, y: 154, width: 22, height: 18, rx: 4, fill: brunoNeck }, false);
     // Bruno eye whites
     fl(g, 'M 66 90 C 68 84 74 82 80 84 C 86 86 86 92 82 96 C 78 98 68 96 66 90 Z', '#FFFFFF', false);
     fl(g, 'M 92 88 C 94 82 100 80 106 82 C 112 84 112 90 108 94 C 104 96 94 94 92 88 Z', '#FFFFFF', false);
 
-    // Bruno jacket fill — dark navy
+    // Bruno jacket fill — dark navy (gradient for depth)
+    const jacketGrad = a ? HL : gd(defs, 'l', [['0%','#243442'],['100%','#0F1A22']], { x1: 32, y1: 270, x2: 140, y2: 270 });
     fl(g,
       'M 36 204 C 44 186 62 174 86 172 C 110 174 128 186 136 204 L 140 340 L 32 340 Z',
-      '#1B2632', a);
+      jacketGrad, a);
+    // Jacket fold shadows
+    sh(g, 'M 56 210 C 58 230 56 260 54 290 L 50 290 C 52 260 54 230 52 210 Z', 0.1, false);
+    sh(g, 'M 116 210 C 114 230 116 260 118 290 L 122 290 C 120 260 118 230 120 210 Z', 0.1, false);
+    // Jacket shoulder highlight
+    hi(g, 'M 58 190 C 68 182 78 176 86 174 C 78 178 68 184 60 192 Z', 0.08, false);
+
     // Collar fill
     fl(g,
       'M 70 174 C 66 170 60 170 58 176 C 56 182 60 186 66 184 C 74 188 82 190 88 190 C 94 190 100 188 106 184 C 112 186 116 182 114 176 C 112 170 106 170 102 174 Z',
       '#263842', false);
-    // Orange shoulder patches fill
-    fe(g, 'path', { d: 'M 42 210 L 58 206 L 58 216 L 42 220 Z', fill: '#FF6F00' }, a);
-    fe(g, 'path', { d: 'M 130 210 L 114 206 L 114 216 L 130 220 Z', fill: '#FF6F00' }, a);
-    // Zipper strip
-    fe(g, 'rect', { x: 86, y: 190, width: 4, height: 150, fill: '#546E7A' }, false);
+    // Orange shoulder patches (radial gradient, bright center)
+    const patchGradL = a ? HL : gd(defs, 'r', [['0%','#FF8F00'],['100%','#E65100']], { cx: 50, cy: 213, r: 12 });
+    fe(g, 'path', { d: 'M 42 210 L 58 206 L 58 216 L 42 220 Z', fill: patchGradL }, a);
+    const patchGradR = a ? HL : gd(defs, 'r', [['0%','#FF8F00'],['100%','#E65100']], { cx: 122, cy: 213, r: 12 });
+    fe(g, 'path', { d: 'M 130 210 L 114 206 L 114 216 L 130 220 Z', fill: patchGradR }, a);
+    // Zipper strip (metallic gradient)
+    const zipGrad = gd(defs, 'l', [['0%','#455A64'],['50%','#78909C'],['100%','#455A64']], { x1: 86, y1: 265, x2: 90, y2: 265 });
+    fe(g, 'rect', { x: 86, y: 190, width: 4, height: 150, fill: zipGrad }, false);
     // Zipper pull fill
     fe(g, 'rect', { x: 84, y: 190, width: 8, height: 8, rx: 1, fill: '#FF6F00' }, false);
 
@@ -6741,26 +5385,36 @@ const brunomiguelLayers = [
     fl(g,
       'M 24 280 C 18 272 14 264 16 258 C 18 250 22 260 28 272 C 32 280 36 288 40 292 C 34 294 28 292 24 280 Z',
       '#EDBE8C', false);
+    // Bruno under-chin shadow
+    sh(g, 'M 72 150 C 78 154 88 156 96 152 L 94 158 C 86 160 78 160 74 156 Z', 0.12, false);
 
     // ----- Miguel -----
-    // Miguel skin fill — face
+    // Miguel skin fill — face (radial gradient + rosy warmth)
+    const migSkin = a ? HL : gd(defs, 'r', [['0%','#F8DCC0'],['100%','#E0B888']], { cx: 216, cy: 110, r: 50 });
     fl(g,
       'M 190 110 C 190 88 200 72 216 68 C 232 72 242 88 242 110 C 244 126 240 140 234 148 C 228 154 222 160 216 162 C 210 160 204 154 198 148 C 192 140 188 126 190 110 Z',
-      '#F5D0A9', a);
-    // Miguel left ear fill
-    fe(g, 'ellipse', { cx: 184, cy: 118, rx: 5, ry: 10, fill: '#F0C8A0' }, false);
+      migSkin, a);
+    // Miguel left ear fill (radial)
+    const migEarL = gd(defs, 'r', [['0%','#F5D0A9'],['100%','#E0B888']], { cx: 184, cy: 118, r: 12 });
+    fe(g, 'ellipse', { cx: 184, cy: 118, rx: 5, ry: 10, fill: migEarL }, false);
     // Miguel right ear fill
-    fe(g, 'ellipse', { cx: 248, cy: 116, rx: 5, ry: 10, fill: '#F0C8A0' }, false);
-    // Miguel neck skin
-    fe(g, 'rect', { x: 206, y: 158, width: 18, height: 14, rx: 4, fill: '#F0C8A0' }, false);
+    const migEarR = gd(defs, 'r', [['0%','#F5D0A9'],['100%','#E0B888']], { cx: 248, cy: 116, r: 12 });
+    fe(g, 'ellipse', { cx: 248, cy: 116, rx: 5, ry: 10, fill: migEarR }, false);
+    // Miguel neck skin (gradient)
+    const migNeck = gd(defs, 'l', [['0%','#F0C8A0'],['100%','#DCAA80']], { x1: 215, y1: 158, x2: 215, y2: 172 });
+    fe(g, 'rect', { x: 206, y: 158, width: 18, height: 14, rx: 4, fill: migNeck }, false);
     // Miguel eye whites
     fl(g, 'M 200 108 C 202 104 208 102 212 104 C 216 106 216 112 212 114 C 208 116 200 114 200 108 Z', '#FFFFFF', false);
     fl(g, 'M 222 106 C 224 102 230 100 234 102 C 238 104 238 110 234 112 C 230 114 222 112 222 106 Z', '#FFFFFF', false);
 
-    // Miguel sweater fill — navy blue
+    // Miguel sweater fill — navy blue (gradient for depth)
+    const sweaterGrad = a ? HL : gd(defs, 'l', [['0%','#283593'],['100%','#0D1548']], { x1: 166, y1: 260, x2: 266, y2: 260 });
     fl(g,
       'M 170 200 C 180 182 198 172 216 172 C 234 172 252 182 262 200 L 266 340 L 166 340 Z',
-      '#1A237E', a);
+      sweaterGrad, a);
+    // Sweater fold shadows
+    sh(g, 'M 190 210 C 192 230 190 260 188 290 L 184 290 C 186 260 188 230 186 210 Z', 0.08, false);
+    sh(g, 'M 242 210 C 240 230 242 260 244 290 L 248 290 C 246 260 244 230 246 210 Z', 0.08, false);
 
     // Miguel hand skin fills (around toy area)
     fl(g,
@@ -6769,6 +5423,8 @@ const brunomiguelLayers = [
     fl(g,
       'M 234 252 C 240 246 246 248 248 254 C 250 260 246 264 240 262 L 234 252 Z',
       '#F5D0A9', false);
+    // Miguel under-chin shadow
+    sh(g, 'M 206 158 C 210 162 222 162 226 158 L 224 164 C 218 166 212 166 208 164 Z', 0.12, false);
 
     // ----- Third person -----
     // Third person torso fill — brown/tan sweater
@@ -6781,50 +5437,73 @@ const brunomiguelLayers = [
   // Layer 8: Color fills — scene: table, objects, hair, toy, background
   // =====================================================================
   (g, a) => {
-    // Warm ambient background (before table)
-    fe(g, 'rect', { x: 0, y: 0, width: 360, height: 340, fill: '#FFF8E1', opacity: '0.1' }, false);
+    const defs = ce('defs', {}); g.appendChild(defs);
 
-    // Dark table/counter
-    fe(g, 'rect', { x: 0, y: 340, width: 360, height: 110, fill: '#37474F' }, a);
+    // Warm ambient background (radial gradient, warm center, cooler edges)
+    const ambientGrad = gd(defs, 'r', [['0%','#FFF8E1',0.12],['100%','#E8E0D0',0.04]], { cx: 160, cy: 170, r: 200 });
+    fe(g, 'rect', { x: 0, y: 0, width: 360, height: 340, fill: ambientGrad }, false);
+
+    // Dark table/counter (gradient for depth)
+    const tableGrad = a ? HL : gd(defs, 'l', [['0%','#37474F'],['100%','#263238']], { x1: 0, y1: 395, x2: 360, y2: 395 });
+    fe(g, 'rect', { x: 0, y: 340, width: 360, height: 110, fill: tableGrad }, a);
     // Table surface top highlight
     fe(g, 'rect', { x: 0, y: 336, width: 360, height: 4, fill: '#455A64' }, false);
+    // Surface reflection band
+    hi(g, 'M 40 342 C 80 340 120 341 160 342 L 160 344 C 120 343 80 342 40 344 Z', 0.06, false);
+    hi(g, 'M 200 342 C 240 340 280 341 320 342 L 320 344 C 280 343 240 342 200 344 Z', 0.06, false);
 
-    // Blue ball fill with highlight
+    // Blue ball (radial gradient with offset highlight)
+    const ballGrad = a ? HL : gd(defs, 'r', [['0%','#42A5F5'],['60%','#1E88E5'],['100%','#1565C0']], { cx: 175, cy: 322, r: 22 });
     fl(g,
       'M 160 332 C 160 324 170 316 180 316 C 190 316 200 324 200 332 C 200 338 190 340 180 340 C 170 340 160 338 160 332 Z',
-      '#1E88E5', a);
+      ballGrad, a);
     // Ball highlight
-    fe(g, 'ellipse', { cx: 176, cy: 322, rx: 4, ry: 3, fill: '#64B5F6', opacity: '0.5' }, false);
+    fe(g, 'ellipse', { cx: 176, cy: 322, rx: 4, ry: 3, fill: '#90CAF9', opacity: '0.5' }, false);
+    // Ball cast shadow
+    sh(g, 'M 168 338 C 174 340 186 340 192 338 L 194 342 C 186 344 174 344 166 342 Z', 0.1, false);
 
-    // White cup fill
+    // White cup (gradient + rim highlight)
+    const cupGrad = a ? HL : gd(defs, 'l', [['0%','#FAFAFA'],['100%','#E0E0E0']], { x1: 244, y1: 328, x2: 262, y2: 328 });
     fl(g,
       'M 244 318 L 242 338 C 246 342 254 342 260 338 L 262 318 Z',
-      '#FAFAFA', a);
+      cupGrad, a);
+    // Cup rim highlight
+    hi(g, 'M 246 318 L 260 318 L 260 320 L 246 320 Z', 0.2, false);
     // Cup shadow
     fl(g,
       'M 244 330 C 248 332 254 332 260 330 L 262 338 C 258 342 248 342 242 338 Z',
       '#E0E0E0', false);
 
-    // Toy halves — blue left, red right
+    // Toy halves — radial gradients per half
+    const toyBlue = a ? HL : gd(defs, 'r', [['0%','#42A5F5'],['100%','#1565C0']], { cx: 208, cy: 258, r: 20 });
     fl(g,
       'M 198 262 C 198 254 206 246 216 246 L 216 276 C 206 276 198 270 198 262 Z',
-      '#1E88E5', a);
+      toyBlue, a);
+    const toyRed = a ? HL : gd(defs, 'r', [['0%','#EF5350'],['100%','#C62828']], { cx: 226, cy: 258, r: 20 });
     fl(g,
       'M 216 246 C 226 246 234 254 234 262 C 234 270 226 276 216 276 Z',
-      '#E53935', a);
+      toyRed, a);
+    // Toy dividing shadow
+    sh(g, 'M 215 248 L 215 274 L 217 274 L 217 248 Z', 0.12, false);
 
     // Napkin fill
     fe(g, 'rect', { x: 269, y: 327, width: 30, height: 12, rx: 1, fill: '#FAFAFA' }, false);
 
-    // Bruno hair fill (dark brown buzzcut area)
+    // Bruno hair fill (gradient crown to temple)
+    const brunoHairGrad = gd(defs, 'l', [['0%','#4E3828'],['100%','#2E1C10']], { x1: 86, y1: 42, x2: 86, y2: 92 });
     fl(g,
       'M 60 92 C 58 76 64 58 78 48 C 92 42 104 44 112 54 C 118 64 120 78 118 90 L 114 88 C 116 78 112 66 106 58 C 100 50 90 46 80 48 C 70 52 62 64 60 78 Z',
-      '#3E2C20', false);
+      brunoHairGrad, false);
 
-    // Miguel hair fill (dark brown)
+    // Miguel hair fill (gradient crown to temple)
+    const migHairGrad = gd(defs, 'l', [['0%','#5D4037'],['100%','#3E2723']], { x1: 216, y1: 64, x2: 216, y2: 108 });
     fl(g,
       'M 194 106 C 192 90 200 74 214 68 C 228 64 240 68 248 78 C 254 88 256 98 252 108 L 248 104 C 250 96 248 86 244 80 C 238 72 228 68 218 70 C 208 74 200 82 196 94 Z',
-      '#4E342E', false);
+      migHairGrad, false);
+
+    // Cast shadows on table from figures
+    sh(g, 'M 40 340 C 60 344 110 344 130 340 L 132 346 C 110 350 60 350 38 346 Z', 0.08, false);
+    sh(g, 'M 170 340 C 190 344 240 344 260 340 L 262 346 C 240 350 190 350 168 346 Z', 0.08, false);
 
     // Background wooden wall panels (vertical lines, warm)
     pp(g, [
@@ -6843,17 +5522,24 @@ const brunomiguelLayers = [
   //          cafe background, table reflection, final touches
   // =====================================================================
   (g, a) => {
+    const defs = ce('defs', {}); g.appendChild(defs);
+
+    // Eye shine glow — Bruno (soft glow behind dots)
+    const eyeGlow = gf(defs, 2);
+    fef(g, 'circle', { cx: 74, cy: 88, r: 3, fill: 'white', opacity: '0.3', filter: eyeGlow }, false);
+    fef(g, 'circle', { cx: 100, cy: 86, r: 3, fill: 'white', opacity: '0.3', filter: eyeGlow }, false);
     // Eye shines — Bruno
     fe(g, 'circle', { cx: 74, cy: 88, r: 1.5, fill: '#FFFFFF' }, a);
     fe(g, 'circle', { cx: 100, cy: 86, r: 1.5, fill: '#FFFFFF' }, a);
-    // Second smaller highlight — Bruno
     fe(g, 'circle', { cx: 78, cy: 92, r: 0.8, fill: '#FFFFFF', opacity: '0.7' }, false);
     fe(g, 'circle', { cx: 104, cy: 90, r: 0.8, fill: '#FFFFFF', opacity: '0.7' }, false);
 
+    // Eye shine glow — Miguel
+    fef(g, 'circle', { cx: 206, cy: 109, r: 2.5, fill: 'white', opacity: '0.3', filter: eyeGlow }, false);
+    fef(g, 'circle', { cx: 228, cy: 107, r: 2.5, fill: 'white', opacity: '0.3', filter: eyeGlow }, false);
     // Eye shines — Miguel
     fe(g, 'circle', { cx: 206, cy: 109, r: 1.3, fill: '#FFFFFF' }, a);
     fe(g, 'circle', { cx: 228, cy: 107, r: 1.3, fill: '#FFFFFF' }, a);
-    // Second smaller highlight — Miguel
     fe(g, 'circle', { cx: 210, cy: 112, r: 0.7, fill: '#FFFFFF', opacity: '0.7' }, false);
     fe(g, 'circle', { cx: 232, cy: 110, r: 0.7, fill: '#FFFFFF', opacity: '0.7' }, false);
 
@@ -6866,12 +5552,12 @@ const brunomiguelLayers = [
     pt.textContent = 'PESSOAL';
     if (a) pt.classList.add('active-element');
     g.appendChild(pt);
-    // Refresh colored dots (polish layer, slightly brighter)
+    // Refresh colored dots
     fe(g, 'circle', { cx: 64, cy: 246, r: 1.5, fill: '#FF8F00' }, false);
     fe(g, 'circle', { cx: 69, cy: 246, r: 1.5, fill: '#66BB6A' }, false);
     fe(g, 'circle', { cx: 74, cy: 246, r: 1.5, fill: '#42A5F5' }, false);
 
-    // "95" on Miguel's sweater (polish / fill version)
+    // "95" on Miguel's sweater
     const t95f = ce('text', {
       x: 202, y: 222, fill: '#ECEFF1',
       'font-size': '16', 'font-weight': 'bold',
@@ -6880,7 +5566,6 @@ const brunomiguelLayers = [
     t95f.textContent = '95';
     if (a) t95f.classList.add('active-element');
     g.appendChild(t95f);
-    // "YEARS" on sweater
     const tyf = ce('text', {
       x: 207, y: 232, fill: '#B0BEC5',
       'font-size': '4.5', 'font-family': 'Arial, sans-serif',
@@ -6889,24 +5574,32 @@ const brunomiguelLayers = [
     tyf.textContent = 'YEARS';
     g.appendChild(tyf);
 
-    // Beard shadow (subtle darker area under chin/jawline)
+    // Beard shadow (gradient for smooth transition)
+    const beardGrad = gd(defs, 'r', [['0%','#5D4037',0.3],['100%','#5D4037',0]], { cx: 86, cy: 144, r: 24 });
     fl(g,
       'M 64 134 C 70 142 78 150 86 154 C 94 150 100 142 106 134 C 102 142 96 148 88 152 C 80 148 72 142 64 134 Z',
-      '#5D4037', false);
+      beardGrad, false);
 
-    // Miguel cheek blush
-    fe(g, 'ellipse', { cx: 202, cy: 128, rx: 8, ry: 4, fill: '#FFAB91', opacity: '0.3' }, a);
-    fe(g, 'ellipse', { cx: 234, cy: 126, rx: 8, ry: 4, fill: '#FFAB91', opacity: '0.3' }, a);
+    // Miguel cheek blush (radial gradient for natural falloff)
+    const migBlushL = gd(defs, 'r', [['0%','#FFAB91',0.35],['100%','#FFAB91',0]], { cx: 202, cy: 128, r: 12 });
+    fe(g, 'ellipse', { cx: 202, cy: 128, rx: 10, ry: 5, fill: migBlushL }, a);
+    const migBlushR = gd(defs, 'r', [['0%','#FFAB91',0.35],['100%','#FFAB91',0]], { cx: 234, cy: 126, r: 12 });
+    fe(g, 'ellipse', { cx: 234, cy: 126, rx: 10, ry: 5, fill: migBlushR }, a);
 
     // Bruno mouth interior color
     fl(g,
       'M 76 134 C 82 136 88 138 94 138 C 98 136 102 134 104 132 L 102 134 C 98 138 92 140 88 140 C 84 140 80 138 76 134 Z',
       '#E57373', false);
 
-    // Cafe background hints — ceiling fluorescent light
+    // Cafe background hints — ceiling fluorescent light with glow
+    const lightGlow = gf(defs, 3);
     pp(g, ['M 130 0 L 130 18', 'M 230 0 L 230 18'], a, lt);
     pp(g, ['M 130 18 L 230 18'], a, lt);
+    fef(g, 'rect', { x: 132, y: 6, width: 96, height: 12, rx: 2, fill: '#FFF9C4', opacity: '0.15', filter: lightGlow }, false);
     fe(g, 'rect', { x: 132, y: 6, width: 96, height: 12, rx: 2, fill: '#FFF9C4', opacity: '0.2' }, false);
+    // Light cone paths (subtle)
+    fo(g, 'M 150 18 L 120 170 L 180 170 Z', '#FFF8E1', 0.03, false);
+    fo(g, 'M 210 18 L 180 170 L 240 170 Z', '#FFF8E1', 0.03, false);
 
     // Wooden wall panel texture (warm wood grain accents)
     pp(g, [
@@ -6921,7 +5614,7 @@ const brunomiguelLayers = [
       'M 200 356 C 240 352 280 354 320 358'
     ], a, lt);
 
-    // Finger skin fills for Miguel's hands (small detail fills)
+    // Finger skin fills for Miguel's hands
     fe(g, 'ellipse', { cx: 186, cy: 248, rx: 5, ry: 4, fill: '#F5D0A9', opacity: '0.6' }, false);
     fe(g, 'ellipse', { cx: 246, cy: 246, rx: 5, ry: 4, fill: '#F5D0A9', opacity: '0.6' }, false);
 
@@ -6931,6 +5624,16 @@ const brunomiguelLayers = [
     // Toy highlight (subtle shine)
     fe(g, 'ellipse', { cx: 210, cy: 254, rx: 3, ry: 2, fill: '#64B5F6', opacity: '0.4' }, false);
     fe(g, 'ellipse', { cx: 222, cy: 254, rx: 3, ry: 2, fill: '#EF9A9A', opacity: '0.4' }, false);
+
+    // Warm light spots on faces
+    const faceWarmB = gd(defs, 'r', [['0%','#FFF8E1',0.06],['100%','#FFF8E1',0]], { cx: 80, cy: 100, r: 40 });
+    fe(g, 'ellipse', { cx: 80, cy: 100, rx: 40, ry: 35, fill: faceWarmB }, false);
+    const faceWarmM = gd(defs, 'r', [['0%','#FFF8E1',0.06],['100%','#FFF8E1',0]], { cx: 216, cy: 115, r: 35 });
+    fe(g, 'ellipse', { cx: 216, cy: 115, rx: 35, ry: 30, fill: faceWarmM }, false);
+
+    // Vignette overlay
+    const vignette = gd(defs, 'r', [['0%','#000000',0],['100%','#000000',0.06]], { cx: 180, cy: 200, r: 220 });
+    fe(g, 'rect', { x: 0, y: 0, width: 360, height: 450, fill: vignette }, false);
 
     // Third person collar/neckline detail
     pp(g, ['M 304 58 C 310 54 318 54 324 58'], false, lt);
@@ -10351,660 +9054,80 @@ const tioavoLayers = [
 ];
 
 const miguelLayers = [
-  // =====================================================================
-  // Layer 0: Composition guides — table edge, Miguel zone, chair outline
-  // =====================================================================
+  // ================================================================
+  // PNG TRACED APPROACH: Layers use edge-detected PNG images.
+  // Layer 0: construction guides | Layers 1-4: traced outlines
+  // Layer 5: color reference | Layer 6: signature
+  // ================================================================
+
+  // Layer 0: Construction guides
   (g, a) => {
-    // Table edge horizontal
-    pp(g, ['M 0 240 L 360 240'], a, lt);
-    // Table front drape guides
-    pp(g, ['M 0 240 L 0 450', 'M 360 240 L 360 450'], a, lt);
-    // Miguel vertical center guide (right side)
-    pp(g, ['M 270 10 L 270 240'], a, lt);
-    // Shoulder line guide
-    pp(g, ['M 200 145 L 340 145'], a, lt);
-    // Head zone circle guide
-    pp(g, ['M 270 40 C 295 40 315 60 315 85 C 315 110 295 130 270 130 C 245 130 225 110 225 85 C 225 60 245 40 270 40 Z'], a, lt);
-    // Chair back rectangle guide
-    pp(g, ['M 210 25 L 335 25 L 335 220 L 210 220 Z'], a, lt);
-    // Bottle zone guide
-    pp(g, ['M 80 100 L 180 100 L 180 240 L 80 240 Z'], a, lt);
+    // Grid lines
+    pp(g, ['M 180 0 L 180 450'], a, lt);
+    pp(g, ['M 0 150 L 360 150'], a, lt);
+    pp(g, ['M 0 300 L 360 300'], a, lt);
+    // Frame
+    pp(g, ['M 10 5 L 350 5 L 350 445 L 10 445 Z'], a, lt);
   },
 
-  // =====================================================================
-  // Layer 1: Miguel body — head, neck, shoulders, torso, arms
-  // =====================================================================
+  // Layer 1: Top region — traced from photo
   (g, a) => {
-    // Head — slightly oval, child proportions
-    pp(g, [
-      'M 270 42 C 292 42 310 56 312 78 C 314 96 310 112 302 122 C 294 132 284 138 270 140 C 256 138 246 132 238 122 C 230 112 226 96 228 78 C 230 56 248 42 270 42 Z'
-    ], a);
-    // Neck
-    pp(g, [
-      'M 258 138 L 255 155',
-      'M 282 138 L 285 155'
-    ], a);
-    // Shoulders and torso in hoodie — leaning forward
-    pp(g, [
-      'M 218 178 C 228 162 248 154 270 154 C 292 154 312 162 322 178 L 328 240 L 212 240 Z'
-    ], a);
-    // Left arm — reaching toward mouth
-    pp(g, [
-      'M 226 182 C 216 192 206 202 198 214 C 192 224 190 232 194 236 C 198 240 206 238 212 230 C 220 218 232 200 242 186'
-    ], a);
-    // Right arm — reaching toward cup on table
-    pp(g, [
-      'M 314 182 C 322 194 328 208 332 222 C 334 230 332 236 328 238 C 324 240 320 236 318 228 L 312 210'
-    ], a);
+    const src = a ? 'img/miguel/step1_hl.png' : 'img/miguel/step1.png';
+    const img = ce('image', { x: '0', y: '0', width: '360', height: '450' });
+    img.setAttribute('href', src);
+    if (a) img.classList.add('active-element');
+    g.appendChild(img);
   },
 
-  // =====================================================================
-  // Layer 2: Face — eyes, brows, nose, eating grin with teeth, ears
-  // =====================================================================
+  // Layer 2: Middle region — traced from photo
   (g, a) => {
-    // Left eye — almond, lively
-    pp(g, [
-      'M 252 78 C 254 72 260 68 266 70 C 272 72 274 78 272 84 C 270 88 264 90 258 88 C 254 86 252 82 252 78 Z'
-    ], a);
-    // Right eye
-    pp(g, [
-      'M 274 78 C 276 72 282 68 288 70 C 294 72 296 78 294 84 C 292 88 286 90 280 88 C 276 86 274 82 274 78 Z'
-    ], a);
-    // Left eyelid crease
-    pp(g, ['M 254 72 C 258 68 264 66 270 68'], a, lt);
-    // Right eyelid crease
-    pp(g, ['M 276 72 C 280 68 286 66 292 68'], a, lt);
-    // Left pupil
-    fe(g, 'circle', { cx: 262, cy: 80, r: 3.8, fill: a ? HL : '#2D1B0E' }, a);
-    // Right pupil
-    fe(g, 'circle', { cx: 284, cy: 80, r: 3.8, fill: a ? HL : '#2D1B0E' }, a);
-    // Left eyebrow — slightly arched
-    pp(g, ['M 250 66 C 256 60 264 58 272 62'], a);
-    // Right eyebrow
-    pp(g, ['M 278 62 C 286 58 294 60 300 66'], a);
-    // Nose — bridge and nostrils
-    pp(g, [
-      'M 268 76 C 267 84 266 92 264 98',
-      'M 260 100 C 263 106 267 108 270 108 C 273 108 277 106 280 100'
-    ], a);
-    // Nose bridge subtle line
-    pp(g, ['M 270 76 C 269 82 268 88 267 94'], a, lt);
-    // Open mouth — big eating grin, upper lip
-    pp(g, [
-      'M 252 114 C 256 110 264 108 270 108 C 276 108 284 110 288 114'
-    ], a);
-    // Lower lip curve — wide open grin
-    pp(g, [
-      'M 252 114 C 256 128 264 134 270 134 C 276 134 284 128 288 114'
-    ], a);
-    // Upper teeth row — 6 individual teeth
-    pp(g, ['M 254 114 L 286 114'], a);
-    pp(g, [
-      'M 259 114 L 259 119',
-      'M 264 114 L 264 120',
-      'M 270 114 L 270 120',
-      'M 276 114 L 276 120',
-      'M 281 114 L 281 119'
-    ], a, lt);
-    // Lower teeth hint
-    pp(g, ['M 258 126 L 282 126'], a, lt);
-    pp(g, [
-      'M 264 126 L 264 122',
-      'M 270 126 L 270 121',
-      'M 276 126 L 276 122'
-    ], a, lt);
-    // Left ear — slightly prominent
-    pp(g, [
-      'M 226 76 C 220 72 216 78 216 86 C 216 94 220 100 226 98'
-    ], a);
-    // Left ear inner detail
-    pp(g, ['M 222 80 C 220 84 220 90 222 94'], a, lt);
-    // Right ear — slightly prominent
-    pp(g, [
-      'M 314 76 C 320 72 324 78 324 86 C 324 94 320 100 314 98'
-    ], a);
-    // Right ear inner detail
-    pp(g, ['M 318 80 C 320 84 320 90 318 94'], a, lt);
+    const src = a ? 'img/miguel/step2_hl.png' : 'img/miguel/step2.png';
+    const img = ce('image', { x: '0', y: '0', width: '360', height: '450' });
+    img.setAttribute('href', src);
+    if (a) img.classList.add('active-element');
+    g.appendChild(img);
   },
 
-  // =====================================================================
-  // Layer 3: Hair + hoodie details — texture, hood, drawstrings, seam
-  // =====================================================================
+  // Layer 3: Bottom region — traced from photo
   (g, a) => {
-    // Hair outline — short, dirty blonde, swept to the right
-    pp(g, [
-      'M 230 74 C 228 58 236 42 252 34 C 264 28 280 28 294 34 C 306 42 312 58 310 74'
-    ], a);
-    // Hair inner volume
-    pp(g, [
-      'M 234 70 C 236 56 244 44 258 38 C 270 34 284 36 294 44 C 302 52 306 64 304 72'
-    ], a);
-    // Hair texture — swept strands
-    pp(g, [
-      'M 248 36 C 258 30 270 30 282 36',
-      'M 240 46 C 252 38 266 36 280 40',
-      'M 236 56 C 248 48 262 44 276 48',
-      'M 244 64 C 256 58 268 56 280 60'
-    ], a, lt);
-    // Hair wisp on forehead
-    pp(g, [
-      'M 258 42 C 262 46 268 48 274 46',
-      'M 252 50 C 256 54 264 56 270 54'
-    ], a, lt);
-    // Hoodie body — yellow fabric
-    pp(g, [
-      'M 218 178 C 228 162 248 154 270 154 C 292 154 312 162 322 178 L 328 240 L 212 240 Z'
-    ], a);
-    // Hood neckline — lying flat behind neck
-    pp(g, [
-      'M 232 168 C 244 160 256 156 270 156 C 284 156 296 160 308 168'
-    ], a);
-    // Hood draped behind shoulders
-    pp(g, [
-      'M 224 186 C 218 180 214 172 216 166 C 218 160 224 158 232 162',
-      'M 316 186 C 322 180 326 172 324 166 C 322 160 316 158 308 162'
-    ], a);
-    // Hood back curve
-    pp(g, [
-      'M 224 186 C 238 194 254 198 270 198 C 286 198 302 194 316 186'
-    ], a);
-    // Drawstrings hanging down
-    pp(g, [
-      'M 258 190 C 256 198 254 208 252 218',
-      'M 282 190 C 284 198 286 208 288 218'
-    ], a);
-    // Drawstring tips (small ovals)
-    pp(g, [
-      'M 251 218 C 250 222 252 224 254 222 C 256 220 254 216 252 216',
-      'M 287 218 C 286 222 288 224 290 222 C 292 220 290 216 288 216'
-    ], a, lt);
-    // Center seam
-    pp(g, ['M 270 198 L 270 240'], a, lt);
-    // Sleeve creases — left arm
-    pp(g, [
-      'M 226 184 C 222 188 218 194 216 200',
-      'M 230 190 C 226 196 222 204 220 210'
-    ], a, lt);
-    // Sleeve creases — right arm
-    pp(g, [
-      'M 314 184 C 318 188 322 194 324 200',
-      'M 310 190 C 314 196 318 204 320 210'
-    ], a, lt);
-    // Hoodie front pocket hint
-    pp(g, [
-      'M 240 218 C 248 222 260 224 270 224 C 280 224 292 222 300 218'
-    ], a, lt);
+    const src = a ? 'img/miguel/step3_hl.png' : 'img/miguel/step3.png';
+    const img = ce('image', { x: '0', y: '0', width: '360', height: '450' });
+    img.setAttribute('href', src);
+    if (a) img.classList.add('active-element');
+    g.appendChild(img);
   },
 
-  // =====================================================================
-  // Layer 4: Hands + action — left hand w/ food to mouth, right hand
-  //          holding cup with liquid, individual fingers
-  // =====================================================================
+  // Layer 4: Fine detail — traced from photo
   (g, a) => {
-    // Left hand — near mouth, bringing food
-    // Palm
-    pp(g, [
-      'M 212 150 C 208 146 202 144 198 148 C 194 152 196 158 200 162'
-    ], a);
-    // Thumb
-    pp(g, [
-      'M 212 150 C 216 146 218 140 216 136 C 214 132 210 132 208 136'
-    ], a);
-    // Index finger — reaching toward mouth
-    pp(g, [
-      'M 200 148 C 196 142 192 134 190 128 C 188 124 190 120 194 120 C 198 120 200 124 200 130'
-    ], a);
-    // Middle finger
-    pp(g, [
-      'M 198 150 C 194 144 188 136 186 130 C 184 126 186 122 190 122 C 194 122 196 126 196 132'
-    ], a);
-    // Ring finger (shorter)
-    pp(g, [
-      'M 196 154 C 192 148 188 140 186 136 C 184 132 186 128 190 128'
-    ], a);
-    // Pinky (shortest, curled)
-    pp(g, [
-      'M 196 158 C 192 154 190 148 190 144 C 190 140 192 138 194 140'
-    ], a);
-    // Food piece near fingers — small morsel
-    pp(g, [
-      'M 188 118 C 184 114 186 108 192 106 C 198 104 204 108 202 114 C 200 118 194 120 190 118'
-    ], a);
-
-    // Right hand — holding transparent cup
-    // Cup outline
-    pp(g, [
-      'M 318 244 L 316 268 C 316 274 322 278 330 278 C 338 278 344 274 344 268 L 342 244 Z'
-    ], a);
-    // Cup rim
-    pp(g, [
-      'M 316 244 C 322 242 330 240 338 242 L 344 244'
-    ], a);
-    // Liquid level inside cup
-    pp(g, [
-      'M 318 254 C 324 256 332 256 340 254'
-    ], a, lt);
-    // Right hand thumb on cup
-    pp(g, [
-      'M 316 252 C 312 250 308 254 308 260 C 308 264 312 266 316 264'
-    ], a);
-    // Right index finger wrapping cup
-    pp(g, [
-      'M 344 252 C 348 250 352 254 352 260 C 352 264 348 266 344 264'
-    ], a);
-    // Right middle finger
-    pp(g, [
-      'M 344 258 C 350 258 354 262 354 268 C 354 272 350 274 346 272'
-    ], a);
-    // Right ring finger
-    pp(g, [
-      'M 344 264 C 348 266 350 270 350 274 C 350 278 348 280 344 278'
-    ], a);
-    // Right pinky
-    pp(g, [
-      'M 344 270 C 346 272 348 276 346 280 C 344 282 342 280 342 276'
-    ], a);
+    const src = a ? 'img/miguel/step4_hl.png' : 'img/miguel/step4.png';
+    const img = ce('image', { x: '0', y: '0', width: '360', height: '450' });
+    img.setAttribute('href', src);
+    if (a) img.classList.add('active-element');
+    g.appendChild(img);
   },
 
-  // =====================================================================
-  // Layer 5: Table — red tablecloth with drape/folds, bowl with moon,
-  //          food in bowl
-  // =====================================================================
+  // Layer 5: Color reference — photo at reduced opacity
   (g, a) => {
-    // Tablecloth — full table surface
-    pp(g, ['M 0 240 L 360 240'], a);
-    // Tablecloth draping over front edge
-    pp(g, [
-      'M 0 240 C 8 244 14 250 16 262 L 0 262',
-      'M 360 240 C 352 244 346 250 344 262 L 360 262'
-    ], a);
-    // Tablecloth wrinkle/fold lines
-    pp(g, [
-      'M 30 242 C 50 248 70 252 90 248',
-      'M 120 242 C 140 250 160 254 180 248',
-      'M 200 242 C 220 248 240 252 260 248',
-      'M 280 242 C 300 248 320 250 340 246'
-    ], a, lt);
-    // Deeper fold lines
-    pp(g, [
-      'M 60 244 C 64 252 68 258 72 262',
-      'M 160 244 C 164 254 168 260 172 266',
-      'M 240 244 C 244 252 248 258 252 264'
-    ], a, lt);
-    // Drape folds at front
-    pp(g, [
-      'M 40 260 C 44 274 46 288 44 302',
-      'M 120 258 C 124 272 126 286 124 300',
-      'M 200 260 C 204 274 206 288 204 302',
-      'M 300 258 C 304 272 306 286 304 300'
-    ], a, lt);
-
-    // Bowl — elliptical ceramic bowl, center-right on table
-    pp(g, [
-      'M 230 275 C 230 264 248 256 270 256 C 292 256 310 264 310 275 C 310 286 292 294 270 294 C 248 294 230 286 230 275 Z'
-    ], a);
-    // Bowl rim highlight
-    pp(g, [
-      'M 234 272 C 234 262 252 256 270 256 C 288 256 306 262 306 272'
-    ], a);
-    // Food in bowl — mounded rice/food
-    pp(g, [
-      'M 238 270 C 248 262 260 258 270 258 C 280 258 292 262 302 270'
-    ], a, lt);
-    pp(g, [
-      'M 244 268 C 252 264 262 260 270 260 C 278 260 288 264 296 268'
-    ], a, lt);
-    // Moon crescent design on bowl
-    pp(g, [
-      'M 266 282 C 262 278 262 272 266 268 C 264 270 264 276 266 280',
-      'M 266 268 C 270 266 274 268 276 272 C 278 276 276 280 272 282'
-    ], a, lt);
+    const img = ce('image', { x: '0', y: '0', width: '360', height: '450', opacity: a ? '0.6' : '0.25' });
+    img.setAttribute('href', 'img/Miguel.jpg');
+    if (a) img.classList.add('active-element');
+    g.appendChild(img);
   },
 
-  // =====================================================================
-  // Layer 6: Bottles, can, glasses — wine bottle w/ glass stopper,
-  //          Lemon bottle w/ cap, red can, empty glass, label areas
-  // =====================================================================
+  // Layer 6: Signature
   (g, a) => {
-    // ---- Wine bottle (Quinta do Cardo) — tall, dark green, center-left ----
-    // Bottle body
-    pp(g, [
-      'M 130 142 L 130 240',
-      'M 152 142 L 152 240'
-    ], a);
-    // Bottle shoulder curve
-    pp(g, [
-      'M 130 142 C 130 134 134 128 138 124',
-      'M 152 142 C 152 134 148 128 144 124'
-    ], a);
-    // Bottle neck
-    pp(g, [
-      'M 138 124 L 138 100',
-      'M 144 124 L 144 100'
-    ], a);
-    // Neck lip/ring
-    pp(g, [
-      'M 136 100 L 146 100',
-      'M 136 98 L 146 98'
-    ], a);
-    // Glass ball stopper — distinctive round sphere on top
-    pp(g, [
-      'M 141 98 C 141 94 138 90 138 86 C 138 78 141 72 145 72 C 149 72 152 78 152 86 C 152 90 149 94 149 98'
-    ], a);
-    // Stopper cross highlight (glass shine)
-    pp(g, [
-      'M 142 82 C 144 78 146 78 148 82',
-      'M 143 86 C 145 84 147 86 145 88'
-    ], a, lt);
-    // Wine label area
-    pp(g, ['M 132 170 L 150 170 L 150 216 L 132 216 Z'], a, lt);
-    // Label inner line
-    pp(g, ['M 134 186 L 148 186'], a, lt);
-    // Pink/red label accent
-    pp(g, ['M 132 192 L 150 192 L 150 210 L 132 210 Z'], a, lt);
-
-    // ---- Lemon drink bottle — shorter, wider, left of wine ----
-    // Body
-    pp(g, [
-      'M 92 170 L 92 240',
-      'M 118 170 L 118 240'
-    ], a);
-    // Shoulder
-    pp(g, [
-      'M 92 170 C 92 162 96 156 100 152',
-      'M 118 170 C 118 162 114 156 110 152'
-    ], a);
-    // Neck
-    pp(g, [
-      'M 100 152 L 100 140',
-      'M 110 152 L 110 140'
-    ], a);
-    // Yellow screw cap
-    pp(g, [
-      'M 98 140 L 98 132 L 112 132 L 112 140 Z'
-    ], a);
-    // Cap ridges
-    pp(g, ['M 100 134 L 100 140', 'M 104 132 L 104 140', 'M 108 134 L 108 140'], a, lt);
-    // Label area
-    pp(g, ['M 94 182 L 116 182 L 116 226 L 94 226 Z'], a, lt);
-    // Lemon graphic hint on label
-    pp(g, [
-      'M 102 200 C 100 196 102 192 106 190 C 110 188 114 190 114 196 C 114 200 110 204 106 204 C 102 204 100 202 102 200'
-    ], a, lt);
-
-    // ---- Red can — far left ----
-    // Body (cylinder)
-    pp(g, [
-      'M 42 216 C 42 210 50 206 60 206 C 70 206 78 210 78 216 L 78 256 C 78 262 70 266 60 266 C 50 266 42 262 42 256 Z'
-    ], a);
-    // Can top ellipse
-    pp(g, [
-      'M 42 216 C 42 222 50 226 60 226 C 70 226 78 222 78 216'
-    ], a);
-    // Can pull tab hint
-    pp(g, [
-      'M 56 210 L 64 210 L 62 214 L 58 214 Z'
-    ], a, lt);
-
-    // ---- Empty Super Bock glass — far right ----
-    pp(g, [
-      'M 336 240 L 338 270 C 338 274 334 278 328 278 C 322 278 318 274 318 270 L 320 240'
-    ], a, lt);
-    // Glass rim
-    pp(g, ['M 320 240 C 324 238 332 238 336 240'], a, lt);
-    // Glass base
-    pp(g, ['M 322 278 L 322 284 L 334 284 L 334 278'], a, lt);
-
-    // ---- Blue scissors on table (small detail) ----
-    pp(g, [
-      'M 178 256 C 176 252 180 248 184 250 C 188 252 186 256 182 258',
-      'M 182 258 C 184 262 180 266 176 264 C 172 262 174 258 178 256',
-      'M 182 258 L 194 250',
-      'M 182 258 L 194 266'
-    ], a, lt);
-  },
-
-  // =====================================================================
-  // Layer 7: Color fills — Miguel (skin, hair, hoodie, ears, hands)
-  // =====================================================================
-  (g, a) => {
-    // Skin — face
-    fl(g,
-      'M 270 44 C 290 44 308 58 310 78 C 312 96 308 110 300 120 C 292 130 282 136 270 138 C 258 136 248 130 240 120 C 232 110 228 96 230 78 C 232 58 250 44 270 44 Z',
-      '#F5D0A9', a);
-    // Neck skin
-    fl(g,
-      'M 258 136 L 255 155 L 285 155 L 282 136 Z',
-      '#F5D0A9', false);
-    // Left ear fill
-    fe(g, 'ellipse', { cx: 220, cy: 88, rx: 6, ry: 12, fill: '#F5D0A9' }, false);
-    // Right ear fill
-    fe(g, 'ellipse', { cx: 320, cy: 88, rx: 6, ry: 12, fill: '#F5D0A9' }, false);
-    // Hair fill — dirty blonde
-    fl(g,
-      'M 232 74 C 230 58 238 42 254 34 C 266 28 282 28 296 34 C 308 42 314 58 312 74 L 308 72 C 310 60 306 48 296 42 C 286 36 272 34 260 38 C 248 44 240 56 238 70 Z',
-      '#C4A265', a);
-    // Hoodie fill — bright yellow
-    fl(g,
-      'M 218 178 C 228 162 248 154 270 154 C 292 154 312 162 322 178 L 328 240 L 212 240 Z',
-      '#FFD740', a);
-    // Hood fill — slightly darker yellow
-    fl(g,
-      'M 224 186 C 218 180 214 172 216 166 C 218 160 224 158 232 162 C 244 156 256 154 270 154 C 284 154 296 156 308 162 C 316 158 322 160 324 166 C 326 172 322 180 316 186 C 302 194 286 198 270 198 C 254 198 238 194 224 186 Z',
-      '#FFC107', a);
-    // Left hand skin fill
-    fl(g,
-      'M 212 150 C 208 146 202 144 198 148 C 194 152 196 158 200 162 L 212 150 Z',
-      '#F5D0A9', false);
-    // Right hand skin fill (around cup area)
-    fl(g,
-      'M 316 252 C 312 250 308 254 308 260 C 308 264 312 266 316 264 L 316 252 Z',
-      '#F5D0A9', false);
-    // Left arm hoodie sleeve fill
-    fl(g,
-      'M 226 182 C 216 192 206 202 198 214 C 192 224 194 236 200 238 C 206 240 214 232 220 220 C 228 206 236 192 242 186 Z',
-      '#FFD740', false);
-    // Right arm hoodie sleeve fill
-    fl(g,
-      'M 314 182 C 322 194 328 208 332 222 C 334 230 330 238 326 236 C 322 234 318 228 314 216 C 310 204 308 192 310 184 Z',
-      '#FFD740', false);
-  },
-
-  // =====================================================================
-  // Layer 8: Color fills — table, objects (tablecloth, bowl, bottles,
-  //          can, cup, glass stopper)
-  // =====================================================================
-  (g, a) => {
-    // Red tablecloth — covers entire table area below y=240
-    fe(g, 'rect', { x: 0, y: 240, width: 360, height: 210, fill: '#C62828' }, a);
-    // Tablecloth fold shadow accents
-    fl(g,
-      'M 60 244 C 64 252 68 258 72 262 L 68 262 C 64 258 60 252 58 244 Z',
-      '#B71C1C', false);
-    fl(g,
-      'M 160 244 C 164 254 168 260 172 266 L 168 266 C 164 260 160 254 158 244 Z',
-      '#B71C1C', false);
-
-    // Gray ceramic bowl
-    fl(g,
-      'M 232 275 C 232 266 250 258 270 258 C 290 258 308 266 308 275 C 308 284 290 292 270 292 C 250 292 232 284 232 275 Z',
-      '#9E9E9E', a);
-    // Bowl inner (lighter)
-    fl(g,
-      'M 238 272 C 238 264 254 258 270 258 C 286 258 302 264 302 272 C 302 278 286 282 270 282 C 254 282 238 278 238 272 Z',
-      '#BDBDBD', false);
-    // Food in bowl
-    fl(g,
-      'M 242 268 C 252 262 262 260 270 260 C 278 260 288 262 298 268 C 294 272 282 274 270 274 C 258 274 246 272 242 268 Z',
-      '#F5DEB3', false);
-
-    // Wine bottle — dark green
-    fl(g,
-      'M 132 142 L 132 238 L 150 238 L 150 142 C 150 136 148 130 144 126 L 140 126 C 136 130 132 136 132 142 Z',
-      '#1B5E20', a);
-    // Wine bottle neck
-    fl(g,
-      'M 139 126 L 139 100 L 143 100 L 143 126 Z',
-      '#2E7D32', false);
-    // Glass ball stopper — translucent sphere
-    fe(g, 'circle', { cx: 141, cy: 84, r: 10, fill: '#E0E0E0', opacity: '0.45' }, a);
-    // Stopper inner glass hint
-    fe(g, 'circle', { cx: 141, cy: 84, r: 7, fill: '#F5F5F5', opacity: '0.3' }, false);
-    // Wine label — pink/red area
-    fe(g, 'rect', { x: 133, y: 192, width: 16, height: 18, rx: 1, fill: '#E91E63', opacity: '0.6' }, false);
-
-    // Lemon drink bottle — brown
-    fl(g,
-      'M 94 170 L 94 238 L 116 238 L 116 170 C 116 164 114 158 110 154 L 100 154 C 96 158 94 164 94 170 Z',
-      '#5D4037', a);
-    // Lemon bottle neck
-    fl(g,
-      'M 101 154 L 101 142 L 109 142 L 109 154 Z',
-      '#6D4C41', false);
-    // Yellow cap
-    fe(g, 'rect', { x: 99, y: 132, width: 12, height: 10, rx: 2, fill: '#FDD835' }, a);
-    // Lemon label accent (yellow-green area)
-    fe(g, 'rect', { x: 96, y: 196, width: 18, height: 20, rx: 1, fill: '#FDD835', opacity: '0.5' }, false);
-
-    // Red can
-    fl(g,
-      'M 44 218 C 44 212 52 208 60 208 C 68 208 76 212 76 218 L 76 254 C 76 260 68 264 60 264 C 52 264 44 260 44 254 Z',
-      '#D32F2F', a);
-    // Can top highlight
-    fl(g,
-      'M 44 218 C 44 224 52 228 60 228 C 68 228 76 224 76 218 C 76 212 68 208 60 208 C 52 208 44 212 44 218 Z',
-      '#E53935', false);
-
-    // Cup — translucent
-    fl(g,
-      'M 320 244 L 318 268 C 318 274 324 278 330 278 C 336 278 342 274 342 268 L 340 244 Z',
-      '#E3F2FD', false);
-    // Liquid in cup
-    fl(g,
-      'M 320 254 C 324 256 332 256 340 254 L 342 268 C 342 274 336 278 330 278 C 324 278 318 274 318 268 Z',
-      '#FFECB3', false);
-
-    // Chair fill — dark behind Miguel
-    fe(g, 'rect', { x: 212, y: 28, width: 120, height: 190, rx: 8, fill: '#37474F', opacity: '0.12' }, false);
-  },
-
-  // =====================================================================
-  // Layer 9: Polish — eye shines, cheek blush, mouth color, label text,
-  //          stopper shine, background hints
-  // =====================================================================
-  (g, a) => {
-    // Eye shine — left
-    fe(g, 'circle', { cx: 260, cy: 78, r: 1.6, fill: 'white' }, a);
-    // Eye shine — right
-    fe(g, 'circle', { cx: 282, cy: 78, r: 1.6, fill: 'white' }, a);
-    // Second smaller highlight — left
-    fe(g, 'circle', { cx: 264, cy: 82, r: 0.8, fill: 'white', opacity: '0.7' }, false);
-    // Second smaller highlight — right
-    fe(g, 'circle', { cx: 286, cy: 82, r: 0.8, fill: 'white', opacity: '0.7' }, false);
-
-    // Cheek blush — left
-    fe(g, 'ellipse', { cx: 250, cy: 106, rx: 12, ry: 6, fill: '#FFAB91', opacity: '0.35' }, a);
-    // Cheek blush — right
-    fe(g, 'ellipse', { cx: 292, cy: 106, rx: 12, ry: 6, fill: '#FFAB91', opacity: '0.35' }, a);
-
-    // Mouth interior color — pink/red gums
-    fl(g,
-      'M 254 114 C 258 126 266 132 270 132 C 274 132 282 126 286 114 L 282 114 C 280 122 276 128 270 128 C 264 128 260 122 258 114 Z',
-      '#E57373', false);
-    // Tongue hint
-    fl(g,
-      'M 264 122 C 266 126 270 128 274 126 C 276 124 276 120 274 118 L 266 118 C 264 120 264 122 264 122 Z',
-      '#EF9A9A', false);
-
-    // Wine label text — "QUINTA DO CARDO"
-    const wt1 = ce('text', { x: 134, y: 186, fill: '#FAFAFA', 'font-size': '4', 'font-family': 'serif', 'letter-spacing': '0.5' });
-    wt1.textContent = 'QUINTA';
-    if (a) wt1.classList.add('active-element');
-    g.appendChild(wt1);
-    const wt2 = ce('text', { x: 136, y: 192, fill: '#FAFAFA', 'font-size': '3.5', 'font-family': 'serif', 'letter-spacing': '0.3' });
-    wt2.textContent = 'DO';
-    g.appendChild(wt2);
-    const wt3 = ce('text', { x: 134, y: 198, fill: '#FAFAFA', 'font-size': '4', 'font-family': 'serif', 'letter-spacing': '0.5' });
-    wt3.textContent = 'CARDO';
-    g.appendChild(wt3);
-
-    // Lemon label text
-    const lt3 = ce('text', { x: 97, y: 206, fill: '#4E342E', 'font-size': '4.5', 'font-family': 'sans-serif', 'font-weight': 'bold' });
-    lt3.textContent = 'Lemon';
-    if (a) lt3.classList.add('active-element');
-    g.appendChild(lt3);
-    const lt4 = ce('text', { x: 95, y: 212, fill: '#6D4C41', 'font-size': '3', 'font-family': 'sans-serif' });
-    lt4.textContent = 'TINTO DE';
-    g.appendChild(lt4);
-    const lt5 = ce('text', { x: 97, y: 217, fill: '#6D4C41', 'font-size': '3', 'font-family': 'sans-serif' });
-    lt5.textContent = 'VERAO';
-    g.appendChild(lt5);
-
-    // Glass stopper shine — crescent highlight
-    fe(g, 'circle', { cx: 139, cy: 80, r: 2.5, fill: 'white', opacity: '0.6' }, a);
-    fe(g, 'circle', { cx: 143, cy: 76, r: 1.2, fill: 'white', opacity: '0.4' }, false);
-
-    // Can label hint
-    const ct = ce('text', { x: 52, y: 240, fill: '#FFCDD2', 'font-size': '4', 'font-family': 'sans-serif', 'font-weight': 'bold' });
-    ct.textContent = 'SB';
-    g.appendChild(ct);
-
-    // Background — fridge (far left, light strokes)
-    pp(g, [
-      'M 0 20 L 45 20 L 45 210 L 0 210',
-      'M 0 120 L 45 120'
-    ], a, lt);
-    // Fridge fill hint
-    fe(g, 'rect', { x: 0, y: 20, width: 45, height: 190, rx: 3, fill: '#546E7A', opacity: '0.12' }, false);
-    // Fridge handle
-    pp(g, ['M 38 60 L 38 100'], a, lt);
-    // Fridge magnets
-    fe(g, 'rect', { x: 8, y: 40, width: 8, height: 8, rx: 1, fill: '#F44336', opacity: '0.3' }, false);
-    fe(g, 'rect', { x: 22, y: 50, width: 6, height: 8, rx: 1, fill: '#2196F3', opacity: '0.3' }, false);
-    fe(g, 'rect', { x: 12, y: 66, width: 7, height: 6, rx: 1, fill: '#4CAF50', opacity: '0.3' }, false);
-
-    // Background — wall (beige/cream)
-    fe(g, 'rect', { x: 45, y: 0, width: 165, height: 240, fill: '#F5F0E1', opacity: '0.08' }, false);
-
-    // Wall framed photos (tiny rectangles)
-    pp(g, ['M 70 30 L 90 30 L 90 50 L 70 50 Z'], a, lt);
-    pp(g, ['M 100 26 L 116 26 L 116 42 L 100 42 Z'], a, lt);
-    // "FAMILY" letters on shelf
-    pp(g, ['M 56 60 L 130 60'], a, lt);
-    const ft = ce('text', { x: 62, y: 58, fill: a ? HL : LP, 'font-size': '6', 'font-family': 'sans-serif', 'letter-spacing': '2', opacity: '0.5' });
-    ft.textContent = 'FAMILY';
-    if (a) ft.classList.add('active-element');
-    g.appendChild(ft);
-
-    // Chair back hint behind Miguel
-    pp(g, [
-      'M 212 30 C 214 28 330 28 332 30 L 332 218 L 212 218 Z'
-    ], a, lt);
-
-    // Tablecloth wrinkle highlights (lighter lines on red)
-    pp(g, [
-      'M 50 260 C 70 256 90 258 110 260',
-      'M 150 258 C 170 254 190 256 210 258',
-      'M 260 260 C 280 256 300 258 320 260'
-    ], a, lt);
-
-    // Food crumb near Miguel's mouth
-    fl(g,
-      'M 192 108 C 190 104 194 100 198 102 C 202 104 200 110 196 110 Z',
-      '#F5DEB3', false);
-
-    // Tile floor hint at very bottom
-    pp(g, [
-      'M 0 420 L 360 420',
-      'M 0 440 L 360 440'
-    ], a, lt);
-    pp(g, [
-      'M 60 420 L 60 450',
-      'M 120 420 L 120 450',
-      'M 180 420 L 180 450',
-      'M 240 420 L 240 450',
-      'M 300 420 L 300 450'
-    ], a, lt);
+    const t = ce('text', {
+      x: 180, y: 435,
+      fill: a ? HL : '#A08060',
+      'font-size': '15',
+      'text-anchor': 'middle',
+      'font-family': 'Georgia, serif',
+      'letter-spacing': '3',
+      'font-style': 'italic'
+    });
+    t.textContent = 'Miguel';
+    if (a) t.classList.add('active-element');
+    g.appendChild(t);
   }
 ];
 
