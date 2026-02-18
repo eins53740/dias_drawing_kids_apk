@@ -162,6 +162,19 @@ html, body {
   flex-shrink: 0;
 }
 
+.family-card-arrow.gold {
+  color: #FFD700;
+  text-shadow: 0 1px 3px rgba(255, 215, 0, 0.4);
+}
+
+.family-card-stars {
+  font-size: 0.7em;
+  letter-spacing: 1px;
+  margin-top: 1px;
+  line-height: 1;
+  color: #FFD700;
+}
+
 .menu-footer {
   text-align: center;
   padding: 12px;

@@ -5,7 +5,7 @@ const familyMembers = [
   // ===== O MIGUEL =====
   {
     id: 'miguelbebe', name: 'Miguel Bebé', photo: 'img/miguel-bebe.jpeg',
-    description: 'O Miguel quando era bebé!', color: '#FF7043', category: 'O Miguel',
+    description: 'O Miguel quando era bebé!', color: '#FF7043', category: 'O Miguel', difficulty: 5,
     steps: [
       { title: 'Composição', description: 'Vista de cima (bird\'s eye view). Desenha linhas-guia leves: oval grande para a cabeça no topo, retângulo para o tronco, direções dos braços e pernas.', tip: 'A cabeça fica no topo. O braço direito sobe ao lado da cabeça, o esquerdo desce segurando a letra M.' },
       { title: 'Cabeça e rosto', description: 'Contorno da cabeça grande e redonda. Olhos, nariz, boca, orelhas. A testa é ampla (proporção de recém-nascido). Olhos a olhar para cima.', tip: 'Os olhos ficam no terço inferior da cabeça — bebés têm testas enormes.' },
@@ -19,7 +19,7 @@ const familyMembers = [
   },
   {
     id: 'batizado', name: 'Batizado', photo: 'img/batizado-miguel.jpg',
-    description: 'O batizado do Miguel!', color: '#7E57C2', category: 'O Miguel',
+    description: 'O batizado do Miguel!', color: '#7E57C2', category: 'O Miguel', difficulty: 5,
     steps: [
       { title: 'Composicao', description: 'Linhas-guia de composicao: centro vertical, tercos horizontais e moldura.', tip: 'Desenha com linhas muito leves - sao apenas referencias.' },
       { title: 'Parte superior', description: 'Contornos tracados da zona superior da imagem: cabeca(s), rosto(s), cabelo.', tip: 'Segue os contornos da foto - as linhas seguem as formas reais.' },
@@ -32,7 +32,7 @@ const familyMembers = [
   },
   {
     id: 'miguel', name: 'Miguel a Comer', photo: 'img/Miguel.jpg',
-    description: 'O Miguel à mesa!', color: '#FF9800', category: 'O Miguel',
+    description: 'O Miguel à mesa!', color: '#FF9800', category: 'O Miguel', difficulty: 5,
     steps: [
       { title: 'Composicao', description: 'Linhas-guia de composicao: centro vertical, tercos horizontais e moldura.', tip: 'Desenha com linhas muito leves - sao apenas referencias.' },
       { title: 'Parte superior', description: 'Contornos tracados da zona superior da imagem: cabeca(s), rosto(s), cabelo.', tip: 'Segue os contornos da foto - as linhas seguem as formas reais.' },
@@ -45,7 +45,7 @@ const familyMembers = [
   },
   {
     id: 'matilde', name: 'Matilde', photo: 'img/matilde.jpg',
-    description: 'A Matilde!', color: '#F48FB1', category: 'O Miguel',
+    description: 'A Matilde!', color: '#F48FB1', category: 'O Miguel', difficulty: 5,
     steps: [
       { title: 'Composicao', description: 'Linhas-guia de composicao: centro vertical, tercos horizontais e moldura.', tip: 'Desenha com linhas muito leves - sao apenas referencias.' },
       { title: 'Parte superior', description: 'Contornos tracados da zona superior da imagem: cabeca(s), rosto(s), cabelo.', tip: 'Segue os contornos da foto - as linhas seguem as formas reais.' },
@@ -58,7 +58,7 @@ const familyMembers = [
   },
   {
     id: 'mdd', name: 'Miguel na Aldeia', photo: 'img/mdd.jpeg',
-    description: 'O Miguel na aldeia!', color: '#66BB6A', category: 'O Miguel',
+    description: 'O Miguel na aldeia!', color: '#66BB6A', category: 'O Miguel', difficulty: 2,
     steps: [
       { title: 'Composição', description: 'Miguel à esquerda/centro, debruçado sobre um muro de pedra com musgo. Paisagem rural ao fundo com casas de pedra. Pai parcialmente visível à direita.', tip: 'O muro de pedra cruza a imagem na diagonal — cria profundidade.' },
       { title: 'O Miguel — corpo', description: 'Menino (~3-4 anos) debruçado sobre o muro com os braços apoiados. Corpo inclinado para a frente. Olha para a câmara com expressão curiosa e simpática.', tip: 'A posição debruçada dá dinamismo — o corpo faz uma diagonal.' },
@@ -76,7 +76,7 @@ const familyMembers = [
   // ===== OS PAIS =====
   {
     id: 'paisestudio', name: 'Retrato de Família', photo: 'img/pais-estudio.jpeg',
-    description: 'Retrato de família no estúdio!', color: '#26A69A', category: 'Os Pais',
+    description: 'Retrato de família no estúdio!', color: '#26A69A', category: 'Os Pais', difficulty: 2,
     steps: [
       { title: 'Composição', description: 'Três figuras em pirâmide: Sandra ao centro com Miguel ao colo (esquerda), Ricardo atrás abraçando Sandra. Fundo verde com pampas grass dos lados.', tip: 'A composição em triângulo é clássica para retratos de família.' },
       { title: 'Sandra — corpo e rosto', description: 'Ao centro, virada para a câmara. Rosto oval elegante. Sorriso aberto e radiante. Cabelo castanho-escuro liso com risca ao meio, até aos ombros. Gola alta verde-escuro/teal.', tip: 'Sandra é o ponto central — o seu sorriso é o foco da imagem.' },
@@ -92,7 +92,7 @@ const familyMembers = [
   },
   {
     id: 'casamento', name: 'Casamento', photo: 'img/casamento-pais.jpg',
-    description: 'O casamento dos pais!', color: '#78909C', category: 'Os Pais',
+    description: 'O casamento dos pais!', color: '#78909C', category: 'Os Pais', difficulty: 2,
     steps: [
       { title: 'Composição', description: 'Cena a preto e branco. Ricardo e Sandra sentados num banco ao centro da igreja de pedra. Convidados em bancos atrás. Paredes de granito, teto de madeira.', tip: 'A foto é a preto e branco — foca-te nos valores tonais (claro/escuro).' },
       { title: 'Ricardo — noivo', description: 'Sentado à esquerda do banco. Fato escuro formal, camisa branca, gravata clara com padrão subtil. Cabelo penteado para trás. Postura erguida, a olhar para a frente.', tip: 'O fato escuro contrasta com a camisa branca — define a silhueta.' },
@@ -108,7 +108,7 @@ const familyMembers = [
   },
   {
     id: 'pais', name: 'Pais a Saltar', photo: 'img/pais.jpg',
-    description: 'Os pais a saltar!', color: '#42A5F5', category: 'Os Pais',
+    description: 'Os pais a saltar!', color: '#42A5F5', category: 'Os Pais', difficulty: 2,
     steps: [
       { title: 'Composição', description: 'Duas figuras no ar contra céu azul puro. Ricardo à esquerda (mais alto, pernas abertas em estrela), Sandra à direita (braço livre levantado). Mãos dadas ao centro.', tip: 'A foto é de baixo para cima — as figuras parecem voar contra o céu.' },
       { title: 'Ricardo — corpo', description: 'Corpo inteiro em pose de star-jump. Pernas abertas e separadas. Braço esquerdo esticado para baixo. Mão direita segura a de Sandra. Corpo magro e atlético.', tip: 'As pernas fazem quase 180° — é uma pose muito dinâmica.' },
@@ -124,7 +124,7 @@ const familyMembers = [
   },
   {
     id: 'sandra', name: 'Mãe Sandra', photo: 'img/Sandra.jpg',
-    description: 'A mãe a jogar dominó!', color: '#AB47BC', category: 'Os Pais',
+    description: 'A mãe a jogar dominó!', color: '#AB47BC', category: 'Os Pais', difficulty: 2,
     steps: [
       { title: 'Composição', description: 'Sandra sentada atrás de uma mesa com toalha axadrezada (bege/castanho). Está centrada, a olhar para baixo para as peças de dominó nas mãos.', tip: 'A toalha axadrezada cria um padrão rítmico que preenche a metade inferior.' },
       { title: 'Sandra — corpo', description: 'Busto e braços visíveis atrás da mesa. Ligeiramente inclinada para a frente. Braços à frente segurando dominós. Ombros relaxados.', tip: 'A inclinação para a frente mostra concentração no jogo.' },
@@ -142,7 +142,7 @@ const familyMembers = [
   // ===== A FAMÍLIA =====
   {
     id: 'paitio', name: 'Pai, Tio e Miguel', photo: 'img/pai-tio-miguel.jpg',
-    description: 'O pai, o tio e o Miguel!', color: '#FFA726', category: 'A Família',
+    description: 'O pai, o tio e o Miguel!', color: '#FFA726', category: 'A Família', difficulty: 2,
     steps: [
       { title: 'Composição', description: 'Três figuras à volta de uma mesa com toalha laranja. Bruno (tio) à esquerda, Miguel ao centro, Ricardo (pai) à direita, inclinado para o filho. Parede com quadros atrás.', tip: 'É um triângulo de interação — o Miguel é o foco entre os dois adultos.' },
       { title: 'Bruno (Tio) — corpo', description: 'À esquerda, sentado, encostado para trás com braço na cadeira atrás do Miguel. Corpo mais largo/musculoso. Expressão relaxada a observar. T-shirt cinza clara.', tip: 'O Bruno está numa postura relaxada, de observador — mais afastado da ação.' },
@@ -158,7 +158,7 @@ const familyMembers = [
   },
   {
     id: 'brunomiguel', name: 'Tio Bruno + Miguel', photo: 'img/Bruno + Miguel.jpg',
-    description: 'O tio Bruno e o Miguel no café!', color: '#5C6BC0', category: 'A Família',
+    description: 'O tio Bruno e o Miguel no café!', color: '#5C6BC0', category: 'A Família', difficulty: 2,
     steps: [
       { title: 'Composição', description: 'Duas figuras lado a lado: Bruno (tio) à esquerda, Miguel à direita. Mesa/balcão escuro em baixo. Terceira pessoa (tronco) ao fundo à direita. Interior de café moderno.', tip: 'O Bruno ocupa ~40% da largura, o Miguel ~35%.' },
       { title: 'Bruno — corpo e rosto', description: 'Rosto anguloso e magro. Maxilar definido. Olhos escuros a olhar para o brinquedo do Miguel. Sobrancelhas grossas. Nariz recto e proeminente.', tip: 'O Bruno está ligeiramente virado para o Miguel, a observar.' },
@@ -174,7 +174,7 @@ const familyMembers = [
   },
   {
     id: 'padrinhos', name: 'Padrinhos', photo: 'img/padrinhos.jpg',
-    description: 'Os padrinhos do Miguel!', color: '#8D6E63', category: 'A Família',
+    description: 'Os padrinhos do Miguel!', color: '#8D6E63', category: 'A Família', difficulty: 2,
     steps: [
       { title: 'Composição', description: 'Três figuras de pé contra parede de pedra de granito. Madrinha à esquerda com bebé Miguel ao colo. Padrinho à direita a apontar para a câmara. Janela branca atrás.', tip: 'É uma composição vertical — figuras de corpo inteiro.' },
       { title: 'Madrinha', description: 'Mulher com cabelo castanho-escuro longo e liso. Sorriso aberto, a olhar para o bebé. Vestido navy/preto comprido sem mangas. Pulseira preta no pulso.', tip: 'O cabelo comprido cai pelos ombros — linhas longas e lisas.' },
@@ -188,11 +188,23 @@ const familyMembers = [
       { title: 'Retoques finais', description: 'Brilho nos óculos do padrinho. Textura da pedra. Detalhes do bordado na roupa do bebé. Sorriso do bebé. Movimento no cabelo da madrinha.', tip: 'Os óculos têm um brilho rectangular — reflexo da luz.' }
     ]
   },
+  {
+    id: 'segundafamilia', name: 'Segunda Família', photo: 'img/segunda-familia.jpeg',
+    description: 'O Miguel com os peluches e o app!', color: '#EF5350', category: 'A Família', difficulty: 3,
+    steps: [
+      { title: 'Composicao', description: 'Linhas-guia de composicao: centro vertical, tercos horizontais e moldura.', tip: 'Desenha com linhas muito leves - sao apenas referencias.' },
+      { title: 'Parte superior', description: 'Contornos tracados da zona superior da imagem: cabeca(s), rosto(s), cabelo.', tip: 'Segue os contornos da foto - as linhas seguem as formas reais.' },
+      { title: 'Parte central', description: 'Contornos tracados da zona central: tronco, bracos, objectos.', tip: 'Mantem a pressao do lapis constante para linhas uniformes.' },
+      { title: 'Parte inferior', description: 'Contornos tracados da zona inferior: pernas, mesa, chao, fundo.', tip: 'As linhas mais distantes podem ser mais leves.' },
+      { title: 'Referencia de cor', description: 'A foto original como referencia de cores e tons.', tip: 'Observa as cores e sombras da foto para colorir o desenho.' },
+      { title: 'Assinatura', description: 'Assina o desenho com o nome no fundo da composicao.', tip: 'Uma assinatura discreta completa o retrato.' }
+    ]
+  },
 
   // ===== OS AVÓS =====
   {
     id: 'avoesduarte', name: 'Avós Duarte', photo: 'img/avoes-duarte.jpg',
-    description: 'Os avós Duarte com o Miguel bebé!', color: '#5C6BC0', category: 'Os Avós',
+    description: 'Os avós Duarte com o Miguel bebé!', color: '#5C6BC0', category: 'Os Avós', difficulty: 2,
     steps: [
       { title: 'Composição', description: 'Três figuras sentadas. Avô ao centro com bebé Miguel ao colo. Avó à direita. Parede de pedra com janela de madeira escura atrás. Vasos de plantas à esquerda.', tip: 'O avô com o bebé é o centro da atenção.' },
       { title: 'Avô Duarte', description: 'Homem ~60-70 anos, calvo no topo com cabelo cinzento nos lados. Óculos rectangulares de armação escura. Barba/cavanhaque grisalho. Sorriso caloroso a olhar para o bebé.', tip: 'A calvície é uma forma oval clara no topo — brilhante e lisa.' },
@@ -208,7 +220,7 @@ const familyMembers = [
   },
   {
     id: 'avosdias', name: 'Avós Dias', photo: 'img/avos-dias.jpg',
-    description: 'Os avós Dias com o Miguel bebé!', color: '#26A69A', category: 'Os Avós',
+    description: 'Os avós Dias com o Miguel bebé!', color: '#26A69A', category: 'Os Avós', difficulty: 2,
     steps: [
       { title: 'Composição', description: 'Três figuras de pé sob toldo decorativo. Avó à esquerda com bebé ao colo. Avô à direita. Toldo com padrão vermelho/rosa. Restaurante ao ar livre ao fundo.', tip: 'O toldo colorido cria um teto decorativo acima das figuras.' },
       { title: 'Avó Dias', description: 'Mulher ~60-70 anos. Cabelo curto encaracolado castanho-cinzento. Óculos rectangulares com lente levemente escurecida. Sorriso caloroso. Top sem mangas turquesa/teal.', tip: 'O turquesa do top é a cor mais viva da avó.' },
@@ -224,7 +236,7 @@ const familyMembers = [
   },
   {
     id: 'bivo', name: 'Bisavô', photo: 'img/bivo.jpg',
-    description: 'O bisavô a celebrar!', color: '#FF8A65', category: 'Os Avós',
+    description: 'O bisavô a celebrar!', color: '#FF8A65', category: 'Os Avós', difficulty: 2,
     steps: [
       { title: 'Composição', description: 'Um senhor idoso sentado a uma mesa de restaurante com toalha laranja. Segura uma garrafa de água. Balões dourados atrás. Pratos e copos na mesa.', tip: 'A toalha laranja vibrante domina a metade inferior da cena.' },
       { title: 'Bisavô — rosto', description: 'Homem muito idoso (~85-90 anos). Calvo com cabelo branco finíssimo nos lados. Sorriso enorme e genuíno, boca aberta mostrando alguns dentes. Rugas profundas de alegria.', tip: 'As rugas contam uma história — cada linha é importante.' },
@@ -240,7 +252,7 @@ const familyMembers = [
   },
   {
     id: 'tioavo', name: 'Tio + Avô', photo: 'img/tio-avo.jpg',
-    description: 'O tio Bruno e o avô nos passadiços!', color: '#66BB6A', category: 'Os Avós',
+    description: 'O tio Bruno e o avô nos passadiços!', color: '#66BB6A', category: 'Os Avós', difficulty: 2,
     steps: [
       { title: 'Composição', description: 'Selfie de duas pessoas na metade inferior. Vale montanhoso dramático na metade superior. Passadiço de madeira visível na encosta à direita. Céu azul com nuvens.', tip: 'A paisagem é tão protagonista quanto as pessoas.' },
       { title: 'Bruno (Tio)', description: 'À esquerda, mais perto da câmara (selfie). Rosto magro angular, maxilar definido. Barba curta/rente. Cabelo escuro curto. Sorriso. T-shirt branca "Quechua".', tip: 'Numa selfie, a pessoa que segura o telemóvel fica ligeiramente maior.' },
@@ -313,14 +325,16 @@ function buildMenu() {
     const card = document.createElement('div');
     card.className = 'family-card' + (isDone ? ' completed' : '');
     card.style.borderColor = member.color;
+    const stars = '\u2605'.repeat(member.difficulty || 0) + '\u2606'.repeat(5 - (member.difficulty || 0));
     card.innerHTML = `
       <img class="family-card-photo" src="${member.photo}" alt="${member.name}">
       <div class="family-card-info">
         <div class="family-card-name">${member.name}</div>
         <div class="family-card-desc">${member.description}</div>
+        <div class="family-card-stars">${stars}</div>
       </div>
       ${isDone ? '<div class="family-card-check" title="Desmarcar"></div>' : ''}
-      <div class="family-card-arrow">\u25B6</div>
+      <div class="family-card-arrow${member.difficulty >= 5 ? ' gold' : ''}">\u25B6</div>
     `;
     if (isDone) {
       card.querySelector('.family-card-check').addEventListener('click', (e) => {

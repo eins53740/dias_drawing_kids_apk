@@ -30,6 +30,7 @@ PHOTOS = {
     'avosdias':     'img/avos-dias.jpg',
     'bivo':         'img/bivo.jpg',
     'tioavo':       'img/tio-avo.jpg',
+    'segundafamilia': 'img/segunda-familia.jpeg',
 }
 
 # Scene -> display name for signature layer
@@ -50,7 +51,15 @@ NAMES = {
     'avosdias':     'Avos Dias',
     'bivo':         'Bisavo',
     'tioavo':       'Tio & Avo',
+    'segundafamilia': 'Segunda Familia',
 }
+
+# Scenes that use 6-layer (no fine detail) variant
+SIMPLE_SCENES = {'segundafamilia'}
+
+# Scenes that use 7-layer pencil sketch variant (4-star)
+PENCIL_SCENES = {'paisestudio', 'pais', 'sandra', 'paitio', 'brunomiguel',
+                 'avoesduarte', 'avosdias', 'tioavo'}
 
 
 def make_png_layers(scene_id, photo_path):
@@ -132,13 +141,102 @@ def make_png_layers(scene_id, photo_path):
   }}'''
 
 
-# 7 step descriptions for app.js (matching 7 layers: 0-6)
+def make_png_layers_simple(scene_id, photo_path):
+    """Generate JS code for 6-layer variant (no fine detail layer)."""
+    return f'''  // ================================================================
+  // PNG TRACED APPROACH (3-star): 6 layers, no fine detail.
+  // Layer 0: construction guides | Layers 1-3: traced outlines
+  // Layer 4: color reference | Layer 5: signature
+  // ================================================================
+
+  // Layer 0: Construction guides
+  (g, a) => {{
+    pp(g, ['M 180 0 L 180 450'], a, lt);
+    pp(g, ['M 0 150 L 360 150'], a, lt);
+    pp(g, ['M 0 300 L 360 300'], a, lt);
+    pp(g, ['M 10 5 L 350 5 L 350 445 L 10 445 Z'], a, lt);
+  }},
+
+  // Layer 1: Top region — traced from photo
+  (g, a) => {{
+    const src = a ? 'img/{scene_id}/step1_hl.png' : 'img/{scene_id}/step1.png';
+    const img = ce('image', {{ x: '0', y: '0', width: '360', height: '450' }});
+    img.setAttribute('href', src);
+    if (a) img.classList.add('active-element');
+    g.appendChild(img);
+  }},
+
+  // Layer 2: Middle region — traced from photo
+  (g, a) => {{
+    const src = a ? 'img/{scene_id}/step2_hl.png' : 'img/{scene_id}/step2.png';
+    const img = ce('image', {{ x: '0', y: '0', width: '360', height: '450' }});
+    img.setAttribute('href', src);
+    if (a) img.classList.add('active-element');
+    g.appendChild(img);
+  }},
+
+  // Layer 3: Bottom region — traced from photo
+  (g, a) => {{
+    const src = a ? 'img/{scene_id}/step3_hl.png' : 'img/{scene_id}/step3.png';
+    const img = ce('image', {{ x: '0', y: '0', width: '360', height: '450' }});
+    img.setAttribute('href', src);
+    if (a) img.classList.add('active-element');
+    g.appendChild(img);
+  }},
+
+  // Layer 4: Color reference — photo at reduced opacity
+  (g, a) => {{
+    const img = ce('image', {{ x: '0', y: '0', width: '360', height: '450', opacity: a ? '0.6' : '0.25' }});
+    img.setAttribute('href', '{photo_path}');
+    if (a) img.classList.add('active-element');
+    g.appendChild(img);
+  }},
+
+  // Layer 5: Signature
+  (g, a) => {{
+    const t = ce('text', {{
+      x: 180, y: 435,
+      fill: a ? HL : '#A08060',
+      'font-size': '15',
+      'text-anchor': 'middle',
+      'font-family': 'Georgia, serif',
+      'letter-spacing': '3',
+      'font-style': 'italic'
+    }});
+    t.textContent = '{NAMES.get(scene_id, scene_id)}';
+    if (a) t.classList.add('active-element');
+    g.appendChild(t);
+  }}'''
+
+
+# 6 step descriptions for 3-star scenes (matching 6 layers: 0-5)
+STEP_DESCRIPTIONS_SIMPLE = [
+    { 'title': 'Composicao', 'description': 'Linhas-guia de composicao: centro vertical, tercos horizontais e moldura.', 'tip': 'Desenha com linhas muito leves - sao apenas referencias.' },
+    { 'title': 'Parte superior', 'description': 'Contornos tracados da zona superior da imagem: cabeca(s), rosto(s), cabelo.', 'tip': 'Segue os contornos da foto - as linhas seguem as formas reais.' },
+    { 'title': 'Parte central', 'description': 'Contornos tracados da zona central: tronco, bracos, objectos.', 'tip': 'Mantem a pressao do lapis constante para linhas uniformes.' },
+    { 'title': 'Parte inferior', 'description': 'Contornos tracados da zona inferior: pernas, mesa, chao, fundo.', 'tip': 'As linhas mais distantes podem ser mais leves.' },
+    { 'title': 'Referencia de cor', 'description': 'A foto original como referencia de cores e tons.', 'tip': 'Observa as cores e sombras da foto para colorir o desenho.' },
+    { 'title': 'Assinatura', 'description': 'Assina o desenho com o nome no fundo da composicao.', 'tip': 'Uma assinatura discreta completa o retrato.' },
+]
+
+# 7 step descriptions for 5-star Canny scenes (matching 7 layers: 0-6)
 STEP_DESCRIPTIONS = [
     { 'title': 'Composicao', 'description': 'Linhas-guia de composicao: centro vertical, tercos horizontais e moldura.', 'tip': 'Desenha com linhas muito leves - sao apenas referencias.' },
     { 'title': 'Parte superior', 'description': 'Contornos tracados da zona superior da imagem: cabeca(s), rosto(s), cabelo.', 'tip': 'Segue os contornos da foto - as linhas seguem as formas reais.' },
     { 'title': 'Parte central', 'description': 'Contornos tracados da zona central: tronco, bracos, objectos.', 'tip': 'Mantem a pressao do lapis constante para linhas uniformes.' },
     { 'title': 'Parte inferior', 'description': 'Contornos tracados da zona inferior: pernas, mesa, chao, fundo.', 'tip': 'As linhas mais distantes podem ser mais leves.' },
     { 'title': 'Detalhes finos', 'description': 'Textura e detalhes adicionais: roupa, sombras, padroes.', 'tip': 'Usa linhas finas e leves para os detalhes de textura.' },
+    { 'title': 'Referencia de cor', 'description': 'A foto original como referencia de cores e tons.', 'tip': 'Observa as cores e sombras da foto para colorir o desenho.' },
+    { 'title': 'Assinatura', 'description': 'Assina o desenho com o nome no fundo da composicao.', 'tip': 'Uma assinatura discreta completa o retrato.' },
+]
+
+# 7 step descriptions for 4-star pencil sketch scenes (matching 7 layers: 0-6)
+STEP_DESCRIPTIONS_PENCIL = [
+    { 'title': 'Composicao', 'description': 'Linhas-guia de composicao: centro vertical, tercos horizontais e moldura.', 'tip': 'Desenha com linhas muito leves - sao apenas referencias.' },
+    { 'title': 'Contornos superiores', 'description': 'Esboco a lapis da zona superior: contornos principais das cabecas, rostos e cabelo.', 'tip': 'Usa tracos suaves e naturais, como se desenhasses a lapis macio.' },
+    { 'title': 'Contornos centrais', 'description': 'Esboco a lapis da zona central: tronco, bracos, maos e objectos.', 'tip': 'Varia a pressao do lapis para dar vida aos contornos.' },
+    { 'title': 'Contornos inferiores', 'description': 'Esboco a lapis da zona inferior: pernas, mesa, chao e fundo.', 'tip': 'As linhas do fundo podem ser mais leves e soltas.' },
+    { 'title': 'Sombreado e profundidade', 'description': 'Tons suaves de lapis que dao volume e profundidade ao desenho. Sombras, texturas e atmosfera.', 'tip': 'Usa o lapis de lado para criar sombras suaves e graduais.' },
     { 'title': 'Referencia de cor', 'description': 'A foto original como referencia de cores e tons.', 'tip': 'Observa as cores e sombras da foto para colorir o desenho.' },
     { 'title': 'Assinatura', 'description': 'Assina o desenho com o nome no fundo da composicao.', 'tip': 'Uma assinatura discreta completa o retrato.' },
 ]
@@ -176,7 +274,11 @@ def splice_drawings(scene_id, photo_path):
     if end_idx < len(content) and content[end_idx] == ';':
         end_idx += 1
 
-    new_array = f"const {scene_id}Layers = [\n{make_png_layers(scene_id, photo_path)}\n];"
+    if scene_id in SIMPLE_SCENES:
+        layers_code = make_png_layers_simple(scene_id, photo_path)
+    else:
+        layers_code = make_png_layers(scene_id, photo_path)
+    new_array = f"const {scene_id}Layers = [\n{layers_code}\n];"
     new_content = content[:start_idx] + new_array + content[end_idx:]
 
     with open(DRAWINGS_FILE, 'w', encoding='utf-8') as f:
@@ -222,8 +324,14 @@ def splice_app_steps(scene_id):
         return False
 
     # Build new steps array
+    if scene_id in SIMPLE_SCENES:
+        steps = STEP_DESCRIPTIONS_SIMPLE
+    elif scene_id in PENCIL_SCENES:
+        steps = STEP_DESCRIPTIONS_PENCIL
+    else:
+        steps = STEP_DESCRIPTIONS
     steps_lines = []
-    for s in STEP_DESCRIPTIONS:
+    for s in steps:
         t = s['title'].replace("'", "\\'")
         d = s['description'].replace("'", "\\'")
         tip = s['tip'].replace("'", "\\'")
