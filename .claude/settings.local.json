@@ -16,7 +16,26 @@
       "Bash(pkill:*)",
       "Bash(npx serve:*)",
       "Bash(taskkill:*)",
-      "Bash(netstat:*)"
+      "Bash(netstat:*)",
+      "Bash(pip:*)",
+      "Bash(winget list:*)",
+      "Bash(choco list:*)",
+      "Bash(python tools/photo_to_svg.py:*)",
+      "Bash(python tools/trace_layers.py:*)",
+      "Bash(python tools/make_layers.py:*)",
+      "Bash(python tools/make_layers_v2.py:*)",
+      "Bash(python tools/make_layers_v3.py:*)",
+      "Bash(python tools/splice_layers.py:*)",
+      "Bash(rustc:*)",
+      "Bash(python tools/make_scene_layers.py:*)",
+      "Bash(python:*)",
+      "Bash(CSC_IDENTITY_AUTO_DISCOVERY=false npm run build:win:*)",
+      "Bash(npx @electron/packager:*)",
+      "Bash(7z a:*)",
+      "Bash(powershell -Command \"Compress-Archive -Path ''DesenhaOsDias-win32-x64'' -DestinationPath ''DesenhaOsDias-portable.zip'' -Force\")",
+      "Bash(node_modules/7zip-bin/win/x64/7za.exe:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ]
   }
 }
