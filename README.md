@@ -1,129 +1,133 @@
-# Desenha os Dias
+# Desenhos do Miguel D. D.
 
-A progressive step-by-step drawing guide app for kids, featuring SVG tutorials based on real family photos from the Dias family.
+A progressive step-by-step drawing guide app for kids, featuring tutorials based on real family photos from the Dias family. 25 scenes across 4 categories, with multiple artistic styles.
 
-Built as a web app (HTML/CSS/JS) wrapped with [Capacitor](https://capacitorjs.com/) for Android APK distribution.
+(c) BD 2026
 
-## Features
+## How to Run
 
-- **16 drawing scenes** organized in 4 family categories
-- **10 progressive layers** per scene — from composition guides to final polish
-- **Reference photos** shown alongside each drawing step
-- Step-by-step instructions in Portuguese with tips for young artists
-- Completion screen with stars and the finished drawing
-- Mobile-first responsive design
-- Offline-capable (no network needed after loading)
+### Quick Launch (Windows)
 
-## Scenes
+Double-click **`run.bat`** in the root folder. It launches the desktop app if available, otherwise starts a web server.
 
-| Category | Scenes |
-|----------|--------|
-| **O Miguel** | Miguel Beb&eacute;, Batizado, Miguel, Matilde, MDD |
-| **Os Pais** | Pais Est&uacute;dio, Casamento, Pais, Sandra |
-| **A Fam&iacute;lia** | Pai &amp; Tio, Bruno &amp; Miguel, Padrinhos |
-| **Os Av&oacute;s** | Av&oacute;s Duarte, Av&oacute;s Dias, Bisav&ocirc;, Tio-Av&ocirc; |
+### Option 1: Portable Desktop App (Windows)
 
-## Drawing System
+No installation needed. Just run:
 
-Each scene has 10 SVG layers rendered progressively:
+```
+dist\DesenhaOsDias-win32-x64\DesenhaOsDias.exe
+```
 
-| Layers | Role | Render Order |
-|--------|------|--------------|
-| 0–6 | Outlines (guides, body, face, hair, clothing, hands, background) | Rendered **on top** |
-| 7–9 | Color fills (figures, scene, polish/highlights) | Rendered **behind** outlines |
+Or extract `dist/DesenhaOsDias-portable.zip` anywhere and run `DesenhaOsDias.exe`.
 
-Layer functions use shared SVG helpers: `ce()`, `sk()`, `lt()`, `pp()`, `fl()`, `fe()`
-
-## Quick Start
-
-### Prerequisites
-
-- [Node.js](https://nodejs.org/) (v16 or later)
-
-### Run the Dev Server
+### Option 2: Web Browser (Python — no Node.js needed)
 
 ```bash
-# Clone the repository
-git clone https://github.com/BD-dias/drawing-kids-apk.git
-cd drawing-kids-apk
+cd www
+python -m http.server 3333
+```
 
-# Install dependencies
+Open **http://localhost:3333** in your browser.
+
+### Option 3: Web Browser (Node.js)
+
+```bash
 npm install
-
-# Start the server (default port)
-npm start
-
-# Or specify a port
 npx serve www -l 3333
 ```
 
-Then open **http://localhost:3333** in your browser (or **http://localhost:3000** with `npm start`).
+Open **http://localhost:3333** in your browser.
 
-### Manual Server (no npm)
-
-If you don't have Node.js, you can use any static file server pointing to the `www/` directory:
+### Option 4: Electron Dev Mode
 
 ```bash
-# Python 3
-cd www
-python -m http.server 3333
-
-# PHP
-cd www
-php -S localhost:3333
-
-# Or simply open www/index.html directly in a browser
-# (some features may not work with file:// protocol)
+npm install
+npx electron .
 ```
 
-## Build Android APK
+### Option 5: Android APK (future)
+
+The project includes a Capacitor Android project ready for Android Studio. See **[ANDROID_STUDIO_DEPLOY.md](ANDROID_STUDIO_DEPLOY.md)** for the full step-by-step guide.
 
 ```bash
-# Initialize Capacitor (first time only)
-npm run cap:init
-npm run cap:add:android
-
-# Sync web files to Android project
-npm run cap:sync
-
-# Open in Android Studio
-npm run cap:open:android
+npm install
+npx cap sync android
+npx cap open android
+# Then: Build > Build APK in Android Studio
 ```
 
-Then build the APK from Android Studio (`Build > Build Bundle(s) / APK(s) > Build APK`).
+Install the APK on any Android 5.1+ device.
+
+## Features
+
+- **25 drawing scenes** organized in 4 family categories
+- **Landscape & portrait** orientations matched to each photo
+- **5 artistic styles**: Canny edge detection, cartoon, adaptive threshold, posterize, hand-drawn SVG
+- **Progressive layers** — from composition guides to final signature
+- **Color-coded arrows** in the menu showing each scene's style
+- **Category quick-jump** navigation bar
+- **Overall progress bar** tracking completed drawings
+- **Reference photos** shown alongside each step
+- Step-by-step instructions in Portuguese with tips for young artists
+- Offline-capable (no network needed)
+
+## Scenes (25)
+
+| Category | Scenes | Styles |
+|----------|--------|--------|
+| **O Miguel** | Miguel Bebe, Batizado, Miguel, Matilde, MDD, MDD e Amigos, MDD Sprunkies | Canny, Cartoon, Posterize |
+| **Os Pais** | Pais Estudio, Casamento, Pais, Sandra | SVG, Cartoon, Posterize |
+| **A Familia** | Pai & Tio, Bruno & Miguel, Padrinhos, 2a Familia, Dias Family, Dias 66, Espedrada, Primos Espedrada | Cartoon, Adaptive, Posterize, SVG |
+| **Os Avos** | Avos Duarte, Avos Dias, Bisavo, Tio-Avo, Avos MDD, Espedrada Primos | Posterize, Adaptive, Cartoon, SVG |
 
 ## Project Structure
 
 ```
-.
-├── www/                      # Web app root (served as-is)
-│   ├── index.html            # Single-page app entry point
-│   ├── manifest.json         # PWA manifest
-│   ├── css/
-│   │   └── style.css         # Full styling (categories, cards, canvas)
-│   ├── js/
-│   │   ├── app.js            # Scene data, menu builder, navigation (~410 lines)
-│   │   └── drawings.js       # 16 SVG scene layer arrays + render engine (~11,000 lines)
-│   └── img/                  # Family reference photos (23 images)
-├── capacitor.config.json     # Capacitor Android config
-├── package.json              # Node dependencies (Capacitor + serve)
-└── README.md
+dias_drawing_kids_apk/
+  run.bat                       # Quick launcher (Windows)
+  www/                          # Web app (source of truth)
+    index.html                  # Single-page app
+    js/app.js                   # 25 scene definitions, menu, navigation
+    js/drawings.js              # SVG/PNG layer arrays + render engine
+    css/style.css               # Full styling
+    img/                        # Photos + PNG layer directories
+  android/                      # Capacitor Android project
+  electron/main.js              # Electron desktop wrapper
+  dist/                         # Build outputs
+    DesenhaOsDias-win32-x64/    # Windows portable exe
+    DesenhaOsDias-portable.zip  # Windows portable zip
+  tools/                        # Python tools for generating scene layers
+    make_scene_layers.py        # PNG generator (5 artistic styles)
+    splice_scene.py             # Injects layers into JS files
+  img/                          # Original source photos (hi-res)
+  ANDROID_STUDIO_DEPLOY.md      # Android build guide
+  BUILD.md                      # Full build instructions
 ```
 
 ## Tech Stack
 
 - **Frontend:** Vanilla HTML5, CSS3, JavaScript (ES6+)
-- **SVG:** Programmatic SVG generation via DOM API (no libraries)
-- **Mobile:** Capacitor 6 for Android wrapper
-- **Dev Server:** [serve](https://www.npmjs.com/package/serve) (static file server)
+- **SVG/PNG:** Programmatic SVG with PNG traced layers (OpenCV edge detection)
+- **Desktop:** Electron (portable, no install)
+- **Mobile:** Capacitor 6 for Android
+- **Tools:** Python 3 + OpenCV for image processing
 
-## How It Works
+## Rebuilding
 
-1. `app.js` defines the 16 scenes with metadata (name, photo, category, step descriptions)
-2. `drawings.js` contains 16 layer arrays (10 functions each) that build SVG drawings progressively
-3. The render engine draws color layers (7–9) first, then outline layers (0–6) on top
-4. Each step reveals one more layer, with the active layer highlighted in orange
-5. A notebook-paper background with faint lines gives the "sketchbook" feel
+```bash
+# Rebuild Electron exe (Windows)
+npm run build:electron:win
+
+# Regenerate all PNG layers
+python tools/make_scene_layers.py --4star
+python tools/make_scene_layers.py miguelbebe batizado miguel matilde
+python tools/splice_scene.py --batch <scene_list>
+
+# Sync to Android
+npx cap sync android
+```
+
+See **[BUILD.md](BUILD.md)** for full build instructions.
 
 ## License
 
