@@ -1,5 +1,8 @@
 node_modules/
-android/
 .gradle/
-/dist/DesenhaOsDias-win32-x64
-dist/DesenhaOsDias-portable.zip
+dist/
+android/.gradle/
+android/app/build/
+android/build/
+android/local.properties
+tmp_diff.txt

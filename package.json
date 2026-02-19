@@ -11,7 +11,10 @@
     "cap:add:android": "npx cap add android",
     "cap:copy": "npx cap copy",
     "cap:sync": "npx cap sync",
-    "cap:open:android": "npx cap open android"
+    "cap:open:android": "npx cap open android",
+    "build:android": "npx cap sync android && cd android && ./gradlew assembleDebug",
+    "build:electron:win": "npx @electron/packager . DesenhaOsDias --platform=win32 --arch=x64 --overwrite --out=dist",
+    "build:electron:mac": "npx @electron/packager . DesenhaOsDias --platform=darwin --arch=universal --overwrite --out=dist"
   },
   "build": {
     "appId": "com.dias.desenha",

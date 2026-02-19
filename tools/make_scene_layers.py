@@ -14,10 +14,19 @@ import numpy as np
 import os
 import sys
 
-W, H = 360, 450
+W, H = 360, 450  # Portrait default
+LW, LH = 450, 360  # Landscape
+
+# Scenes that should use landscape orientation (wider than tall source photos)
+LANDSCAPE_SCENES = {
+    'batizado', 'miguel', 'matilde', 'paitio',
+    'avoesduarte', 'avosdias', 'tioavo',
+    'diasfamily', 'espedrada', 'espedradaprimos',
+}
 
 # Scene ID -> photo path mapping
 SCENES = {
+    'miguelbebe':   'www/img/miguel-bebe.jpeg',
     'batizado':     'www/img/batizado-miguel.jpg',
     'miguel':       'www/img/Miguel.jpg',
     'matilde':      'www/img/matilde.jpg',
@@ -34,26 +43,36 @@ SCENES = {
     'bivo':         'www/img/bivo.jpg',
     'tioavo':       'www/img/tio-avo.jpg',
     'segundafamilia': 'www/img/segunda-familia.jpeg',
+    'avosmdd':        'www/img/avos-mdd.png',
+    'diasfamily':     'www/img/dias-family.png',
+    'dias66':         'www/img/dias-family-2.png',
+    'espedrada':      'www/img/espedrada.jpg',
+    'espedradaprimos':'www/img/espedrada-primos.jpg',
+    'mddeamigos':     'www/img/mdd-amigos.png',
+    'mddsprunkies':   'www/img/mdd-sprunkies.jpg',
+    'primosespedrada':'www/img/primos-espedrada.jpg',
 }
 
 
-def load_and_resize(path):
+def load_and_resize(path, canvas_w=None, canvas_h=None):
     img = cv2.imread(path)
     if img is None:
         raise FileNotFoundError(f"Cannot load: {path}")
+    cw = canvas_w or W
+    ch = canvas_h or H
     h, w = img.shape[:2]
-    target_ratio = W / H
+    target_ratio = cw / ch
     img_ratio = w / h
     if img_ratio > target_ratio:
-        new_w = W
-        new_h = int(W / img_ratio)
+        new_w = cw
+        new_h = int(cw / img_ratio)
     else:
-        new_h = H
-        new_w = int(H * img_ratio)
+        new_h = ch
+        new_w = int(ch * img_ratio)
     resized = cv2.resize(img, (new_w, new_h), interpolation=cv2.INTER_AREA)
-    canvas = np.ones((H, W, 3), dtype=np.uint8) * 255
-    y_off = (H - new_h) // 2
-    x_off = (W - new_w) // 2
+    canvas = np.ones((ch, cw, 3), dtype=np.uint8) * 255
+    y_off = (ch - new_h) // 2
+    x_off = (cw - new_w) // 2
     canvas[y_off:y_off+new_h, x_off:x_off+new_w] = resized
     return canvas
 
@@ -81,13 +100,21 @@ def apply_mask(sketch, mask):
     return result
 
 
+def get_dims(scene_id):
+    """Return (width, height) for scene based on orientation."""
+    if scene_id in LANDSCAPE_SCENES:
+        return LW, LH
+    return W, H
+
+
 def process_scene(scene_id, photo_path, canny_low=30, canny_high=80, skip_detail=False):
     out_dir = f"www/img/{scene_id}"
     os.makedirs(out_dir, exist_ok=True)
+    sw, sh = get_dims(scene_id)
 
-    print(f"\n=== Processing: {scene_id} ({photo_path}) ===")
+    print(f"\n=== Processing: {scene_id} ({photo_path}) [{sw}x{sh}] ===")
     print(f"    Canny({canny_low}, {canny_high}), skip_detail={skip_detail}")
-    img = load_and_resize(photo_path)
+    img = load_and_resize(photo_path, sw, sh)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     # Light smoothing
@@ -111,19 +138,17 @@ def process_scene(scene_id, photo_path, canny_low=30, canny_high=80, skip_detail
     shape = gray.shape
 
     # 4 spatial regions: horizontal bands
-    # Adaptive split based on where the most edge content is
-    h_third = H // 3
-    h_half = H // 2
+    h_third = sh // 3
 
     # Step 1: Top third (heads, faces, sky)
-    step1_mask = rect_mask(shape, 0, 0, W, h_third + 20)
+    step1_mask = rect_mask(shape, 0, 0, sw, h_third + 20)
 
     # Step 2: Middle third (torso, arms, main body)
-    step2_mask = rect_mask(shape, 0, h_third - 20, W, 2 * h_third + 20)
+    step2_mask = rect_mask(shape, 0, h_third - 20, sw, 2 * h_third + 20)
     step2_only = cv2.subtract(step2_mask, step1_mask)
 
     # Step 3: Bottom third (legs, table, floor)
-    step3_mask = rect_mask(shape, 0, 2 * h_third - 20, W, H)
+    step3_mask = rect_mask(shape, 0, 2 * h_third - 20, sw, sh)
     step3_only = cv2.subtract(step3_mask, step2_mask)
 
     step_configs = [
@@ -134,7 +159,7 @@ def process_scene(scene_id, photo_path, canny_low=30, canny_high=80, skip_detail
 
     # Step 4: Fine detail overlay (texture that wasn't in main edges)
     if not skip_detail:
-        step4_mask = rect_mask(shape, 0, 0, W, H)
+        step4_mask = rect_mask(shape, 0, 0, sw, sh)
         step_configs.append(("step4", step4_mask, sketch_fine, "Fine detail"))
 
     for name, mask, src, desc in step_configs:
@@ -181,10 +206,11 @@ def process_scene_pencil(scene_id, photo_path, blur_ksize=21, detail_ksize=9, st
     Produces 4 step PNGs: 3 spatial outline regions + 1 shading/depth layer = 7 total layers."""
     out_dir = f"www/img/{scene_id}"
     os.makedirs(out_dir, exist_ok=True)
+    sw, sh = get_dims(scene_id)
 
-    print(f"\n=== Processing (pencil sketch): {scene_id} ({photo_path}) ===")
+    print(f"\n=== Processing (pencil sketch): {scene_id} ({photo_path}) [{sw}x{sh}] ===")
     print(f"    blur_ksize={blur_ksize}, detail_ksize={detail_ksize}, strong_thresh={strong_thresh}")
-    img = load_and_resize(photo_path)
+    img = load_and_resize(photo_path, sw, sh)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     # Enhance contrast to pull more detail from soft-lit photos
@@ -214,15 +240,15 @@ def process_scene_pencil(scene_id, photo_path, blur_ksize=21, detail_ksize=9, st
     sketch_shading[sketch_shading > 240] = 255  # clean up very light noise
 
     shape = sketch_outlines.shape
-    h_third = H // 3
+    h_third = sh // 3
 
     # Spatial masks for outline regions
-    step1_mask = rect_mask(shape, 0, 0, W, h_third + 20)
-    step2_mask = rect_mask(shape, 0, h_third - 20, W, 2 * h_third + 20)
+    step1_mask = rect_mask(shape, 0, 0, sw, h_third + 20)
+    step2_mask = rect_mask(shape, 0, h_third - 20, sw, 2 * h_third + 20)
     step2_only = cv2.subtract(step2_mask, step1_mask)
-    step3_mask = rect_mask(shape, 0, 2 * h_third - 20, W, H)
+    step3_mask = rect_mask(shape, 0, 2 * h_third - 20, sw, sh)
     step3_only = cv2.subtract(step3_mask, step2_mask)
-    step4_mask = rect_mask(shape, 0, 0, W, H)  # full image for shading
+    step4_mask = rect_mask(shape, 0, 0, sw, sh)  # full image for shading
 
     step_configs = [
         ("step1", step1_mask, sketch_strong, "Top region (outlines)"),
@@ -259,6 +285,275 @@ def process_scene_pencil(scene_id, photo_path, blur_ksize=21, detail_ksize=9, st
     return True
 
 
+def process_scene_cartoon(scene_id, photo_path, bilateral_d=9, bilateral_sigma=75, canny_low=50, canny_high=120):
+    """Generate PNG layers using cartoon/comic style: bilateral flatten + bold Canny edges.
+    Produces 4 step PNGs: 3 spatial outline regions + 1 bold detail layer = 7 total layers."""
+    out_dir = f"www/img/{scene_id}"
+    os.makedirs(out_dir, exist_ok=True)
+    sw, sh = get_dims(scene_id)
+
+    print(f"\n=== Processing (cartoon): {scene_id} ({photo_path}) [{sw}x{sh}] ===")
+    img = load_and_resize(photo_path, sw, sh)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    # Heavy bilateral filtering to flatten textures (cartoon effect)
+    flat = gray.copy()
+    for _ in range(3):
+        flat = cv2.bilateralFilter(flat, bilateral_d, bilateral_sigma, bilateral_sigma)
+
+    # Bold edge detection on flattened image
+    edges = cv2.Canny(flat, canny_low, canny_high)
+    kernel = np.ones((2, 2), np.uint8)
+    edges = cv2.dilate(edges, kernel, iterations=2)  # thicker lines for cartoon
+    sketch = 255 - edges
+
+    # Lighter detail pass for step4
+    edges_detail = cv2.Canny(flat, 30, 70)
+    edges_detail = cv2.dilate(edges_detail, kernel, iterations=1)
+    sketch_detail = 255 - edges_detail
+
+    shape = gray.shape
+    h_third = sh // 3
+
+    step1_mask = rect_mask(shape, 0, 0, sw, h_third + 20)
+    step2_mask = rect_mask(shape, 0, h_third - 20, sw, 2 * h_third + 20)
+    step2_only = cv2.subtract(step2_mask, step1_mask)
+    step3_mask = rect_mask(shape, 0, 2 * h_third - 20, sw, sh)
+    step3_only = cv2.subtract(step3_mask, step2_mask)
+    step4_mask = rect_mask(shape, 0, 0, sw, sh)
+
+    step_configs = [
+        ("step1", step1_mask, sketch, "Top region (bold outlines)"),
+        ("step2", step2_only, sketch, "Middle region (bold outlines)"),
+        ("step3", step3_only, sketch, "Bottom region (bold outlines)"),
+        ("step4", step4_mask, sketch_detail, "Expression & detail"),
+    ]
+
+    for name, mask, src, desc in step_configs:
+        step_sketch = apply_mask(src, mask)
+        ink = np.sum(step_sketch < 200)
+        print(f"  {desc}: {ink} ink pixels")
+
+        # For step 4, only keep NEW edges not in main sketch
+        if name == "step4":
+            main_dark = sketch < 200
+            fine_dark = step_sketch < 200
+            new_detail = fine_dark & ~main_dark
+            result = np.ones_like(step_sketch) * 255
+            result[new_detail] = step_sketch[new_detail]
+            step_sketch = result
+            ink = np.sum(step_sketch < 200)
+            print(f"    (new detail only: {ink} pixels)")
+
+        rgba = make_transparent(step_sketch, ink_color=(74, 74, 74))
+        cv2.imwrite(f"{out_dir}/{name}.png", rgba)
+
+        rgba_hl = make_transparent(step_sketch, ink_color=(230, 81, 0))
+        cv2.imwrite(f"{out_dir}/{name}_hl.png", rgba_hl)
+
+    full_rgba = make_transparent(sketch, ink_color=(74, 74, 74))
+    cv2.imwrite(f"{out_dir}/full.png", full_rgba)
+
+    total = 0
+    for f in sorted(os.listdir(out_dir)):
+        if f.endswith('.png') and not f.startswith('_'):
+            size = os.path.getsize(os.path.join(out_dir, f))
+            total += size
+    print(f"  Total: {total // 1024}KB ({len([f for f in os.listdir(out_dir) if f.endswith('.png')])} files)")
+    return True
+
+
+def process_scene_adaptive(scene_id, photo_path, block_size=15, c_val=8):
+    """Generate PNG layers using adaptive threshold style: high-contrast B&W woodcut.
+    Produces 4 step PNGs: 3 spatial regions + 1 gradient/shadow layer = 7 total layers."""
+    out_dir = f"www/img/{scene_id}"
+    os.makedirs(out_dir, exist_ok=True)
+    sw, sh = get_dims(scene_id)
+
+    print(f"\n=== Processing (adaptive threshold): {scene_id} ({photo_path}) [{sw}x{sh}] ===")
+    img = load_and_resize(photo_path, sw, sh)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    # Enhance contrast
+    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+    gray = clahe.apply(gray)
+
+    # Light smoothing before threshold
+    smooth = cv2.bilateralFilter(gray, 7, 50, 50)
+
+    # Adaptive threshold for woodcut effect
+    thresh = cv2.adaptiveThreshold(smooth, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                                    cv2.THRESH_BINARY, block_size, c_val)
+
+    # Clean small noise
+    kernel_clean = np.ones((2, 2), np.uint8)
+    thresh = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel_clean, iterations=1)
+
+    # Softer threshold for shadow/gradient layer (larger block, less contrast)
+    thresh_soft = cv2.adaptiveThreshold(smooth, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+                                         cv2.THRESH_BINARY, block_size * 3 + (1 if (block_size * 3) % 2 == 0 else 0), c_val // 2)
+
+    shape = gray.shape
+    h_third = sh // 3
+
+    step1_mask = rect_mask(shape, 0, 0, sw, h_third + 20)
+    step2_mask = rect_mask(shape, 0, h_third - 20, sw, 2 * h_third + 20)
+    step2_only = cv2.subtract(step2_mask, step1_mask)
+    step3_mask = rect_mask(shape, 0, 2 * h_third - 20, sw, sh)
+    step3_only = cv2.subtract(step3_mask, step2_mask)
+    step4_mask = rect_mask(shape, 0, 0, sw, sh)
+
+    step_configs = [
+        ("step1", step1_mask, thresh, "Top region (woodcut)"),
+        ("step2", step2_only, thresh, "Middle region (woodcut)"),
+        ("step3", step3_only, thresh, "Bottom region (woodcut)"),
+        ("step4", step4_mask, thresh_soft, "Shadows & texture"),
+    ]
+
+    for name, mask, src, desc in step_configs:
+        step_sketch = apply_mask(src, mask)
+        ink = np.sum(step_sketch < 200)
+        print(f"  {desc}: {ink} ink pixels")
+
+        if name == "step4":
+            main_dark = thresh < 200
+            fine_dark = step_sketch < 200
+            new_detail = fine_dark & ~main_dark
+            result = np.ones_like(step_sketch) * 255
+            result[new_detail] = step_sketch[new_detail]
+            step_sketch = result
+            ink = np.sum(step_sketch < 200)
+            print(f"    (new detail only: {ink} pixels)")
+
+        rgba = make_transparent(step_sketch, ink_color=(74, 74, 74))
+        cv2.imwrite(f"{out_dir}/{name}.png", rgba)
+
+        rgba_hl = make_transparent(step_sketch, ink_color=(230, 81, 0))
+        cv2.imwrite(f"{out_dir}/{name}_hl.png", rgba_hl)
+
+    full_rgba = make_transparent(thresh, ink_color=(74, 74, 74))
+    cv2.imwrite(f"{out_dir}/full.png", full_rgba)
+
+    total = 0
+    for f in sorted(os.listdir(out_dir)):
+        if f.endswith('.png') and not f.startswith('_'):
+            size = os.path.getsize(os.path.join(out_dir, f))
+            total += size
+    print(f"  Total: {total // 1024}KB ({len([f for f in os.listdir(out_dir) if f.endswith('.png')])} files)")
+    return True
+
+
+def process_scene_posterize(scene_id, photo_path, k_colors=6, canny_low=40, canny_high=100):
+    """Generate PNG layers using posterize style: K-means color reduction + edge overlay.
+    Produces 4 step PNGs: 3 spatial edge regions + 1 posterized color region layer = 7 total layers."""
+    out_dir = f"www/img/{scene_id}"
+    os.makedirs(out_dir, exist_ok=True)
+    sw, sh = get_dims(scene_id)
+
+    print(f"\n=== Processing (posterize): {scene_id} ({photo_path}) [{sw}x{sh}] ===")
+    img = load_and_resize(photo_path, sw, sh)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    # Edge detection for outlines
+    smooth = cv2.bilateralFilter(gray, 7, 50, 50)
+    edges = cv2.Canny(smooth, canny_low, canny_high)
+    kernel = np.ones((2, 2), np.uint8)
+    edges = cv2.dilate(edges, kernel, iterations=1)
+    sketch = 255 - edges
+
+    # K-means posterization on grayscale for color region boundaries
+    z = gray.reshape((-1, 1)).astype(np.float32)
+    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
+    _, labels, centers = cv2.kmeans(z, k_colors, None, criteria, 10, cv2.KMEANS_RANDOM_CENTERS)
+    centers = np.uint8(centers)
+    posterized = centers[labels.flatten()].reshape(gray.shape)
+
+    # Extract region boundaries from posterized image
+    region_edges = np.zeros_like(gray)
+    for i in range(k_colors):
+        mask_i = (posterized == centers[i][0]).astype(np.uint8) * 255
+        contours, _ = cv2.findContours(mask_i, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        cv2.drawContours(region_edges, contours, -1, 255, 1)
+
+    region_sketch = 255 - region_edges
+
+    shape = gray.shape
+    h_third = sh // 3
+
+    step1_mask = rect_mask(shape, 0, 0, sw, h_third + 20)
+    step2_mask = rect_mask(shape, 0, h_third - 20, sw, 2 * h_third + 20)
+    step2_only = cv2.subtract(step2_mask, step1_mask)
+    step3_mask = rect_mask(shape, 0, 2 * h_third - 20, sw, sh)
+    step3_only = cv2.subtract(step3_mask, step2_mask)
+    step4_mask = rect_mask(shape, 0, 0, sw, sh)
+
+    step_configs = [
+        ("step1", step1_mask, sketch, "Top region (edges)"),
+        ("step2", step2_only, sketch, "Middle region (edges)"),
+        ("step3", step3_only, sketch, "Bottom region (edges)"),
+        ("step4", step4_mask, region_sketch, "Color region boundaries"),
+    ]
+
+    for name, mask, src, desc in step_configs:
+        step_sketch = apply_mask(src, mask)
+        ink = np.sum(step_sketch < 200)
+        print(f"  {desc}: {ink} ink pixels")
+
+        if name == "step4":
+            main_dark = sketch < 200
+            fine_dark = step_sketch < 200
+            new_detail = fine_dark & ~main_dark
+            result = np.ones_like(step_sketch) * 255
+            result[new_detail] = step_sketch[new_detail]
+            step_sketch = result
+            ink = np.sum(step_sketch < 200)
+            print(f"    (new detail only: {ink} pixels)")
+
+        rgba = make_transparent(step_sketch, ink_color=(74, 74, 74))
+        cv2.imwrite(f"{out_dir}/{name}.png", rgba)
+
+        rgba_hl = make_transparent(step_sketch, ink_color=(230, 81, 0))
+        cv2.imwrite(f"{out_dir}/{name}_hl.png", rgba_hl)
+
+    full_rgba = make_transparent(sketch, ink_color=(74, 74, 74))
+    cv2.imwrite(f"{out_dir}/full.png", full_rgba)
+
+    total = 0
+    for f in sorted(os.listdir(out_dir)):
+        if f.endswith('.png') and not f.startswith('_'):
+            size = os.path.getsize(os.path.join(out_dir, f))
+            total += size
+    print(f"  Total: {total // 1024}KB ({len([f for f in os.listdir(out_dir) if f.endswith('.png')])} files)")
+    return True
+
+
+# Style assignments for 4-star scenes
+STYLE_MAP = {
+    'pais':         'cartoon',
+    'paitio':       'cartoon',
+    'tioavo':       'cartoon',
+    'brunomiguel':  'adaptive',
+    'avosdias':     'adaptive',
+    'sandra':       'posterize',
+    'avoesduarte':  'posterize',
+    # Phase 2 scenes
+    'avosmdd':          'posterize',
+    'diasfamily':       'cartoon',
+    'dias66':           'adaptive',
+    'espedrada':        'cartoon',
+    'espedradaprimos':  'adaptive',
+    'mddeamigos':       'posterize',
+    'mddsprunkies':     'cartoon',
+    'primosespedrada':  'posterize',
+}
+
+STYLE_FUNCS = {
+    'cartoon':   process_scene_cartoon,
+    'adaptive':  process_scene_adaptive,
+    'posterize': process_scene_posterize,
+}
+
+
 QUALITY_PRESETS = {
     5: {'canny_low': 30, 'canny_high': 80, 'skip_detail': False},   # Full detail
     4: {'canny_low': 40, 'canny_high': 100, 'skip_detail': False},  # Good detail
@@ -274,16 +569,25 @@ def main():
         print("       python tools/make_scene_layers.py --all")
         print("       python tools/make_scene_layers.py <scene_id> --quality 3")
         print("       python tools/make_scene_layers.py <scene_id> --pencil")
+        print("       python tools/make_scene_layers.py <scene_id> --style cartoon|adaptive|posterize")
+        print("       python tools/make_scene_layers.py --4star  (all 7 scenes with assigned styles)")
         print(f"\nAvailable scenes: {', '.join(SCENES.keys())}")
+        print(f"Style assignments: {STYLE_MAP}")
         sys.exit(1)
 
     # Parse flags
     quality = 5
     pencil = False
+    style = None
     args = list(sys.argv[1:])
     if '--pencil' in args:
         pencil = True
         args.remove('--pencil')
+    if '--style' in args:
+        si = args.index('--style')
+        style = args[si + 1]
+        args.pop(si)
+        args.pop(si)
     if '--quality' in args:
         qi = args.index('--quality')
         quality = int(args[qi + 1])
@@ -291,6 +595,19 @@ def main():
         args.pop(qi)  # remove the number
 
     params = QUALITY_PRESETS.get(quality, QUALITY_PRESETS[5])
+
+    # Batch process all 4-star scenes with their assigned styles
+    if args[0] == '--4star':
+        for sid, sty in STYLE_MAP.items():
+            photo = SCENES.get(sid)
+            if not photo:
+                print(f"  SKIP: no photo for {sid}")
+                continue
+            try:
+                STYLE_FUNCS[sty](sid, photo)
+            except Exception as e:
+                print(f"  ERROR ({sid}): {e}")
+        return
 
     if args[0] == '--all':
         for sid, photo in SCENES.items():
@@ -311,7 +628,13 @@ def main():
             print(f"Unknown scene: {scene_id}")
             print(f"Available: {', '.join(SCENES.keys())}")
             sys.exit(1)
-        if pencil:
+
+        if style:
+            if style not in STYLE_FUNCS:
+                print(f"Unknown style: {style}. Available: {list(STYLE_FUNCS.keys())}")
+                sys.exit(1)
+            STYLE_FUNCS[style](scene_id, photo_path)
+        elif pencil:
             process_scene_pencil(scene_id, photo_path)
         else:
             process_scene(scene_id, photo_path, **params)

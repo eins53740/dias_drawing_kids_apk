@@ -6,7 +6,7 @@ function createWindow() {
     width: 420,
     height: 750,
     resizable: true,
-    title: 'Desenha os Dias',
+    title: 'Desenhos do Miguel D. D.',
     icon: path.join(__dirname, '..', 'www', 'img', 'icon.png'),
     webPreferences: {
       nodeIntegration: false,

@@ -45,7 +45,7 @@ html, body {
 }
 
 .app-title {
-  font-size: 2.2em;
+  font-size: 1.9em;
   color: #FF6F00;
   text-shadow: 2px 2px 0px #FFE082;
   letter-spacing: 1px;
@@ -55,6 +55,34 @@ html, body {
   font-size: 1.1em;
   color: #795548;
   margin-top: 8px;
+}
+
+.category-nav {
+  display: flex;
+  gap: 6px;
+  padding: 4px 16px 6px;
+  flex-shrink: 0;
+  justify-content: center;
+}
+
+.category-nav-btn {
+  background: #FFF3E0;
+  border: 1.5px solid #FFE0B2;
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 0.75em;
+  font-weight: 700;
+  color: #8D6E63;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.category-nav-btn:active,
+.category-nav-btn.active {
+  background: #FF6F00;
+  color: white;
+  border-color: #FF6F00;
 }
 
 .family-grid {
@@ -167,6 +195,26 @@ html, body {
   text-shadow: 0 1px 3px rgba(255, 215, 0, 0.4);
 }
 
+.family-card-arrow.cartoon {
+  color: #FF6B6B;
+  text-shadow: 0 1px 3px rgba(255, 107, 107, 0.4);
+}
+
+.family-card-arrow.adaptive {
+  color: #8B6914;
+  text-shadow: 0 1px 3px rgba(139, 105, 20, 0.4);
+}
+
+.family-card-arrow.posterize {
+  color: #9C27B0;
+  text-shadow: 0 1px 3px rgba(156, 39, 176, 0.4);
+}
+
+.family-card-arrow.simple {
+  color: #26A69A;
+  text-shadow: 0 1px 3px rgba(38, 166, 154, 0.4);
+}
+
 .family-card-stars {
   font-size: 0.7em;
   letter-spacing: 1px;
@@ -177,8 +225,39 @@ html, body {
 
 .menu-footer {
   text-align: center;
-  padding: 12px;
+  padding: 8px 16px 12px;
   flex-shrink: 0;
+}
+
+.overall-progress {
+  width: 100%;
+  max-width: 300px;
+  height: 8px;
+  background: #E0E0E0;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 0 auto 4px;
+}
+
+.overall-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #4CAF50, #8BC34A);
+  border-radius: 4px;
+  transition: width 0.4s ease;
+  width: 0%;
+}
+
+.overall-progress-label {
+  font-size: 0.7em;
+  color: #8D6E63;
+  margin-bottom: 6px;
+}
+
+.copyright {
+  font-size: 0.6em;
+  color: #BDBDBD;
+  text-align: right;
+  margin-top: 4px;
 }
 
 .pencil-decoration {
@@ -271,13 +350,17 @@ html, body {
 
 .drawing-canvas {
   width: 100%;
-  aspect-ratio: 320 / 450;
+  aspect-ratio: 360 / 450;
   background: #FFFEF9;
   border-radius: 16px;
   border: 2px solid #E8E0D0;
   box-shadow: 0 4px 20px rgba(0,0,0,0.08), inset 0 0 30px rgba(255,248,225,0.5);
   overflow: hidden;
   position: relative;
+}
+
+.drawing-canvas.landscape {
+  aspect-ratio: 450 / 360;
 }
 
 .drawing-canvas svg {
@@ -488,6 +571,11 @@ html, body {
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+}
+
+.done-drawing.landscape {
+  width: 252px;
+  height: 180px;
 }
 
 .done-drawing svg {

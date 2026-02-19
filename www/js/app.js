@@ -7,14 +7,13 @@ const familyMembers = [
     id: 'miguelbebe', name: 'Miguel Bebé', photo: 'img/miguel-bebe.jpeg',
     description: 'O Miguel quando era bebé!', color: '#FF7043', category: 'O Miguel', difficulty: 5,
     steps: [
-      { title: 'Composição', description: 'Vista de cima (bird\'s eye view). Desenha linhas-guia leves: oval grande para a cabeça no topo, retângulo para o tronco, direções dos braços e pernas.', tip: 'A cabeça fica no topo. O braço direito sobe ao lado da cabeça, o esquerdo desce segurando a letra M.' },
-      { title: 'Cabeça e rosto', description: 'Contorno da cabeça grande e redonda. Olhos, nariz, boca, orelhas. A testa é ampla (proporção de recém-nascido). Olhos a olhar para cima.', tip: 'Os olhos ficam no terço inferior da cabeça — bebés têm testas enormes.' },
-      { title: 'Corpo e braços', description: 'Tronco curto. Braço direito levantado ao lado da cabeça. Braço esquerdo a descer sobre a barriga segurando a letra M. Casaco aberto mostrando o peito.', tip: 'Segue os contornos da foto — as linhas seguem as formas reais do corpo.' },
-      { title: 'Textura da roupa', description: 'Detalhe da malha do casaco de tricot bege. Textura visível nas mangas, tronco e calções. Costuras e pregas do tecido.', tip: 'A malha cria um padrão de pequenos V — observa as sombras entre os pontos.' },
-      { title: 'Pernas e botinhas', description: 'Pernas ligeiramente abertas e dobradas (pose natural de recém-nascido). Calções de malha. Botinhas de tricot nos pés com punho canelado.', tip: 'As pernas de bebé são curtas e rechonchudas, com pregas de gordura.' },
-      { title: 'Fundo e decoração', description: 'Lençol com riscas verticais finas. Pompons coloridos espalhados. Canto de moldura de madeira. Pregas do tecido à volta do corpo.', tip: 'O fundo emoldura o bebé — as riscas e pompons criam equilíbrio visual.' },
-      { title: 'Referência de cor', description: 'Observa as cores da foto original como referência: pele rosada, casaco bege, letra M branca, pompons coloridos, lençol branco-cinza.', tip: 'Usa lápis de cor suaves — as cores da cena são neutras com acentos vivos.' },
-      { title: 'Assinatura', description: 'Assina o desenho com o nome "Miguel" em itálico elegante no fundo da composição.', tip: 'Uma assinatura discreta completa o retrato.' }
+      { title: 'Composicao', description: 'Linhas-guia de composicao: centro vertical, tercos horizontais e moldura.', tip: 'Desenha com linhas muito leves - sao apenas referencias.' },
+      { title: 'Parte superior', description: 'Contornos tracados da zona superior da imagem: cabeca(s), rosto(s), cabelo.', tip: 'Segue os contornos da foto - as linhas seguem as formas reais.' },
+      { title: 'Parte central', description: 'Contornos tracados da zona central: tronco, bracos, objectos.', tip: 'Mantem a pressao do lapis constante para linhas uniformes.' },
+      { title: 'Parte inferior', description: 'Contornos tracados da zona inferior: pernas, mesa, chao, fundo.', tip: 'As linhas mais distantes podem ser mais leves.' },
+      { title: 'Detalhes finos', description: 'Textura e detalhes adicionais: roupa, sombras, padroes.', tip: 'Usa linhas finas e leves para os detalhes de textura.' },
+      { title: 'Referencia de cor', description: 'A foto original como referencia de cores e tons.', tip: 'Observa as cores e sombras da foto para colorir o desenho.' },
+      { title: 'Assinatura', description: 'Assina o desenho com o nome no fundo da composicao.', tip: 'Uma assinatura discreta completa o retrato.' }
     ]
   },
   {
@@ -72,6 +71,32 @@ const familyMembers = [
       { title: 'Retoques finais', description: 'Brilho nos olhos. Textura do musgo no muro. Costuras do casaco acolchoado. Detalhe do brinquedo. Sombra sob os braços no muro.', tip: 'O musgo é feito com pequenos pontos e manchas verdes irregulares.' }
     ]
   },
+  {
+    id: 'mddeamigos', name: 'MDD e Amigos', photo: 'img/mdd-amigos.png',
+    description: 'O Miguel e os amigos peluches!', color: '#4DB6AC', category: 'O Miguel', difficulty: 3,
+    steps: [
+      { title: 'Composicao', description: 'Linhas-guia de composicao: centro vertical, tercos horizontais e moldura.', tip: 'Desenha com linhas muito leves - sao apenas referencias.' },
+      { title: 'Parte superior', description: 'Contornos da zona superior: cabecas, rostos e cabelo com linhas claras e definidas.', tip: 'Segue os contornos da foto - as linhas seguem as formas reais.' },
+      { title: 'Parte central', description: 'Contornos da zona central: tronco, bracos e objectos.', tip: 'Mantem a pressao do lapis constante para linhas uniformes.' },
+      { title: 'Parte inferior', description: 'Contornos da zona inferior: pernas, mesa, chao e fundo.', tip: 'As linhas mais distantes podem ser mais leves.' },
+      { title: 'Regioes de cor', description: 'Limites entre as zonas de cor: areas planas de cor separadas por linhas suaves, estilo poster.', tip: 'Pinta cada regiao com uma cor uniforme - sem degradados.' },
+      { title: 'Referencia de cor', description: 'A foto original como referencia de cores e tons.', tip: 'Usa poucas cores - simplifica para 5-6 tons principais.' },
+      { title: 'Assinatura', description: 'Assina o desenho com o nome no fundo da composicao.', tip: 'Uma assinatura discreta completa o retrato.' }
+    ]
+  },
+  {
+    id: 'mddsprunkies', name: 'MDD e Sprunkies', photo: 'img/mdd-sprunkies.jpg',
+    description: 'O Miguel e os Sprunkies!', color: '#7CB342', category: 'O Miguel', difficulty: 4,
+    steps: [
+      { title: 'Composicao', description: 'Linhas-guia de composicao: centro vertical, tercos horizontais e moldura.', tip: 'Desenha com linhas muito leves - sao apenas referencias.' },
+      { title: 'Contornos superiores', description: 'Contornos fortes e simplificados da zona superior: cabecas, rostos, cabelo - estilo banda desenhada.', tip: 'Usa tracos grossos e decisivos, como numa banda desenhada.' },
+      { title: 'Contornos centrais', description: 'Contornos fortes da zona central: tronco, bracos, maos e objectos - linhas limpas e expressivas.', tip: 'Simplifica as formas - menos detalhe, mais expressao.' },
+      { title: 'Contornos inferiores', description: 'Contornos fortes da zona inferior: pernas, mesa, chao e fundo.', tip: 'Mantem as linhas grossas e confiantes ate ao final.' },
+      { title: 'Expressao e detalhe', description: 'Detalhes adicionais que dao expressao: olhos, bocas, pregas de roupa, pequenos objectos.', tip: 'Estes detalhes finos dao personalidade ao estilo cartoon.' },
+      { title: 'Referencia de cor', description: 'A foto original como referencia de cores e tons.', tip: 'Cores vivas e saturadas combinam bem com o estilo cartoon.' },
+      { title: 'Assinatura', description: 'Assina o desenho com o nome no fundo da composicao.', tip: 'Uma assinatura discreta completa o retrato.' }
+    ]
+  },
 
   // ===== OS PAIS =====
   {
@@ -108,68 +133,56 @@ const familyMembers = [
   },
   {
     id: 'pais', name: 'Pais a Saltar', photo: 'img/pais.jpg',
-    description: 'Os pais a saltar!', color: '#42A5F5', category: 'Os Pais', difficulty: 2,
+    description: 'Os pais a saltar!', color: '#42A5F5', category: 'Os Pais', difficulty: 4,
     steps: [
-      { title: 'Composição', description: 'Duas figuras no ar contra céu azul puro. Ricardo à esquerda (mais alto, pernas abertas em estrela), Sandra à direita (braço livre levantado). Mãos dadas ao centro.', tip: 'A foto é de baixo para cima — as figuras parecem voar contra o céu.' },
-      { title: 'Ricardo — corpo', description: 'Corpo inteiro em pose de star-jump. Pernas abertas e separadas. Braço esquerdo esticado para baixo. Mão direita segura a de Sandra. Corpo magro e atlético.', tip: 'As pernas fazem quase 180° — é uma pose muito dinâmica.' },
-      { title: 'Sandra — corpo', description: 'Corpo inteiro no ar. Pernas abertas mas menos que Ricardo. Braço direito levantado alto em V. Mão esquerda segura a do Ricardo. Cabelo ruivo a voar com o vento.', tip: 'O braço levantado e o cabelo ao vento criam movimento.' },
-      { title: 'Rostos e óculos', description: 'Ambos usam óculos de sol escuros. Ricardo: expressão calma/divertida. Sandra: sorriso aberto e radiante. Cabelo escuro curto dele, cabelo ruivo-castanho dela a voar.', tip: 'Os óculos de sol são retângulos arredondados escuros.' },
-      { title: 'Roupa — Ricardo', description: 'T-shirt preta com texto "300" ou similar em branco/cinza no peito. Calças pretas. Ténis Nike cinza/preto com swoosh azul. Relógio ou pulseira no pulso.', tip: 'Todo de preto cria uma silhueta forte contra o azul do céu.' },
-      { title: 'Roupa — Sandra', description: 'T-shirt preta simples. Jeans azuis de lavagem média (fitted). Sapatos rasos pretos (bailarinas). Relógio/pulseira no pulso.', tip: 'Os jeans azuis são o único toque de cor além do céu.' },
-      { title: 'Mãos dadas e detalhes', description: 'As mãos direita dele e esquerda dela encontram-se ao centro — dedos entrelaçados. Swoosh Nike nos ténis. Texto na t-shirt.', tip: 'As mãos unidas são o ponto emocional central da imagem.' },
-      { title: 'Cor — figuras', description: 'Pele clara em ambos. T-shirts pretas. Calças dele pretas. Jeans dela azul médio. Ténis cinza/preto com swoosh azul. Sapatos dela pretos. Cabelo ruivo-castanho.', tip: 'As figuras são quase silhuetas escuras contra o azul brilhante.' },
-      { title: 'Cor — céu', description: 'Céu azul vivo e puro — gradiente de azul-escuro no topo a azul-claro em baixo. Sem nuvens. Completamente limpo.', tip: 'O azul do céu é vibrante e saturado — é 80% da imagem.' },
-      { title: 'Retoques finais', description: 'Sombras nas roupas (dobras em voo). Cabelo da Sandra a esvoaçar. Reflexo nos óculos. Solas dos ténis visíveis. Sensação de movimento no ar.', tip: 'As dobras da roupa seguem a gravidade — puxam para baixo enquanto eles sobem.' }
+      { title: 'Composicao', description: 'Linhas-guia de composicao: centro vertical, tercos horizontais e moldura.', tip: 'Desenha com linhas muito leves - sao apenas referencias.' },
+      { title: 'Contornos superiores', description: 'Contornos fortes e simplificados da zona superior: cabecas, rostos, cabelo - estilo banda desenhada.', tip: 'Usa tracos grossos e decisivos, como numa banda desenhada.' },
+      { title: 'Contornos centrais', description: 'Contornos fortes da zona central: tronco, bracos, maos e objectos - linhas limpas e expressivas.', tip: 'Simplifica as formas - menos detalhe, mais expressao.' },
+      { title: 'Contornos inferiores', description: 'Contornos fortes da zona inferior: pernas, mesa, chao e fundo.', tip: 'Mantem as linhas grossas e confiantes ate ao final.' },
+      { title: 'Expressao e detalhe', description: 'Detalhes adicionais que dao expressao: olhos, bocas, pregas de roupa, pequenos objectos.', tip: 'Estes detalhes finos dao personalidade ao estilo cartoon.' },
+      { title: 'Referencia de cor', description: 'A foto original como referencia de cores e tons.', tip: 'Cores vivas e saturadas combinam bem com o estilo cartoon.' },
+      { title: 'Assinatura', description: 'Assina o desenho com o nome no fundo da composicao.', tip: 'Uma assinatura discreta completa o retrato.' }
     ]
   },
   {
     id: 'sandra', name: 'Mãe Sandra', photo: 'img/Sandra.jpg',
-    description: 'A mãe a jogar dominó!', color: '#AB47BC', category: 'Os Pais', difficulty: 2,
+    description: 'A mãe a jogar dominó!', color: '#AB47BC', category: 'Os Pais', difficulty: 4,
     steps: [
-      { title: 'Composição', description: 'Sandra sentada atrás de uma mesa com toalha axadrezada (bege/castanho). Está centrada, a olhar para baixo para as peças de dominó nas mãos.', tip: 'A toalha axadrezada cria um padrão rítmico que preenche a metade inferior.' },
-      { title: 'Sandra — corpo', description: 'Busto e braços visíveis atrás da mesa. Ligeiramente inclinada para a frente. Braços à frente segurando dominós. Ombros relaxados.', tip: 'A inclinação para a frente mostra concentração no jogo.' },
-      { title: 'Rosto', description: 'Rosto oval. Olhos em amêndoa a olhar para baixo (para os dominós). Sobrancelhas arqueadas. Nariz fino. Sorriso suave e concentrado.', tip: 'Os olhos virados para baixo — as pálpebras cobrem parte da íris.' },
-      { title: 'Cabelo', description: 'Cabelo castanho ondulado puxado para trás com rabo-de-cavalo. Madeixas soltas emolduram o rosto. Elástico visível. Ondas suaves e naturais.', tip: 'O cabelo ondulado tem linhas curvas que fluem — não é liso nem encaracolado.' },
-      { title: 'Roupa', description: 'Casaco rosa-claro aberto sobre camisola preta com texto cursivo branco ("It\'s all good"). Gola do casaco visível. Relógio no pulso.', tip: 'O rosa do casaco contrasta com o preto da camisola.' },
-      { title: 'Mãos e dominós', description: 'Mãos elegantes seguram peças de dominó em leque. Dedos finos. 3-4 peças em cada mão — retângulos brancos com linha central e pontos pretos.', tip: 'Os dominós em leque: ligeiramente sobrepostos com pontos visíveis.' },
-      { title: 'Mesa e objetos', description: 'Dominós jogados em cadeia na mesa. Telemóvel deitado (ecrã dourado). Comando de TV escuro. Toalha axadrezada bege/castanho cobre tudo.', tip: 'A cadeia de dominós faz uma linha serpenteante na mesa.' },
-      { title: 'Cor — Sandra', description: 'Pele clara. Cabelo castanho com reflexos. Casaco rosa-bebé. Camisola preta. Olhos castanhos. Lábios rosados.', tip: 'O rosa suave do casaco é feminino e elegante.' },
-      { title: 'Cor — cenário', description: 'Toalha axadrezada em bege e castanho (quadrados alternados). Dominós brancos com pontos pretos. Telemóvel dourado/cinza. Comando preto.', tip: 'Alterna quadrados claros e escuros para o padrão da toalha.' },
-      { title: 'Retoques finais', description: 'Texto cursivo "It\'s all good" na camisola. Brilho nos olhos. Pontos nos dominós. Textura do axadrezado. Sombras suaves.', tip: 'O texto cursivo é fino e elegante — usa linhas ligadas e fluidas.' }
+      { title: 'Composicao', description: 'Linhas-guia de composicao: centro vertical, tercos horizontais e moldura.', tip: 'Desenha com linhas muito leves - sao apenas referencias.' },
+      { title: 'Parte superior', description: 'Contornos da zona superior: cabecas, rostos e cabelo com linhas claras e definidas.', tip: 'Segue os contornos da foto - as linhas seguem as formas reais.' },
+      { title: 'Parte central', description: 'Contornos da zona central: tronco, bracos e objectos.', tip: 'Mantem a pressao do lapis constante para linhas uniformes.' },
+      { title: 'Parte inferior', description: 'Contornos da zona inferior: pernas, mesa, chao e fundo.', tip: 'As linhas mais distantes podem ser mais leves.' },
+      { title: 'Regioes de cor', description: 'Limites entre as zonas de cor: areas planas de cor separadas por linhas suaves, estilo poster.', tip: 'Pinta cada regiao com uma cor uniforme - sem degradados.' },
+      { title: 'Referencia de cor', description: 'A foto original como referencia de cores e tons.', tip: 'Usa poucas cores - simplifica para 5-6 tons principais.' },
+      { title: 'Assinatura', description: 'Assina o desenho com o nome no fundo da composicao.', tip: 'Uma assinatura discreta completa o retrato.' }
     ]
   },
 
   // ===== A FAMÍLIA =====
   {
     id: 'paitio', name: 'Pai, Tio e Miguel', photo: 'img/pai-tio-miguel.jpg',
-    description: 'O pai, o tio e o Miguel!', color: '#FFA726', category: 'A Família', difficulty: 2,
+    description: 'O pai, o tio e o Miguel!', color: '#FFA726', category: 'A Família', difficulty: 4,
     steps: [
-      { title: 'Composição', description: 'Três figuras à volta de uma mesa com toalha laranja. Bruno (tio) à esquerda, Miguel ao centro, Ricardo (pai) à direita, inclinado para o filho. Parede com quadros atrás.', tip: 'É um triângulo de interação — o Miguel é o foco entre os dois adultos.' },
-      { title: 'Bruno (Tio) — corpo', description: 'À esquerda, sentado, encostado para trás com braço na cadeira atrás do Miguel. Corpo mais largo/musculoso. Expressão relaxada a observar. T-shirt cinza clara.', tip: 'O Bruno está numa postura relaxada, de observador — mais afastado da ação.' },
-      { title: 'Bruno — rosto e detalhes', description: 'Rosto arredondado, barba escura curta. Cabelo castanho-escuro curto. Olhos a observar o que acontece. T-shirt "SAGRES 0.0" com emblema alado azul-escuro no peito.', tip: 'O logo da Sagres tem asas estilizadas — um detalhe reconhecível.' },
-      { title: 'Ricardo (Pai) — corpo e rosto', description: 'À direita, inclinado para a frente em direção ao Miguel. Rosto magro e angular, queixo forte. Pouca barba/barbeado. Sorriso a mostrar ovos ao filho. T-shirt escura de desporto.', tip: 'A posição inclinada do Ricardo mostra envolvimento com o filho.' },
-      { title: 'Miguel ao centro', description: 'Sentado entre os dois, a olhar para baixo com concentração. Cabelo castanho-escuro curto. Camisola branca com padrão de bonecos/animais coloridos e letra "W". Mãos sobre a mesa.', tip: 'O padrão da camisola: figuras pequenas em cinza, azul, laranja espalhadas.' },
-      { title: 'Mãos e ovos pintados', description: 'O Miguel tem um ovo pintado pequeno (laranja) na mão. Ricardo mostra outro ovo (azul claro) na palma estendida. Atividade de Páscoa — pintar ovos.', tip: 'Os ovos são pequenos e coloridos — pontos de cor focal.' },
-      { title: 'Mesa e fundo', description: 'Toalha laranja/amarela na mesa. Parede branca atrás com quadros pequenos emoldurados (fotos de família). Cadeira de madeira visível.', tip: 'Os quadros na parede são simples retângulos com molduras castanhas.' },
-      { title: 'Cor — figuras', description: 'Bruno: pele clara, t-shirt cinza-claro com logo azul. Miguel: camisola branca com padrão colorido. Ricardo: t-shirt azul-escuro/preta. Pele natural em todos.', tip: 'O cinza do Bruno, o branco do Miguel e o escuro do Ricardo criam ritmo.' },
-      { title: 'Cor — cenário', description: 'Toalha laranja viva. Parede bege/creme. Molduras castanhas. Cadeira madeira mel. Ovos: laranja e azul.', tip: 'A toalha laranja é a cor mais quente e dominante da cena.' },
-      { title: 'Retoques finais', description: 'Texto "SAGRES 0.0" no peito do Bruno. Padrão da camisola do Miguel. Brilho nos olhos. Detalhes dos ovos pintados. Sombras sob a mesa.', tip: 'A cena é íntima e quente — iluminação artificial interior amarelada.' }
+      { title: 'Composicao', description: 'Linhas-guia de composicao: centro vertical, tercos horizontais e moldura.', tip: 'Desenha com linhas muito leves - sao apenas referencias.' },
+      { title: 'Contornos superiores', description: 'Contornos fortes e simplificados da zona superior: cabecas, rostos, cabelo - estilo banda desenhada.', tip: 'Usa tracos grossos e decisivos, como numa banda desenhada.' },
+      { title: 'Contornos centrais', description: 'Contornos fortes da zona central: tronco, bracos, maos e objectos - linhas limpas e expressivas.', tip: 'Simplifica as formas - menos detalhe, mais expressao.' },
+      { title: 'Contornos inferiores', description: 'Contornos fortes da zona inferior: pernas, mesa, chao e fundo.', tip: 'Mantem as linhas grossas e confiantes ate ao final.' },
+      { title: 'Expressao e detalhe', description: 'Detalhes adicionais que dao expressao: olhos, bocas, pregas de roupa, pequenos objectos.', tip: 'Estes detalhes finos dao personalidade ao estilo cartoon.' },
+      { title: 'Referencia de cor', description: 'A foto original como referencia de cores e tons.', tip: 'Cores vivas e saturadas combinam bem com o estilo cartoon.' },
+      { title: 'Assinatura', description: 'Assina o desenho com o nome no fundo da composicao.', tip: 'Uma assinatura discreta completa o retrato.' }
     ]
   },
   {
     id: 'brunomiguel', name: 'Tio Bruno + Miguel', photo: 'img/Bruno + Miguel.jpg',
-    description: 'O tio Bruno e o Miguel no café!', color: '#5C6BC0', category: 'A Família', difficulty: 2,
+    description: 'O tio Bruno e o Miguel no café!', color: '#5C6BC0', category: 'A Família', difficulty: 4,
     steps: [
-      { title: 'Composição', description: 'Duas figuras lado a lado: Bruno (tio) à esquerda, Miguel à direita. Mesa/balcão escuro em baixo. Terceira pessoa (tronco) ao fundo à direita. Interior de café moderno.', tip: 'O Bruno ocupa ~40% da largura, o Miguel ~35%.' },
-      { title: 'Bruno — corpo e rosto', description: 'Rosto anguloso e magro. Maxilar definido. Olhos escuros a olhar para o brinquedo do Miguel. Sobrancelhas grossas. Nariz recto e proeminente.', tip: 'O Bruno está ligeiramente virado para o Miguel, a observar.' },
-      { title: 'Bruno — cabelo e barba', description: 'Cabelo muito curto (rapado) — pontinhos pequenos. Barba curta/por fazer ao longo do maxilar e queixo. Entradas nas têmporas. Textura de pontos (stippling).', tip: 'Stippling: pontos individuais em vez de linhas para cabelo curto e barba.' },
-      { title: 'Bruno — casaco', description: 'Casaco escuro (azul-marinho/preto) com fecho ao centro. Patches laranjas nos ombros. Logo "PESSOAL" no peito com 3 pontos coloridos (laranja, verde, azul).', tip: 'Os detalhes laranjas são a assinatura visual do casaco.' },
-      { title: 'Miguel — corpo e rosto', description: 'Ao lado, mais baixo. Cara redonda infantil. Olhos a olhar para baixo (brinquedo nas mãos). Boca ligeiramente aberta. Cabelo castanho-escuro curto.', tip: 'O Miguel nesta foto é mais velho — feições menos redondas que em bebé.' },
-      { title: 'Miguel — roupa e brinquedo', description: 'Camisola azul-escura/navy com "95" e "YEARS" em branco. Mãos seguram brinquedo colorido (azul e vermelho). Dedos a manipular o objeto.', tip: 'O "95" é grande e central — o detalhe que identifica a camisola.' },
-      { title: 'Mesa e terceira pessoa', description: 'Balcão escuro em baixo. Bola azul na mesa. Copo branco de papel. Mão do Bruno a gesticular. Terceira pessoa ao fundo: camisola castanha, só tronco visível.', tip: 'A terceira pessoa é apenas sugerida — não precisa de detalhe facial.' },
-      { title: 'Cor — figuras', description: 'Bruno: pele morena, casaco azul-escuro com laranjas. Miguel: pele clara, camisola navy. Terceira pessoa: camisola castanha.', tip: 'O contraste azul-escuro + laranja do Bruno é forte e reconhecível.' },
-      { title: 'Cor — cenário', description: 'Mesa cinza-escura. Bola azul vivo. Copo branco. Brinquedo metade azul/metade vermelho. Fundo quente de café (madeira, luz amarelada).', tip: 'A bola azul é um ponto de cor intenso na mesa escura.' },
-      { title: 'Retoques finais', description: 'Texto "PESSOAL" e pontos coloridos no casaco. "95" na camisola do Miguel. Reflexo na mesa. Luz ambiente de café ao fundo.', tip: 'Linhas verticais suaves ao fundo sugerem o interior do café moderno.' }
+      { title: 'Composicao', description: 'Linhas-guia de composicao: centro vertical, tercos horizontais e moldura.', tip: 'Desenha com linhas muito leves - sao apenas referencias.' },
+      { title: 'Parte superior', description: 'Zona superior em alto contraste preto e branco: cabecas, rostos e cabelo com sombras marcadas.', tip: 'Pensa em preto e branco - sem tons cinzentos, so luz e sombra.' },
+      { title: 'Parte central', description: 'Zona central em contraste forte: tronco, bracos e objectos com areas escuras bem definidas.', tip: 'As areas de sombra sao completamente pretas - sem meios tons.' },
+      { title: 'Parte inferior', description: 'Zona inferior em contraste: pernas, mesa, chao com texturas de luz e sombra.', tip: 'O efeito de gravura cria padroes interessantes nas texturas.' },
+      { title: 'Sombras e texturas', description: 'Camada adicional de sombras e texturas que dao profundidade ao estilo gravura.', tip: 'Usa hachurado (linhas cruzadas) para simular as sombras.' },
+      { title: 'Referencia de cor', description: 'A foto original como referencia de cores e tons.', tip: 'Mesmo a preto e branco, observa onde a luz incide na foto.' },
+      { title: 'Assinatura', description: 'Assina o desenho com o nome no fundo da composicao.', tip: 'Uma assinatura discreta completa o retrato.' }
     ]
   },
   {
@@ -200,38 +213,84 @@ const familyMembers = [
       { title: 'Assinatura', description: 'Assina o desenho com o nome no fundo da composicao.', tip: 'Uma assinatura discreta completa o retrato.' }
     ]
   },
+  {
+    id: 'diasfamily', name: 'Família Dias', photo: 'img/dias-family.png',
+    description: 'A família Dias junta!', color: '#FF7043', category: 'A Família', difficulty: 4,
+    steps: [
+      { title: 'Composicao', description: 'Linhas-guia de composicao: centro vertical, tercos horizontais e moldura.', tip: 'Desenha com linhas muito leves - sao apenas referencias.' },
+      { title: 'Contornos superiores', description: 'Contornos fortes e simplificados da zona superior: cabecas, rostos, cabelo - estilo banda desenhada.', tip: 'Usa tracos grossos e decisivos, como numa banda desenhada.' },
+      { title: 'Contornos centrais', description: 'Contornos fortes da zona central: tronco, bracos, maos e objectos - linhas limpas e expressivas.', tip: 'Simplifica as formas - menos detalhe, mais expressao.' },
+      { title: 'Contornos inferiores', description: 'Contornos fortes da zona inferior: pernas, mesa, chao e fundo.', tip: 'Mantem as linhas grossas e confiantes ate ao final.' },
+      { title: 'Expressao e detalhe', description: 'Detalhes adicionais que dao expressao: olhos, bocas, pregas de roupa, pequenos objectos.', tip: 'Estes detalhes finos dao personalidade ao estilo cartoon.' },
+      { title: 'Referencia de cor', description: 'A foto original como referencia de cores e tons.', tip: 'Cores vivas e saturadas combinam bem com o estilo cartoon.' },
+      { title: 'Assinatura', description: 'Assina o desenho com o nome no fundo da composicao.', tip: 'Uma assinatura discreta completa o retrato.' }
+    ]
+  },
+  {
+    id: 'dias66', name: 'Família Dias 66', photo: 'img/dias-family-2.png',
+    description: 'A família Dias com o bebé!', color: '#8D6E63', category: 'A Família', difficulty: 3,
+    steps: [
+      { title: 'Composicao', description: 'Linhas-guia de composicao: centro vertical, tercos horizontais e moldura.', tip: 'Desenha com linhas muito leves - sao apenas referencias.' },
+      { title: 'Parte superior', description: 'Zona superior em alto contraste preto e branco: cabecas, rostos e cabelo com sombras marcadas.', tip: 'Pensa em preto e branco - sem tons cinzentos, so luz e sombra.' },
+      { title: 'Parte central', description: 'Zona central em contraste forte: tronco, bracos e objectos com areas escuras bem definidas.', tip: 'As areas de sombra sao completamente pretas - sem meios tons.' },
+      { title: 'Parte inferior', description: 'Zona inferior em contraste: pernas, mesa, chao com texturas de luz e sombra.', tip: 'O efeito de gravura cria padroes interessantes nas texturas.' },
+      { title: 'Sombras e texturas', description: 'Camada adicional de sombras e texturas que dao profundidade ao estilo gravura.', tip: 'Usa hachurado (linhas cruzadas) para simular as sombras.' },
+      { title: 'Referencia de cor', description: 'A foto original como referencia de cores e tons.', tip: 'Mesmo a preto e branco, observa onde a luz incide na foto.' },
+      { title: 'Assinatura', description: 'Assina o desenho com o nome no fundo da composicao.', tip: 'Uma assinatura discreta completa o retrato.' }
+    ]
+  },
+  {
+    id: 'espedrada', name: 'Espedrada', photo: 'img/espedrada.jpg',
+    description: 'Todos juntos na Espedrada!', color: '#26C6DA', category: 'A Família', difficulty: 4,
+    steps: [
+      { title: 'Composicao', description: 'Linhas-guia de composicao: centro vertical, tercos horizontais e moldura.', tip: 'Desenha com linhas muito leves - sao apenas referencias.' },
+      { title: 'Contornos superiores', description: 'Contornos fortes e simplificados da zona superior: cabecas, rostos, cabelo - estilo banda desenhada.', tip: 'Usa tracos grossos e decisivos, como numa banda desenhada.' },
+      { title: 'Contornos centrais', description: 'Contornos fortes da zona central: tronco, bracos, maos e objectos - linhas limpas e expressivas.', tip: 'Simplifica as formas - menos detalhe, mais expressao.' },
+      { title: 'Contornos inferiores', description: 'Contornos fortes da zona inferior: pernas, mesa, chao e fundo.', tip: 'Mantem as linhas grossas e confiantes ate ao final.' },
+      { title: 'Expressao e detalhe', description: 'Detalhes adicionais que dao expressao: olhos, bocas, pregas de roupa, pequenos objectos.', tip: 'Estes detalhes finos dao personalidade ao estilo cartoon.' },
+      { title: 'Referencia de cor', description: 'A foto original como referencia de cores e tons.', tip: 'Cores vivas e saturadas combinam bem com o estilo cartoon.' },
+      { title: 'Assinatura', description: 'Assina o desenho com o nome no fundo da composicao.', tip: 'Uma assinatura discreta completa o retrato.' }
+    ]
+  },
+  {
+    id: 'primosespedrada', name: 'Primos Espedrada', photo: 'img/primos-espedrada.jpg',
+    description: 'Os primos na Espedrada!', color: '#EC407A', category: 'A Família', difficulty: 3,
+    steps: [
+      { title: 'Composicao', description: 'Linhas-guia de composicao: centro vertical, tercos horizontais e moldura.', tip: 'Desenha com linhas muito leves - sao apenas referencias.' },
+      { title: 'Parte superior', description: 'Contornos da zona superior: cabecas, rostos e cabelo com linhas claras e definidas.', tip: 'Segue os contornos da foto - as linhas seguem as formas reais.' },
+      { title: 'Parte central', description: 'Contornos da zona central: tronco, bracos e objectos.', tip: 'Mantem a pressao do lapis constante para linhas uniformes.' },
+      { title: 'Parte inferior', description: 'Contornos da zona inferior: pernas, mesa, chao e fundo.', tip: 'As linhas mais distantes podem ser mais leves.' },
+      { title: 'Regioes de cor', description: 'Limites entre as zonas de cor: areas planas de cor separadas por linhas suaves, estilo poster.', tip: 'Pinta cada regiao com uma cor uniforme - sem degradados.' },
+      { title: 'Referencia de cor', description: 'A foto original como referencia de cores e tons.', tip: 'Usa poucas cores - simplifica para 5-6 tons principais.' },
+      { title: 'Assinatura', description: 'Assina o desenho com o nome no fundo da composicao.', tip: 'Uma assinatura discreta completa o retrato.' }
+    ]
+  },
 
   // ===== OS AVÓS =====
   {
     id: 'avoesduarte', name: 'Avós Duarte', photo: 'img/avoes-duarte.jpg',
-    description: 'Os avós Duarte com o Miguel bebé!', color: '#5C6BC0', category: 'Os Avós', difficulty: 2,
+    description: 'Os avós Duarte com o Miguel bebé!', color: '#5C6BC0', category: 'Os Avós', difficulty: 4,
     steps: [
-      { title: 'Composição', description: 'Três figuras sentadas. Avô ao centro com bebé Miguel ao colo. Avó à direita. Parede de pedra com janela de madeira escura atrás. Vasos de plantas à esquerda.', tip: 'O avô com o bebé é o centro da atenção.' },
-      { title: 'Avô Duarte', description: 'Homem ~60-70 anos, calvo no topo com cabelo cinzento nos lados. Óculos rectangulares de armação escura. Barba/cavanhaque grisalho. Sorriso caloroso a olhar para o bebé.', tip: 'A calvície é uma forma oval clara no topo — brilhante e lisa.' },
-      { title: 'Avô — roupa e mãos', description: 'Camisa de riscas azuis e brancas verticais, colarinho aberto. Relógio metálico no pulso. Mãos grandes a segurar o bebé com carinho. Postura protetora.', tip: 'As riscas verticais da camisa: linhas finas azuis sobre branco.' },
-      { title: 'Avó Duarte', description: 'Mulher ~60-70 anos. Cabelo comprido cinzento-loiro puxado para trás. Óculos rectangulares. Sorriso afectuoso a olhar para o bebé. Blusa azul-marinho com decote transparente/chiffon.', tip: 'Os dois usam óculos semelhantes — é um detalhe de casal.' },
-      { title: 'Avó — detalhes', description: 'Colar de pérolas (fio simples). Tecido chiffon/transparente no decote. Expressão terna virada para o neto.', tip: 'O colar de pérolas: pequenas esferas claras em fio.' },
-      { title: 'Bebé Miguel', description: 'No colo do avô, virado para a câmara. ~6-8 meses. Sorriso enorme com dentes a aparecer. Cabelo fino e claro. Camisa branca e calças azul-escuro. Pés descalços.', tip: 'O sorriso do bebé é irresistível — boca aberta, olhos a brilhar.' },
-      { title: 'Cenário', description: 'Parede de pedra de granito atrás. Janela/porta de madeira escura. Floreira de madeira com plantas verdes na parede à esquerda. Pedestal de madeira visível.', tip: 'A pedra e a madeira criam um ambiente rústico português.' },
-      { title: 'Cor — figuras', description: 'Avô: pele clara, camisa riscas azul/branco, óculos escuros. Avó: blusa navy, pérolas, óculos, cabelo cinzento-loiro. Bebé: camisa branca, calças azuis, pele rosada.', tip: 'Tonalidades de azul unem as três figuras (riscas, blusa, calças).' },
-      { title: 'Cor — cenário', description: 'Pedra cinza/bege. Madeira escura (porta/janela). Floreira em madeira mel. Plantas verdes. Fundo quente natural.', tip: 'Ambiente rústico: cores quentes e naturais.' },
-      { title: 'Retoques finais', description: 'Brilho nos óculos de ambos. Textura da pedra. Veio da madeira. Rosado nas bochechas do bebé. Brilho nos olhos do bebé. Textura do chiffon.', tip: 'O brilho nos óculos são dois retângulos brancos pequenos.' }
+      { title: 'Composicao', description: 'Linhas-guia de composicao: centro vertical, tercos horizontais e moldura.', tip: 'Desenha com linhas muito leves - sao apenas referencias.' },
+      { title: 'Parte superior', description: 'Contornos da zona superior: cabecas, rostos e cabelo com linhas claras e definidas.', tip: 'Segue os contornos da foto - as linhas seguem as formas reais.' },
+      { title: 'Parte central', description: 'Contornos da zona central: tronco, bracos e objectos.', tip: 'Mantem a pressao do lapis constante para linhas uniformes.' },
+      { title: 'Parte inferior', description: 'Contornos da zona inferior: pernas, mesa, chao e fundo.', tip: 'As linhas mais distantes podem ser mais leves.' },
+      { title: 'Regioes de cor', description: 'Limites entre as zonas de cor: areas planas de cor separadas por linhas suaves, estilo poster.', tip: 'Pinta cada regiao com uma cor uniforme - sem degradados.' },
+      { title: 'Referencia de cor', description: 'A foto original como referencia de cores e tons.', tip: 'Usa poucas cores - simplifica para 5-6 tons principais.' },
+      { title: 'Assinatura', description: 'Assina o desenho com o nome no fundo da composicao.', tip: 'Uma assinatura discreta completa o retrato.' }
     ]
   },
   {
     id: 'avosdias', name: 'Avós Dias', photo: 'img/avos-dias.jpg',
-    description: 'Os avós Dias com o Miguel bebé!', color: '#26A69A', category: 'Os Avós', difficulty: 2,
+    description: 'Os avós Dias com o Miguel bebé!', color: '#26A69A', category: 'Os Avós', difficulty: 4,
     steps: [
-      { title: 'Composição', description: 'Três figuras de pé sob toldo decorativo. Avó à esquerda com bebé ao colo. Avô à direita. Toldo com padrão vermelho/rosa. Restaurante ao ar livre ao fundo.', tip: 'O toldo colorido cria um teto decorativo acima das figuras.' },
-      { title: 'Avó Dias', description: 'Mulher ~60-70 anos. Cabelo curto encaracolado castanho-cinzento. Óculos rectangulares com lente levemente escurecida. Sorriso caloroso. Top sem mangas turquesa/teal.', tip: 'O turquesa do top é a cor mais viva da avó.' },
-      { title: 'Avó — detalhes', description: 'Fio de ouro fino com pendente ao pescoço. Unhas pintadas de bordeaux/vermelho escuro. A segurar o bebé contra o peito com ambos os braços.', tip: 'As unhas pintadas são um detalhe que dá personalidade.' },
-      { title: 'Avô Dias', description: 'Homem ~60-70 anos. Cabelo curto cinzento/sal-e-pimenta. Sobrancelhas escuras e grossas (marca distinta). Rosto angular e magro. Expressão séria a olhar para a câmara.', tip: 'As sobrancelhas grossas e escuras são o traço mais marcante do avô.' },
-      { title: 'Avô — roupa', description: 'Polo branco com colarinho. Porte magro e direito. Expressão composta e digna. Mãos ao lado do corpo.', tip: 'O polo branco é simples — foca-te no rosto distinto.' },
-      { title: 'Bebé Miguel', description: 'No colo da avó (~10-12 meses). Roupa toda branca de cerimónia (batizado). A olhar para baixo, expressão calma e curiosa. Mão segura um objeto amarelo-verde.', tip: 'O bebé está vestido de branco — possível dia do batizado.' },
-      { title: 'Cenário', description: 'Toldo de tecido com padrão vermelho/rosa e branco sobre eles. Candeeiro ao fundo. Pessoas em mesas atrás (sugeridas). Vegetação verde e sol ao fundo.', tip: 'O toldo cria sombra mosqueada — padrão decorativo sobre as figuras.' },
-      { title: 'Cor — figuras', description: 'Avó: pele clara, top turquesa, cabelo castanho-cinza, óculos. Avô: pele bronzeada, polo branco, cabelo cinza, sobrancelhas escuras. Bebé: branco, pele rosada.', tip: 'O contraste entre a pele bronzeada do avô e o polo branco é forte.' },
-      { title: 'Cor — cenário', description: 'Toldo vermelho/rosa e branco. Fundo luminoso com verde (árvores) e dourado (sol). Candeeiro bege. Cadeiras/mesas sugeridas.', tip: 'A luz é quente e dourada — dia de verão numa esplanada.' },
-      { title: 'Retoques finais', description: 'Brilho nos óculos da avó. Sobrancelhas marcadas do avô. Textura do toldo. Luz solar ao fundo. Pendente de ouro no pescoço. Unhas bordeaux.', tip: 'A luz de verão cria sombras suaves e tons dourados na pele.' }
+      { title: 'Composicao', description: 'Linhas-guia de composicao: centro vertical, tercos horizontais e moldura.', tip: 'Desenha com linhas muito leves - sao apenas referencias.' },
+      { title: 'Parte superior', description: 'Zona superior em alto contraste preto e branco: cabecas, rostos e cabelo com sombras marcadas.', tip: 'Pensa em preto e branco - sem tons cinzentos, so luz e sombra.' },
+      { title: 'Parte central', description: 'Zona central em contraste forte: tronco, bracos e objectos com areas escuras bem definidas.', tip: 'As areas de sombra sao completamente pretas - sem meios tons.' },
+      { title: 'Parte inferior', description: 'Zona inferior em contraste: pernas, mesa, chao com texturas de luz e sombra.', tip: 'O efeito de gravura cria padroes interessantes nas texturas.' },
+      { title: 'Sombras e texturas', description: 'Camada adicional de sombras e texturas que dao profundidade ao estilo gravura.', tip: 'Usa hachurado (linhas cruzadas) para simular as sombras.' },
+      { title: 'Referencia de cor', description: 'A foto original como referencia de cores e tons.', tip: 'Mesmo a preto e branco, observa onde a luz incide na foto.' },
+      { title: 'Assinatura', description: 'Assina o desenho com o nome no fundo da composicao.', tip: 'Uma assinatura discreta completa o retrato.' }
     ]
   },
   {
@@ -252,18 +311,41 @@ const familyMembers = [
   },
   {
     id: 'tioavo', name: 'Tio + Avô', photo: 'img/tio-avo.jpg',
-    description: 'O tio Bruno e o avô nos passadiços!', color: '#66BB6A', category: 'Os Avós', difficulty: 2,
+    description: 'O tio Bruno e o avô nos passadiços!', color: '#66BB6A', category: 'Os Avós', difficulty: 4,
     steps: [
-      { title: 'Composição', description: 'Selfie de duas pessoas na metade inferior. Vale montanhoso dramático na metade superior. Passadiço de madeira visível na encosta à direita. Céu azul com nuvens.', tip: 'A paisagem é tão protagonista quanto as pessoas.' },
-      { title: 'Bruno (Tio)', description: 'À esquerda, mais perto da câmara (selfie). Rosto magro angular, maxilar definido. Barba curta/rente. Cabelo escuro curto. Sorriso. T-shirt branca "Quechua".', tip: 'Numa selfie, a pessoa que segura o telemóvel fica ligeiramente maior.' },
-      { title: 'Avô Dias', description: 'À direita, ligeiramente atrás. Cabelo cinzento curto. Sobrancelhas escuras e grossas. Rosto angular e magro (como o Bruno). Sorriso com olhos semi-cerrados (sol). Sweatshirt azul-marinho.', tip: 'As sobrancelhas marcadas são o traço familiar — partilhado com o Bruno.' },
-      { title: 'Rostos — detalhes', description: 'Bruno: olhos escuros, sobrancelhas grossas, nariz recto, barba rente com pontinhos. Avô: rugas na testa e cantos dos olhos, pele bronzeada, nariz forte.', tip: 'A semelhança familiar é visível — mesma estrutura do rosto.' },
-      { title: 'Roupa', description: 'Bruno: t-shirt branca de desporto com logo "Quechua" (marca de caminhada) no ombro/peito. Avô: sweatshirt azul-marinho/navy simples.', tip: 'A roupa é prática de caminhada — simples e funcional.' },
-      { title: 'Paisagem — montanhas', description: 'Vale profundo com encostas verdes. Rochas e vegetação mediterrânica (mato baixo). Montanhas em ambos os lados. Caminho/rio no fundo do vale.', tip: 'A perspetiva aérea: as montanhas mais longe são mais claras e azuladas.' },
-      { title: 'Passadiço e detalhes', description: 'Passadiço elevado de madeira cruza a encosta direita — estrutura de tábuas e pilares. Céu azul com nuvens brancas. Rochedos grandes na encosta.', tip: 'O passadiço é uma linha horizontal que corta a montanha — madeira clara.' },
-      { title: 'Cor — figuras', description: 'Bruno: pele clara, t-shirt branca, cabelo/barba escuros. Avô: pele bronzeada, sweatshirt navy, cabelo cinzento.', tip: 'O branco da t-shirt destaca-se contra a paisagem verde.' },
-      { title: 'Cor — paisagem', description: 'Verde variado nas encostas (escuro perto, claro longe). Castanho das rochas. Madeira clara do passadiço. Céu azul com nuvens brancas. Rio/vale em tons profundos.', tip: 'Usa perspetiva atmosférica: longe = mais claro e azulado.' },
-      { title: 'Retoques finais', description: 'Brilho nos olhos. Textura das rochas. Vegetação detalhada na encosta. Estrutura do passadiço. Nuvens com volume. Sombras na montanha.', tip: 'A paisagem portuguesa é verde, rochosa e dramática — captura essa energia.' }
+      { title: 'Composicao', description: 'Linhas-guia de composicao: centro vertical, tercos horizontais e moldura.', tip: 'Desenha com linhas muito leves - sao apenas referencias.' },
+      { title: 'Contornos superiores', description: 'Contornos fortes e simplificados da zona superior: cabecas, rostos, cabelo - estilo banda desenhada.', tip: 'Usa tracos grossos e decisivos, como numa banda desenhada.' },
+      { title: 'Contornos centrais', description: 'Contornos fortes da zona central: tronco, bracos, maos e objectos - linhas limpas e expressivas.', tip: 'Simplifica as formas - menos detalhe, mais expressao.' },
+      { title: 'Contornos inferiores', description: 'Contornos fortes da zona inferior: pernas, mesa, chao e fundo.', tip: 'Mantem as linhas grossas e confiantes ate ao final.' },
+      { title: 'Expressao e detalhe', description: 'Detalhes adicionais que dao expressao: olhos, bocas, pregas de roupa, pequenos objectos.', tip: 'Estes detalhes finos dao personalidade ao estilo cartoon.' },
+      { title: 'Referencia de cor', description: 'A foto original como referencia de cores e tons.', tip: 'Cores vivas e saturadas combinam bem com o estilo cartoon.' },
+      { title: 'Assinatura', description: 'Assina o desenho com o nome no fundo da composicao.', tip: 'Uma assinatura discreta completa o retrato.' }
+    ]
+  },
+  {
+    id: 'avosmdd', name: 'Avós e Miguel', photo: 'img/avos-mdd.png',
+    description: 'Os avós e o Miguel na aldeia!', color: '#FFA726', category: 'Os Avós', difficulty: 3,
+    steps: [
+      { title: 'Composicao', description: 'Linhas-guia de composicao: centro vertical, tercos horizontais e moldura.', tip: 'Desenha com linhas muito leves - sao apenas referencias.' },
+      { title: 'Parte superior', description: 'Contornos da zona superior: cabecas, rostos e cabelo com linhas claras e definidas.', tip: 'Segue os contornos da foto - as linhas seguem as formas reais.' },
+      { title: 'Parte central', description: 'Contornos da zona central: tronco, bracos e objectos.', tip: 'Mantem a pressao do lapis constante para linhas uniformes.' },
+      { title: 'Parte inferior', description: 'Contornos da zona inferior: pernas, mesa, chao e fundo.', tip: 'As linhas mais distantes podem ser mais leves.' },
+      { title: 'Regioes de cor', description: 'Limites entre as zonas de cor: areas planas de cor separadas por linhas suaves, estilo poster.', tip: 'Pinta cada regiao com uma cor uniforme - sem degradados.' },
+      { title: 'Referencia de cor', description: 'A foto original como referencia de cores e tons.', tip: 'Usa poucas cores - simplifica para 5-6 tons principais.' },
+      { title: 'Assinatura', description: 'Assina o desenho com o nome no fundo da composicao.', tip: 'Uma assinatura discreta completa o retrato.' }
+    ]
+  },
+  {
+    id: 'espedradaprimos', name: 'Bisavô e Netos', photo: 'img/espedrada-primos.jpg',
+    description: 'O bisavô com os netos!', color: '#AB47BC', category: 'Os Avós', difficulty: 4,
+    steps: [
+      { title: 'Composicao', description: 'Linhas-guia de composicao: centro vertical, tercos horizontais e moldura.', tip: 'Desenha com linhas muito leves - sao apenas referencias.' },
+      { title: 'Parte superior', description: 'Zona superior em alto contraste preto e branco: cabecas, rostos e cabelo com sombras marcadas.', tip: 'Pensa em preto e branco - sem tons cinzentos, so luz e sombra.' },
+      { title: 'Parte central', description: 'Zona central em contraste forte: tronco, bracos e objectos com areas escuras bem definidas.', tip: 'As areas de sombra sao completamente pretas - sem meios tons.' },
+      { title: 'Parte inferior', description: 'Zona inferior em contraste: pernas, mesa, chao com texturas de luz e sombra.', tip: 'O efeito de gravura cria padroes interessantes nas texturas.' },
+      { title: 'Sombras e texturas', description: 'Camada adicional de sombras e texturas que dao profundidade ao estilo gravura.', tip: 'Usa hachurado (linhas cruzadas) para simular as sombras.' },
+      { title: 'Referencia de cor', description: 'A foto original como referencia de cores e tons.', tip: 'Mesmo a preto e branco, observa onde a luz incide na foto.' },
+      { title: 'Assinatura', description: 'Assina o desenho com o nome no fundo da composicao.', tip: 'Uma assinatura discreta completa o retrato.' }
     ]
   }
 ];
@@ -309,6 +391,41 @@ const doneText = document.getElementById('done-text');
 const donePhoto = document.getElementById('done-photo');
 const doneDrawing = document.getElementById('done-drawing');
 
+// Arrow style mapping: scene_id -> CSS class for arrow color
+const ARROW_STYLES = {
+  // 5-star Canny: gold
+  miguelbebe: 'gold', batizado: 'gold', miguel: 'gold', matilde: 'gold',
+  // Cartoon: coral
+  pais: 'cartoon', paitio: 'cartoon', tioavo: 'cartoon',
+  diasfamily: 'cartoon', espedrada: 'cartoon', mddsprunkies: 'cartoon',
+  // Adaptive threshold: sepia
+  brunomiguel: 'adaptive', avosdias: 'adaptive',
+  dias66: 'adaptive', espedradaprimos: 'adaptive',
+  // Posterize: purple
+  sandra: 'posterize', avoesduarte: 'posterize',
+  avosmdd: 'posterize', mddeamigos: 'posterize', primosespedrada: 'posterize',
+  // Simple Canny: teal
+  segundafamilia: 'simple',
+};
+
+function buildCategoryNav() {
+  const nav = document.getElementById('category-nav');
+  nav.innerHTML = '';
+  const cats = [...new Set(familyMembers.map(m => m.category))];
+  cats.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'category-nav-btn';
+    btn.textContent = cat;
+    btn.addEventListener('click', () => {
+      const target = document.getElementById('cat-' + cat.replace(/\s/g, '-'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      nav.querySelectorAll('.category-nav-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+    nav.appendChild(btn);
+  });
+}
+
 function buildMenu() {
   familyGrid.innerHTML = '';
   const completed = getCompletedScenes();
@@ -318,6 +435,7 @@ function buildMenu() {
       lastCat = member.category;
       const hdr = document.createElement('div');
       hdr.className = 'category-header';
+      hdr.id = 'cat-' + member.category.replace(/\s/g, '-');
       hdr.textContent = member.category;
       familyGrid.appendChild(hdr);
     }
@@ -334,7 +452,7 @@ function buildMenu() {
         <div class="family-card-stars">${stars}</div>
       </div>
       ${isDone ? '<div class="family-card-check" title="Desmarcar"></div>' : ''}
-      <div class="family-card-arrow${member.difficulty >= 5 ? ' gold' : ''}">\u25B6</div>
+      <div class="family-card-arrow${ARROW_STYLES[member.id] ? ' ' + ARROW_STYLES[member.id] : ''}">\u25B6</div>
     `;
     if (isDone) {
       card.querySelector('.family-card-check').addEventListener('click', (e) => {
@@ -346,6 +464,12 @@ function buildMenu() {
     card.addEventListener('click', () => startDrawing(member));
     familyGrid.appendChild(card);
   });
+  // Update overall progress bar
+  const total = familyMembers.length;
+  const done = completed.length;
+  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+  document.getElementById('overall-progress-bar').style.width = pct + '%';
+  document.getElementById('overall-progress-label').textContent = `${done}/${total} desenhos completos (${pct}%)`;
 }
 
 function showScreen(screen) {
@@ -372,7 +496,10 @@ function renderStep() {
 
   drawingCanvas.innerHTML = '';
   const svg = renderDrawing(currentMember.id, currentStep);
-  if (svg) drawingCanvas.appendChild(svg);
+  if (svg) {
+    drawingCanvas.appendChild(svg);
+    drawingCanvas.classList.toggle('landscape', svg.dataset.landscape === '1');
+  }
 
   stepTitle.textContent = step.title;
   stepDescription.textContent = step.description;
@@ -410,6 +537,8 @@ function showCompletion() {
   if (finalSvg) {
     finalSvg.querySelectorAll('.active-element').forEach(el => el.classList.remove('active-element'));
     doneDrawing.appendChild(finalSvg);
+    if (finalSvg.dataset.landscape === '1') doneDrawing.classList.add('landscape');
+    else doneDrawing.classList.remove('landscape');
   }
   showScreen(screenDone);
 }
@@ -436,4 +565,5 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') goToMenu();
 });
 
+buildCategoryNav();
 buildMenu();

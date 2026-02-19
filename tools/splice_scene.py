@@ -12,6 +12,13 @@ import sys
 DRAWINGS_FILE = "www/js/drawings.js"
 APP_FILE = "www/js/app.js"
 
+# Scenes using landscape canvas (450x360 instead of 360x450)
+LANDSCAPE_SCENES = {
+    'batizado', 'miguel', 'matilde', 'paitio',
+    'avoesduarte', 'avosdias', 'tioavo',
+    'diasfamily', 'espedrada', 'espedradaprimos',
+}
+
 # Scene -> photo mapping (for color reference layer)
 PHOTOS = {
     'miguelbebe':   'img/miguel-bebe.jpeg',
@@ -31,6 +38,14 @@ PHOTOS = {
     'bivo':         'img/bivo.jpg',
     'tioavo':       'img/tio-avo.jpg',
     'segundafamilia': 'img/segunda-familia.jpeg',
+    'avosmdd':        'img/avos-mdd.png',
+    'diasfamily':     'img/dias-family.png',
+    'dias66':         'img/dias-family-2.png',
+    'espedrada':      'img/espedrada.jpg',
+    'espedradaprimos':'img/espedrada-primos.jpg',
+    'mddeamigos':     'img/mdd-amigos.png',
+    'mddsprunkies':   'img/mdd-sprunkies.jpg',
+    'primosespedrada':'img/primos-espedrada.jpg',
 }
 
 # Scene -> display name for signature layer
@@ -52,38 +67,62 @@ NAMES = {
     'bivo':         'Bisavo',
     'tioavo':       'Tio & Avo',
     'segundafamilia': 'Segunda Familia',
+    'avosmdd':        'Avos e Miguel',
+    'diasfamily':     'Familia Dias',
+    'dias66':         'Familia Dias',
+    'espedrada':      'Espedrada',
+    'espedradaprimos':'Bisavo e Netos',
+    'mddeamigos':     'Miguel e Amigos',
+    'mddsprunkies':   'Miguel e Sprunkies',
+    'primosespedrada':'Primos Espedrada',
 }
 
 # Scenes that use 6-layer (no fine detail) variant
 SIMPLE_SCENES = {'segundafamilia'}
 
-# Scenes that use 7-layer pencil sketch variant (4-star)
-PENCIL_SCENES = {'paisestudio', 'pais', 'sandra', 'paitio', 'brunomiguel',
-                 'avoesduarte', 'avosdias', 'tioavo'}
+# Scenes that use 7-layer 4-star variants (style-specific)
+FOURSTAR_SCENES = {
+    'pais': 'cartoon', 'paitio': 'cartoon', 'tioavo': 'cartoon',
+    'brunomiguel': 'adaptive', 'avosdias': 'adaptive',
+    'sandra': 'posterize', 'avoesduarte': 'posterize',
+    # Phase 2 scenes
+    'avosmdd': 'posterize', 'diasfamily': 'cartoon', 'dias66': 'adaptive',
+    'espedrada': 'cartoon', 'espedradaprimos': 'adaptive',
+    'mddeamigos': 'posterize', 'mddsprunkies': 'cartoon', 'primosespedrada': 'posterize',
+}
+
+
+def get_dims(scene_id):
+    """Return (w, h) based on scene orientation."""
+    if scene_id in LANDSCAPE_SCENES:
+        return 450, 360
+    return 360, 450
 
 
 def make_png_layers(scene_id, photo_path):
-    """Generate the JS code for PNG-based layers (6 total)."""
+    """Generate the JS code for PNG-based layers (7 total)."""
+    w, h = get_dims(scene_id)
+    cx = w // 2
+    t3 = h // 3
     return f'''  // ================================================================
   // PNG TRACED APPROACH: Layers use edge-detected PNG images.
   // Layer 0: construction guides | Layers 1-4: traced outlines
   // Layer 5: color reference | Layer 6: signature
+  // Canvas: {w}x{h}
   // ================================================================
 
   // Layer 0: Construction guides
   (g, a) => {{
-    // Grid lines
-    pp(g, ['M 180 0 L 180 450'], a, lt);
-    pp(g, ['M 0 150 L 360 150'], a, lt);
-    pp(g, ['M 0 300 L 360 300'], a, lt);
-    // Frame
-    pp(g, ['M 10 5 L 350 5 L 350 445 L 10 445 Z'], a, lt);
+    pp(g, ['M {cx} 0 L {cx} {h}'], a, lt);
+    pp(g, ['M 0 {t3} L {w} {t3}'], a, lt);
+    pp(g, ['M 0 {t3*2} L {w} {t3*2}'], a, lt);
+    pp(g, ['M 10 5 L {w-10} 5 L {w-10} {h-5} L 10 {h-5} Z'], a, lt);
   }},
 
   // Layer 1: Top region — traced from photo
   (g, a) => {{
     const src = a ? 'img/{scene_id}/step1_hl.png' : 'img/{scene_id}/step1.png';
-    const img = ce('image', {{ x: '0', y: '0', width: '360', height: '450' }});
+    const img = ce('image', {{ x: '0', y: '0', width: '{w}', height: '{h}' }});
     img.setAttribute('href', src);
     if (a) img.classList.add('active-element');
     g.appendChild(img);
@@ -92,7 +131,7 @@ def make_png_layers(scene_id, photo_path):
   // Layer 2: Middle region — traced from photo
   (g, a) => {{
     const src = a ? 'img/{scene_id}/step2_hl.png' : 'img/{scene_id}/step2.png';
-    const img = ce('image', {{ x: '0', y: '0', width: '360', height: '450' }});
+    const img = ce('image', {{ x: '0', y: '0', width: '{w}', height: '{h}' }});
     img.setAttribute('href', src);
     if (a) img.classList.add('active-element');
     g.appendChild(img);
@@ -101,7 +140,7 @@ def make_png_layers(scene_id, photo_path):
   // Layer 3: Bottom region — traced from photo
   (g, a) => {{
     const src = a ? 'img/{scene_id}/step3_hl.png' : 'img/{scene_id}/step3.png';
-    const img = ce('image', {{ x: '0', y: '0', width: '360', height: '450' }});
+    const img = ce('image', {{ x: '0', y: '0', width: '{w}', height: '{h}' }});
     img.setAttribute('href', src);
     if (a) img.classList.add('active-element');
     g.appendChild(img);
@@ -110,7 +149,7 @@ def make_png_layers(scene_id, photo_path):
   // Layer 4: Fine detail — traced from photo
   (g, a) => {{
     const src = a ? 'img/{scene_id}/step4_hl.png' : 'img/{scene_id}/step4.png';
-    const img = ce('image', {{ x: '0', y: '0', width: '360', height: '450' }});
+    const img = ce('image', {{ x: '0', y: '0', width: '{w}', height: '{h}' }});
     img.setAttribute('href', src);
     if (a) img.classList.add('active-element');
     g.appendChild(img);
@@ -118,7 +157,7 @@ def make_png_layers(scene_id, photo_path):
 
   // Layer 5: Color reference — photo at reduced opacity
   (g, a) => {{
-    const img = ce('image', {{ x: '0', y: '0', width: '360', height: '450', opacity: a ? '0.6' : '0.25' }});
+    const img = ce('image', {{ x: '0', y: '0', width: '{w}', height: '{h}', opacity: a ? '0.6' : '0.25' }});
     img.setAttribute('href', '{photo_path}');
     if (a) img.classList.add('active-element');
     g.appendChild(img);
@@ -127,7 +166,7 @@ def make_png_layers(scene_id, photo_path):
   // Layer 6: Signature
   (g, a) => {{
     const t = ce('text', {{
-      x: 180, y: 435,
+      x: {cx}, y: {h - 15},
       fill: a ? HL : '#A08060',
       'font-size': '15',
       'text-anchor': 'middle',
@@ -143,24 +182,26 @@ def make_png_layers(scene_id, photo_path):
 
 def make_png_layers_simple(scene_id, photo_path):
     """Generate JS code for 6-layer variant (no fine detail layer)."""
+    w, h = get_dims(scene_id)
+    cx = w // 2
+    t3 = h // 3
     return f'''  // ================================================================
   // PNG TRACED APPROACH (3-star): 6 layers, no fine detail.
-  // Layer 0: construction guides | Layers 1-3: traced outlines
-  // Layer 4: color reference | Layer 5: signature
+  // Canvas: {w}x{h}
   // ================================================================
 
   // Layer 0: Construction guides
   (g, a) => {{
-    pp(g, ['M 180 0 L 180 450'], a, lt);
-    pp(g, ['M 0 150 L 360 150'], a, lt);
-    pp(g, ['M 0 300 L 360 300'], a, lt);
-    pp(g, ['M 10 5 L 350 5 L 350 445 L 10 445 Z'], a, lt);
+    pp(g, ['M {cx} 0 L {cx} {h}'], a, lt);
+    pp(g, ['M 0 {t3} L {w} {t3}'], a, lt);
+    pp(g, ['M 0 {t3*2} L {w} {t3*2}'], a, lt);
+    pp(g, ['M 10 5 L {w-10} 5 L {w-10} {h-5} L 10 {h-5} Z'], a, lt);
   }},
 
   // Layer 1: Top region — traced from photo
   (g, a) => {{
     const src = a ? 'img/{scene_id}/step1_hl.png' : 'img/{scene_id}/step1.png';
-    const img = ce('image', {{ x: '0', y: '0', width: '360', height: '450' }});
+    const img = ce('image', {{ x: '0', y: '0', width: '{w}', height: '{h}' }});
     img.setAttribute('href', src);
     if (a) img.classList.add('active-element');
     g.appendChild(img);
@@ -169,7 +210,7 @@ def make_png_layers_simple(scene_id, photo_path):
   // Layer 2: Middle region — traced from photo
   (g, a) => {{
     const src = a ? 'img/{scene_id}/step2_hl.png' : 'img/{scene_id}/step2.png';
-    const img = ce('image', {{ x: '0', y: '0', width: '360', height: '450' }});
+    const img = ce('image', {{ x: '0', y: '0', width: '{w}', height: '{h}' }});
     img.setAttribute('href', src);
     if (a) img.classList.add('active-element');
     g.appendChild(img);
@@ -178,7 +219,7 @@ def make_png_layers_simple(scene_id, photo_path):
   // Layer 3: Bottom region — traced from photo
   (g, a) => {{
     const src = a ? 'img/{scene_id}/step3_hl.png' : 'img/{scene_id}/step3.png';
-    const img = ce('image', {{ x: '0', y: '0', width: '360', height: '450' }});
+    const img = ce('image', {{ x: '0', y: '0', width: '{w}', height: '{h}' }});
     img.setAttribute('href', src);
     if (a) img.classList.add('active-element');
     g.appendChild(img);
@@ -186,7 +227,7 @@ def make_png_layers_simple(scene_id, photo_path):
 
   // Layer 4: Color reference — photo at reduced opacity
   (g, a) => {{
-    const img = ce('image', {{ x: '0', y: '0', width: '360', height: '450', opacity: a ? '0.6' : '0.25' }});
+    const img = ce('image', {{ x: '0', y: '0', width: '{w}', height: '{h}', opacity: a ? '0.6' : '0.25' }});
     img.setAttribute('href', '{photo_path}');
     if (a) img.classList.add('active-element');
     g.appendChild(img);
@@ -195,7 +236,7 @@ def make_png_layers_simple(scene_id, photo_path):
   // Layer 5: Signature
   (g, a) => {{
     const t = ce('text', {{
-      x: 180, y: 435,
+      x: {cx}, y: {h - 15},
       fill: a ? HL : '#A08060',
       'font-size': '15',
       'text-anchor': 'middle',
@@ -230,16 +271,44 @@ STEP_DESCRIPTIONS = [
     { 'title': 'Assinatura', 'description': 'Assina o desenho com o nome no fundo da composicao.', 'tip': 'Uma assinatura discreta completa o retrato.' },
 ]
 
-# 7 step descriptions for 4-star pencil sketch scenes (matching 7 layers: 0-6)
-STEP_DESCRIPTIONS_PENCIL = [
+# 7 step descriptions for 4-star cartoon scenes (matching 7 layers: 0-6)
+STEP_DESCRIPTIONS_CARTOON = [
     { 'title': 'Composicao', 'description': 'Linhas-guia de composicao: centro vertical, tercos horizontais e moldura.', 'tip': 'Desenha com linhas muito leves - sao apenas referencias.' },
-    { 'title': 'Contornos superiores', 'description': 'Esboco a lapis da zona superior: contornos principais das cabecas, rostos e cabelo.', 'tip': 'Usa tracos suaves e naturais, como se desenhasses a lapis macio.' },
-    { 'title': 'Contornos centrais', 'description': 'Esboco a lapis da zona central: tronco, bracos, maos e objectos.', 'tip': 'Varia a pressao do lapis para dar vida aos contornos.' },
-    { 'title': 'Contornos inferiores', 'description': 'Esboco a lapis da zona inferior: pernas, mesa, chao e fundo.', 'tip': 'As linhas do fundo podem ser mais leves e soltas.' },
-    { 'title': 'Sombreado e profundidade', 'description': 'Tons suaves de lapis que dao volume e profundidade ao desenho. Sombras, texturas e atmosfera.', 'tip': 'Usa o lapis de lado para criar sombras suaves e graduais.' },
-    { 'title': 'Referencia de cor', 'description': 'A foto original como referencia de cores e tons.', 'tip': 'Observa as cores e sombras da foto para colorir o desenho.' },
+    { 'title': 'Contornos superiores', 'description': 'Contornos fortes e simplificados da zona superior: cabecas, rostos, cabelo - estilo banda desenhada.', 'tip': 'Usa tracos grossos e decisivos, como numa banda desenhada.' },
+    { 'title': 'Contornos centrais', 'description': 'Contornos fortes da zona central: tronco, bracos, maos e objectos - linhas limpas e expressivas.', 'tip': 'Simplifica as formas - menos detalhe, mais expressao.' },
+    { 'title': 'Contornos inferiores', 'description': 'Contornos fortes da zona inferior: pernas, mesa, chao e fundo.', 'tip': 'Mantem as linhas grossas e confiantes ate ao final.' },
+    { 'title': 'Expressao e detalhe', 'description': 'Detalhes adicionais que dao expressao: olhos, bocas, pregas de roupa, pequenos objectos.', 'tip': 'Estes detalhes finos dao personalidade ao estilo cartoon.' },
+    { 'title': 'Referencia de cor', 'description': 'A foto original como referencia de cores e tons.', 'tip': 'Cores vivas e saturadas combinam bem com o estilo cartoon.' },
     { 'title': 'Assinatura', 'description': 'Assina o desenho com o nome no fundo da composicao.', 'tip': 'Uma assinatura discreta completa o retrato.' },
 ]
+
+# 7 step descriptions for 4-star adaptive threshold scenes (matching 7 layers: 0-6)
+STEP_DESCRIPTIONS_ADAPTIVE = [
+    { 'title': 'Composicao', 'description': 'Linhas-guia de composicao: centro vertical, tercos horizontais e moldura.', 'tip': 'Desenha com linhas muito leves - sao apenas referencias.' },
+    { 'title': 'Parte superior', 'description': 'Zona superior em alto contraste preto e branco: cabecas, rostos e cabelo com sombras marcadas.', 'tip': 'Pensa em preto e branco - sem tons cinzentos, so luz e sombra.' },
+    { 'title': 'Parte central', 'description': 'Zona central em contraste forte: tronco, bracos e objectos com areas escuras bem definidas.', 'tip': 'As areas de sombra sao completamente pretas - sem meios tons.' },
+    { 'title': 'Parte inferior', 'description': 'Zona inferior em contraste: pernas, mesa, chao com texturas de luz e sombra.', 'tip': 'O efeito de gravura cria padroes interessantes nas texturas.' },
+    { 'title': 'Sombras e texturas', 'description': 'Camada adicional de sombras e texturas que dao profundidade ao estilo gravura.', 'tip': 'Usa hachurado (linhas cruzadas) para simular as sombras.' },
+    { 'title': 'Referencia de cor', 'description': 'A foto original como referencia de cores e tons.', 'tip': 'Mesmo a preto e branco, observa onde a luz incide na foto.' },
+    { 'title': 'Assinatura', 'description': 'Assina o desenho com o nome no fundo da composicao.', 'tip': 'Uma assinatura discreta completa o retrato.' },
+]
+
+# 7 step descriptions for 4-star posterize scenes (matching 7 layers: 0-6)
+STEP_DESCRIPTIONS_POSTERIZE = [
+    { 'title': 'Composicao', 'description': 'Linhas-guia de composicao: centro vertical, tercos horizontais e moldura.', 'tip': 'Desenha com linhas muito leves - sao apenas referencias.' },
+    { 'title': 'Parte superior', 'description': 'Contornos da zona superior: cabecas, rostos e cabelo com linhas claras e definidas.', 'tip': 'Segue os contornos da foto - as linhas seguem as formas reais.' },
+    { 'title': 'Parte central', 'description': 'Contornos da zona central: tronco, bracos e objectos.', 'tip': 'Mantem a pressao do lapis constante para linhas uniformes.' },
+    { 'title': 'Parte inferior', 'description': 'Contornos da zona inferior: pernas, mesa, chao e fundo.', 'tip': 'As linhas mais distantes podem ser mais leves.' },
+    { 'title': 'Regioes de cor', 'description': 'Limites entre as zonas de cor: areas planas de cor separadas por linhas suaves, estilo poster.', 'tip': 'Pinta cada regiao com uma cor uniforme - sem degradados.' },
+    { 'title': 'Referencia de cor', 'description': 'A foto original como referencia de cores e tons.', 'tip': 'Usa poucas cores - simplifica para 5-6 tons principais.' },
+    { 'title': 'Assinatura', 'description': 'Assina o desenho com o nome no fundo da composicao.', 'tip': 'Uma assinatura discreta completa o retrato.' },
+]
+
+STEP_DESCRIPTIONS_BY_STYLE = {
+    'cartoon':   STEP_DESCRIPTIONS_CARTOON,
+    'adaptive':  STEP_DESCRIPTIONS_ADAPTIVE,
+    'posterize': STEP_DESCRIPTIONS_POSTERIZE,
+}
 
 
 def splice_drawings(scene_id, photo_path):
@@ -326,8 +395,8 @@ def splice_app_steps(scene_id):
     # Build new steps array
     if scene_id in SIMPLE_SCENES:
         steps = STEP_DESCRIPTIONS_SIMPLE
-    elif scene_id in PENCIL_SCENES:
-        steps = STEP_DESCRIPTIONS_PENCIL
+    elif scene_id in FOURSTAR_SCENES:
+        steps = STEP_DESCRIPTIONS_BY_STYLE[FOURSTAR_SCENES[scene_id]]
     else:
         steps = STEP_DESCRIPTIONS
     steps_lines = []
