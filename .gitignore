@@ -5,4 +5,7 @@ android/.gradle/
 android/app/build/
 android/build/
 android/local.properties
+android/key.properties
+*.jks
+*.keystore
 tmp_diff.txt

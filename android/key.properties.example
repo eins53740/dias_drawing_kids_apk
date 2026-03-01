@@ -1,0 +1,4 @@
+storeFile=../../keystore/desenha-release.jks
+storePassword=CHANGE_ME
+keyAlias=desenha
+keyPassword=CHANGE_ME

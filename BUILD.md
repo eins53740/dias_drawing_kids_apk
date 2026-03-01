@@ -33,6 +33,22 @@ npx serve www -l 3333
 
 ## Android APK Build
 
+### One-time release signing setup
+Create `android/key.properties` (never commit it):
+
+```properties
+storeFile=../../keystore/desenha-release.jks
+storePassword=YOUR_STORE_PASSWORD
+keyAlias=desenha
+keyPassword=YOUR_KEY_PASSWORD
+```
+
+Then generate a keystore (example):
+
+```bash
+keytool -genkeypair -v -keystore keystore/desenha-release.jks -alias desenha -keyalg RSA -keysize 2048 -validity 10000
+```
+
 ### Option A: Command line
 ```bash
 # Sync web assets to Android project
@@ -47,6 +63,8 @@ cd android
 ./gradlew assembleRelease
 # APK: android/app/build/outputs/apk/release/app-release-unsigned.apk
 ```
+
+If `android/key.properties` is configured, `assembleRelease` produces a signed release APK.
 
 ### Option B: Android Studio
 ```bash
